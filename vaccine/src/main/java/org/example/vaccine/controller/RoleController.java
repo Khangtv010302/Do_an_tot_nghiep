@@ -1,7 +1,6 @@
 package org.example.vaccine.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Delete;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.model.Role;
 import org.example.vaccine.model.request.RoleRequest;
@@ -16,11 +15,11 @@ public class RoleController {
     private final RoleService roleService;
     @PostMapping("")
     public ResponseEntity<ResponseBase> insertRole(@RequestBody RoleRequest request){
-        return roleService.insertRole(request);
+        return roleService.insert(request);
     }
     @PutMapping("")
     public ResponseEntity<ResponseBase> updateRole(@RequestBody Role role){
-        return roleService.updateRole(role);
+        return roleService.updateById(role);
     }
     @GetMapping("")
     public ResponseEntity<ResponseBase> selectAll(){
@@ -28,6 +27,6 @@ public class RoleController {
     }
     @DeleteMapping("")
     public ResponseEntity<ResponseBase> deleteRoleById(@RequestParam String id){
-    return roleService.deleteRole(id);
+    return roleService.deleteById(id);
     }
 }

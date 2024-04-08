@@ -6,8 +6,8 @@ import org.example.vaccine.model.request.RoleRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface RoleService {
-    ResponseEntity<ResponseBase> insertRole(RoleRequest request);
-    ResponseEntity<ResponseBase> updateRole(Role role);
-    ResponseEntity<ResponseBase> deleteRole(String id);
+    ResponseEntity<ResponseBase> insert(RoleRequest request);
+    ResponseEntity<ResponseBase> updateById(Role role);
+    ResponseEntity<ResponseBase> deleteById(String id);
     ResponseEntity<ResponseBase> selectAll();
 }

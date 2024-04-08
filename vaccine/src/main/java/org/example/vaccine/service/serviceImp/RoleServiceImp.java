@@ -21,24 +21,18 @@ public class RoleServiceImp implements RoleService {
     private final RoleMapper roleMapper;
     private final ResponseHandle handle;
     @Override
-    public ResponseEntity<ResponseBase> insertRole(RoleRequest request) {
-        try {
+    public ResponseEntity<ResponseBase> insert(RoleRequest request) {
             CommonResponseCode code = handle.response(roleMapper.insertRole(request));
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
-        }catch (Exception e){
-            return ResponseEntity.status(CommonResponseCode.EXISTING.getHttp()).body(new ResponseBase(CommonResponseCode.EXISTING));
-        }
-
-
     }
     @Override
-    public ResponseEntity<ResponseBase> updateRole(Role role) {
+    public ResponseEntity<ResponseBase> updateById(Role role) {
             CommonResponseCode code = handle.response(roleMapper.updateRole(role));
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }
 
     @Override
-    public ResponseEntity<ResponseBase> deleteRole(String id) {
+    public ResponseEntity<ResponseBase> deleteById(String id) {
         CommonResponseCode code = handle.response(roleMapper.deleteRole(id));
         return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }

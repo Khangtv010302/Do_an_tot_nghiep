@@ -2,6 +2,7 @@ package org.example.vaccine.exception;
 
 import org.example.vaccine.base.CommonResponseCode;
 import org.example.vaccine.base.ResponseBase;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -42,6 +43,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ResponseBase> usernameNotFound() {
         return ResponseEntity.status(CommonResponseCode.WRONG_USER.getHttp()).body(
                 new ResponseBase(CommonResponseCode.WRONG_USER)
+        );
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ResponseBase> existingUnique() {
+        return ResponseEntity.status(CommonResponseCode.EXISTING.getHttp()).body(
+                new ResponseBase(CommonResponseCode.EXISTING)
         );
     }
 }
