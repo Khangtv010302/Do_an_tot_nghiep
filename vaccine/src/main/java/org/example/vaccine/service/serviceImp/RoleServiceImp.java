@@ -20,15 +20,17 @@ import java.util.List;
 public class RoleServiceImp implements RoleService {
     private final RoleMapper roleMapper;
     private final ResponseHandle handle;
+
     @Override
     public ResponseEntity<ResponseBase> insert(RoleRequest request) {
-            CommonResponseCode code = handle.response(roleMapper.insertRole(request));
-            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        CommonResponseCode code = handle.response(roleMapper.insertRole(request));
+        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }
+
     @Override
     public ResponseEntity<ResponseBase> updateById(Role role) {
-            CommonResponseCode code = handle.response(roleMapper.updateRole(role));
-            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        CommonResponseCode code = handle.response(roleMapper.updateRole(role));
+        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }
 
     @Override
@@ -40,8 +42,16 @@ public class RoleServiceImp implements RoleService {
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
         List<Role> roleList = roleMapper.selectAll();
-        if(roleList.isEmpty())
+        if (roleList.isEmpty())
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(roleList));
+    }
+
+    @Override
+    public ResponseEntity<ResponseBase> selectById(String id) {
+        Role role = roleMapper.selectById(id);
+        if (role == null)
+            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+        return ResponseEntity.ok().body(new ResponseData<>(role));
     }
 }

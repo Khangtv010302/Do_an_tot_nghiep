@@ -16,4 +16,6 @@ public interface FormMapper {
     int deleteById(String id);
     @Select("SELECT * FROM form")
     List<Form> selectAll();
+    @Select("SELECT * FROM form WHERE id = #{id}")
+    Form selectById(String id);
 }

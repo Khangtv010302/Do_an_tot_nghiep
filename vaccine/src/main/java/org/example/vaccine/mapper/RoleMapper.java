@@ -16,4 +16,6 @@ public interface RoleMapper {
     int deleteRole (String id);
     @Select("Select * FROM role")
     List<Role> selectAll();
+    @Select("SELECT  * FROM role WHERE id =#{id}")
+    Role selectById(String id);
 }

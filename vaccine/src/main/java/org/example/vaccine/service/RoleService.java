@@ -10,4 +10,5 @@ public interface RoleService {
     ResponseEntity<ResponseBase> updateById(Role role);
     ResponseEntity<ResponseBase> deleteById(String id);
     ResponseEntity<ResponseBase> selectAll();
+    ResponseEntity<ResponseBase> selectById(String id);
 }

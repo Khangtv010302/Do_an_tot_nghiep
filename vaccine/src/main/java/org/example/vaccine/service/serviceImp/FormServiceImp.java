@@ -38,4 +38,12 @@ public class FormServiceImp implements FormService {
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(formList));
     }
+
+    @Override
+    public ResponseEntity<ResponseBase> selectById(String id) {
+        Form form = formMapper.selectById(id);
+        if(form == null)
+            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+        return ResponseEntity.ok(new ResponseData<>(form));
+    }
 }
