@@ -24,7 +24,7 @@ public class FormController {
     public ResponseEntity<ResponseBase> selectAll(){
         return formService.selectAll();
     }
-    @GetMapping("")
+    @GetMapping("/Id")
     public ResponseEntity<ResponseBase> selectAllById(@RequestParam String id){
         return formService.selectById(id);
     }

@@ -12,6 +12,7 @@ import org.example.vaccine.service.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 
@@ -23,8 +24,13 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public ResponseEntity<ResponseBase> insert(RoleRequest request) {
-        CommonResponseCode code = handle.response(roleMapper.insertRole(request));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        try {
+            CommonResponseCode code = handle.response(roleMapper.insertRole(request));
+            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        }catch (Exception e){
+            return ResponseEntity.status(CommonResponseCode.EXISTING.getHttp()).body(new ResponseBase(CommonResponseCode.EXISTING));
+        }
+
     }
 
     @Override

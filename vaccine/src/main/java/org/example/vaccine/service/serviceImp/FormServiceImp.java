@@ -20,9 +20,9 @@ public class FormServiceImp implements FormService {
     private final FormMapper formMapper;
     private final ResponseHandle handle;
     @Override
-    public ResponseEntity<ResponseBase> insert(String name){
-        CommonResponseCode code = handle.response(formMapper.insert(name));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+    public ResponseEntity<ResponseBase> insert(String name)  {
+            CommonResponseCode code = handle.response(formMapper.insert(name));
+            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }
 
     @Override
