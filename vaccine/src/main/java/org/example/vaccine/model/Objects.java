@@ -9,6 +9,6 @@ import org.example.vaccine.model.request.ObjectRequest;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Object extends ObjectRequest {
+public class Objects extends ObjectRequest {
     private String id;
 }

@@ -2,8 +2,6 @@ package org.example.vaccine.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.ResponseBase;
-import org.example.vaccine.model.HealthcareStaff;
-import org.example.vaccine.model.request.HealthcareSearchRequest;
 import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
 import org.example.vaccine.service.HealthcareStaffService;
@@ -32,8 +30,8 @@ public class HealthcareStaffController {
         return healthcareStaffService.selectAll();
     }
     @PostMapping("/Search")
-    ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(@RequestBody HealthcareSearchRequest healthcareSearchRequest){
-        return healthcareStaffService.selectByNameOrEmailOrUsername(healthcareSearchRequest);
+    ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(@RequestParam String info){
+        return healthcareStaffService.selectByNameOrEmailOrUsername(info);
     }
     @GetMapping("/id")
     ResponseEntity<ResponseBase> selectById(@RequestParam String id){

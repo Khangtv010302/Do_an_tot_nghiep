@@ -7,7 +7,6 @@ import org.example.vaccine.base.ResponseData;
 import org.example.vaccine.base.ResponseHandle;
 import org.example.vaccine.mapper.HealthcareStaffMapper;
 import org.example.vaccine.model.HealthcareStaff;
-import org.example.vaccine.model.request.HealthcareSearchRequest;
 import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
 import org.example.vaccine.service.HealthcareStaffService;
@@ -50,8 +49,8 @@ public class HealthcareStaffServiceImp implements HealthcareStaffService {
     }
 
     @Override
-    public ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(HealthcareSearchRequest healthcareSearchRequest) {
-        List<HealthcareStaff> staffList = healthcareStaffMapper.selectByNameOrEmailOrUsername(healthcareSearchRequest);
+    public ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(String info) {
+        List<HealthcareStaff> staffList = healthcareStaffMapper.selectByNameOrEmailOrUsername(info);
         if (staffList.isEmpty())
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok(new ResponseData<>(staffList));

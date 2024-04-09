@@ -2,7 +2,6 @@ package org.example.vaccine.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.example.vaccine.model.HealthcareStaff;
-import org.example.vaccine.model.request.HealthcareSearchRequest;
 import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
 
@@ -20,8 +19,8 @@ public interface HealthcareStaffMapper {
     int deleteById(String id);
     @Select("SELECT  * FROM healthcare_staff")
     List<HealthcareStaff> selectAll();
-    @Select("SELECT * FROM healthcare_staff WHERE fullname LIKE CONCAT('%',#{fullname}, '%') OR email LIKE CONCAT('%',#{email}, '%')  OR username LIKE CONCAT('%', #{username}, '%')")
-    List<HealthcareStaff> selectByNameOrEmailOrUsername(HealthcareSearchRequest request);
+    @Select("SELECT * FROM healthcare_staff WHERE fullname LIKE CONCAT('%',#{info}, '%') OR email LIKE CONCAT('%',#{info}, '%')  OR username LIKE CONCAT('%', #{info}, '%')")
+    List<HealthcareStaff> selectByNameOrEmailOrUsername(String info);
     @Select("SELECT  * FROM healthcare_staff WHERE id = #{id}")
     HealthcareStaff selectById(String id);
 }
