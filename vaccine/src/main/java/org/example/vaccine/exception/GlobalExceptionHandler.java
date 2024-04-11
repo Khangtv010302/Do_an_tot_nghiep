@@ -2,7 +2,6 @@ package org.example.vaccine.exception;
 
 import org.example.vaccine.base.CommonResponseCode;
 import org.example.vaccine.base.ResponseBase;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLNonTransientConnectionException;
 
 
 @ControllerAdvice
