@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GeneralListRequest {
+public class GeneralInjectionRequest {
     private String vaccineId;
-    private int month;
+    private int monthOld;
 }
