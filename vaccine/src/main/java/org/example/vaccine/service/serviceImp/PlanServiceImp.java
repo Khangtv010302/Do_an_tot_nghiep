@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.CommonResponseCode;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.base.ResponseData;
-import org.example.vaccine.base.ResponseHandle;
+
+import org.example.vaccine.exception.DeleteException;
+import org.example.vaccine.exception.UpdateException;
 import org.example.vaccine.mapper.PlanMapper;
 import org.example.vaccine.model.Plan;
 import org.example.vaccine.model.request.PlanRequest;
@@ -21,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlanServiceImp implements PlanService {
     private final PlanMapper planMapper;
-    private final ResponseHandle handle;
     @Override
     @Transactional
     public ResponseEntity<ResponseBase> insert(PlanRequest request) {
@@ -35,24 +36,27 @@ public class PlanServiceImp implements PlanService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseBase> updateById(Plan plan) {
+    public ResponseEntity<ResponseBase> updateById(Plan plan) throws UpdateException {
         int code =planMapper.updateById(plan);
         if(code ==0)
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+            throw new UpdateException();
         planMapper.deletePlanDetailById(plan.getId());
-        for (String vaccineId: plan.getVaccineId()){
-            planMapper.insertPlanDetail(vaccineId,plan.getId());
+        try {
+            for (String vaccineId: plan.getVaccineId()){
+                planMapper.insertPlanDetail(vaccineId,plan.getId());
+            }
+        }catch (Exception e){
+            throw new UpdateException();
         }
         return ResponseEntity.ok(new ResponseBase());
     }
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseBase> deleteById(String id) {
-        int code =  planMapper.deletePlanDetailById(id);
+    public ResponseEntity<ResponseBase> deleteById(String id) throws DeleteException {
+        int code =  planMapper.deletePlanDetailById(id)* planMapper.deleteById(id);
         if(code == 0)
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
-        planMapper.deleteById(id);
+            throw new DeleteException();
         return ResponseEntity.ok().body(new ResponseBase());
     }
 

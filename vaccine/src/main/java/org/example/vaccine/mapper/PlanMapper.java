@@ -28,7 +28,7 @@ public interface PlanMapper {
     List<PlanResponse> selectAll();
     @Select("SELECT * FROM plan WHERE id = #{id}")
     Plan selectById(String id);
-    @Select("SELECT * FROM plan_detail INNER JOIN vaccine on plan_detail.vaccine_id = vaccine.id WHERE plan_id =#{planId}")
+    @Select("SELECT vaccine_id,va.name FROM plan_detail as pl INNER JOIN vaccine as va on pl.vaccine_id = va.id WHERE plan_id =#{planId}")
     List<PlanDetailResponse> selectByPlanId(String id);
 
 }

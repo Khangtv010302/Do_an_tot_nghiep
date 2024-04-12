@@ -50,4 +50,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 new ResponseBase(CommonResponseCode.EXISTING)
         );
     }
+    @ExceptionHandler(InsertException.class)
+    public ResponseEntity<ResponseBase> insertException(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(0,"Insert Failed"));
+    }
+    @ExceptionHandler(UpdateException.class)
+    public ResponseEntity<ResponseBase> updateException(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(0,"Update Failed"));
+    }
+    @ExceptionHandler(DeleteException.class)
+    public ResponseEntity<ResponseBase> deleteException(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(0,"Delete Failed"));
+    }
 }

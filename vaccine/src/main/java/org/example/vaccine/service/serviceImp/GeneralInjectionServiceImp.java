@@ -1,4 +1,4 @@
-package org.example.vaccine.service;
+package org.example.vaccine.service.serviceImp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.CommonResponseCode;
@@ -9,6 +9,7 @@ import org.example.vaccine.mapper.GeneralInjectionMapper;
 import org.example.vaccine.model.GeneralInjection;
 import org.example.vaccine.model.request.GeneralInjectionRequest;
 import org.example.vaccine.model.response.GeneralInjectionResponse;
+import org.example.vaccine.service.GeneralInjectionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GeneralInjectionServiceImp implements GeneralInjectionService{
+public class GeneralInjectionServiceImp implements GeneralInjectionService {
     private final GeneralInjectionMapper generalInjectionMapper;
     private final ResponseHandle handle;
 

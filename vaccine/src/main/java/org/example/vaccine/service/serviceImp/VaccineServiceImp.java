@@ -11,8 +11,8 @@ import org.example.vaccine.mapper.VaccineMapper;
 import org.example.vaccine.model.Vaccine;
 import org.example.vaccine.model.request.VaccineRequest;
 import org.example.vaccine.model.request.VaccineSearchRequest;
+import org.example.vaccine.model.response.VaccineResponse;
 import org.example.vaccine.service.VaccineService;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class VaccineServiceImp implements VaccineService {
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
         }
         try {
-            delete(vaccine.getImage());
+            deleteImage(vaccine.getImage());
            var data = cloudinary.uploader().upload(file.getBytes(), Map.of());
            String image = data.get("url").toString();
            vaccine.setImage(image);
@@ -67,13 +67,13 @@ public class VaccineServiceImp implements VaccineService {
         if (vaccine == null)
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         CommonResponseCode code = handle.response(vaccineMapper.deleteById(id));
-        delete(vaccine.getImage());
+        deleteImage(vaccine.getImage());
         return ResponseEntity.ok(new ResponseBase(code));
     }
 
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
-        List<Vaccine> vaccineList = vaccineMapper.selectAll();
+        List<VaccineResponse> vaccineList = vaccineMapper.selectAll();
         if (vaccineList.isEmpty())
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(vaccineList));
@@ -94,7 +94,7 @@ public class VaccineServiceImp implements VaccineService {
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(vaccine));
     }
-    public Object delete(String url) {
+    public Object deleteImage(String url) {
         try {
             String[] parts = url.split("/");
             String imageNameWithExtension = parts[parts.length - 1];

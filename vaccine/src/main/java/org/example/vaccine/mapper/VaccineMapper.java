@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.example.vaccine.model.Vaccine;
 import org.example.vaccine.model.request.VaccineRequest;
 import org.example.vaccine.model.request.VaccineSearchRequest;
+import org.example.vaccine.model.response.VaccineResponse;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ public interface VaccineMapper {
     int updateById(Vaccine vaccine);
     @Delete("DELETE FROM vaccine WHERE id = #{id}")
     int deleteById(String id);
-    @Select("SELECT * FROM vaccine")
-    List<Vaccine> selectAll();
+    @Select("SELECT va.id,va.name,va.antigen,va.unit,va.packing,va.image,ma.name as 'manufacturerName' FROM vaccine as va INNER JOIN manufacturer as ma ON va.manufacturer_id = ma.id")
+    List<VaccineResponse> selectAll();
     @Select("SELECT * FROM vaccine WHERE name LIKE CONCAT('%',#{name},'%') OR manufacturer_id = #{manufacturerId}")
     List<Vaccine> selectByNameOrManufacturerId(VaccineSearchRequest request);
     @Select("SELECT * FROM vaccine WHERE id = #{id}")
