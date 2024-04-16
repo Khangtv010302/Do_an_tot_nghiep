@@ -1,0 +1,20 @@
+/* Home.css */
+.homepage-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .feature-section {
+    margin-bottom: 20px;
+  }
+  
+  .feature-section h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .feature-section p {
+    font-size: 16px;
+    line-height: 1.5;
+  }

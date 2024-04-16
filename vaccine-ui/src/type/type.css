@@ -1,0 +1,10 @@
+.header{
+    text-align: center;
+}
+.center{
+    margin-top: 2%;
+}
+.submit{
+    display: flex; /* Enable flexbox for alignment */
+    justify-content: flex-end; /* Align buttons to the right */
+}
