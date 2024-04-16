@@ -7,7 +7,6 @@ import {
   LineChartOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import Logo from './assets/VaccineLogo.png';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -39,7 +38,7 @@ const items = [
   getItem('Vaccine', '6', <FontAwesomeIcon icon={faSyringe} />),
   getItem('Nhà cung cấp', '7', <FontAwesomeIcon icon={faIndustry} />),
   getItem('Danh sách các mũi tiêm', '8', <UnorderedListOutlined />),
-  getItem('Nhân viên', '9', <UserOutlined />),
+  getItem('Nhân viên', 'staff', <UserOutlined />),
   getItem('Thống kê báo cáo', '10', <LineChartOutlined />),
   getItem('Loại nhân viên', 'type', <FontAwesomeIcon icon={faUsers} />),
 ];
@@ -66,7 +65,7 @@ const App = ({children}) => {
        
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" >
-          <img src={Logo} alt='' className='Logo' ></img>
+          <img src='/public/assets/VaccineLogo.png' alt='' className='Logo' ></img>
         </div>
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} 
         onClick={onClick}

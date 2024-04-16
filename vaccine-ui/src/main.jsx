@@ -5,6 +5,7 @@ import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './home/Home.jsx'
 import Type from './type/type.jsx'
+import Staff from './staff/Staff.jsx'
 import {
   useQuery,
   useQueryClient,
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path='/' element={<App/>}></Route>
           <Route path='/Home' element={<Home/>}></Route>
           <Route path='/Type' element={<Type/>}></Route>
+          <Route path='/Staff' element={<Staff/>}></Route>
         </Routes>
       </BrowserRouter>
       </QueryClientProvider>
