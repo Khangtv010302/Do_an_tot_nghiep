@@ -9,6 +9,7 @@ import org.example.vaccine.mapper.HealthcareStaffMapper;
 import org.example.vaccine.model.HealthcareStaff;
 import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
+import org.example.vaccine.model.response.HealthcareStaffResponse;
 import org.example.vaccine.service.HealthcareStaffService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,17 +43,13 @@ public class HealthcareStaffServiceImp implements HealthcareStaffService {
 
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
-        List<HealthcareStaff> staffList = healthcareStaffMapper.selectAll();
-        if (staffList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+        List<HealthcareStaffResponse> staffList = healthcareStaffMapper.selectAll();
         return ResponseEntity.ok(new ResponseData<>(staffList));
     }
 
     @Override
     public ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(String info) {
         List<HealthcareStaff> staffList = healthcareStaffMapper.selectByNameOrEmailOrUsername(info);
-        if (staffList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok(new ResponseData<>(staffList));
     }
 

@@ -42,8 +42,6 @@ public class GeneralInjectionServiceImp implements GeneralInjectionService {
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
         List<GeneralInjectionResponse> generalInjections = generalInjectionMapper.selectAll();
-        if (generalInjections.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok(new ResponseData<>(generalInjections));
     }
 }

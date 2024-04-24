@@ -18,9 +18,7 @@ public class VaccineRequest  {
     private String description;
     private String origin;
     private String contraindicated;
-    private String useWithCaution;
     private String unwantedEffect;
     private String preserve;
     private String image;
-
 }

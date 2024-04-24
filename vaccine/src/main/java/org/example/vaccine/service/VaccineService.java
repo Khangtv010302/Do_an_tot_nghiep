@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface VaccineService {
-    ResponseEntity<ResponseBase> insert(VaccineRequest request,MultipartFile multipartFile);
+    ResponseEntity<ResponseBase> insert(VaccineRequest vaccine,MultipartFile file);
     ResponseEntity<ResponseBase> updateById(Vaccine vaccine,MultipartFile file);
     ResponseEntity<ResponseBase> deleteById(String id);
     ResponseEntity<ResponseBase> selectAll();

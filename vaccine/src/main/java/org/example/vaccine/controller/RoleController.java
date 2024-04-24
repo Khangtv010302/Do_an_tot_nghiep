@@ -29,4 +29,8 @@ public class RoleController {
     public ResponseEntity<ResponseBase> deleteRoleById(@RequestParam String id){
     return roleService.deleteById(id);
     }
+    @GetMapping("/id")
+    public  ResponseEntity<ResponseBase> getRoleById(@RequestParam String roleId){
+        return roleService.selectById(roleId);
+    }
 }

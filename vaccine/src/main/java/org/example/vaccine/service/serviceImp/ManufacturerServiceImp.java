@@ -44,8 +44,6 @@ public class ManufacturerServiceImp implements ManufacturerService {
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
         List<Manufacturer> manufacturerList = manufacturerMapper.selectAll();
-        if(manufacturerList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(manufacturerList));
     }
 }

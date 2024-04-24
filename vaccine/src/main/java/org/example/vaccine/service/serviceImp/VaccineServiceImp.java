@@ -29,11 +29,11 @@ public class VaccineServiceImp implements VaccineService {
     private final ResponseHandle handle;
     private final Cloudinary cloudinary;
     @Override
-    public ResponseEntity<ResponseBase> insert(VaccineRequest request,MultipartFile multipartFile) {
+    public ResponseEntity<ResponseBase> insert(VaccineRequest request,MultipartFile file) {
         try {
             if(vaccineMapper.selectByName(request.getName()) != null)
                 return ResponseEntity.status(CommonResponseCode.EXISTING.getHttp()).body(new ResponseBase(CommonResponseCode.EXISTING));
-            var data = cloudinary.uploader().upload(multipartFile.getBytes(),Map.of());
+            var data = cloudinary.uploader().upload(file.getBytes(),Map.of());
             String image = data.get("url").toString();
             request.setImage(image);
             CommonResponseCode code = handle.response(vaccineMapper.insert(request));
@@ -73,17 +73,13 @@ public class VaccineServiceImp implements VaccineService {
 
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
-        List<VaccineResponse> vaccineList = vaccineMapper.selectAll();
-        if (vaccineList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+        List<Vaccine> vaccineList = vaccineMapper.selectAll();
         return ResponseEntity.ok().body(new ResponseData<>(vaccineList));
     }
 
     @Override
     public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(VaccineSearchRequest request) {
         List<Vaccine> vaccineList = vaccineMapper.selectByNameOrManufacturerId(request);
-        if (vaccineList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(vaccineList));
     }
 

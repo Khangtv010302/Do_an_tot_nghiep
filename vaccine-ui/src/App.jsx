@@ -29,14 +29,11 @@ function getItem(label, key, icon, children) {
 }
 const items = [
   getItem('Trang chủ', 'Home', <HomeOutlined />),
-  getItem('Đối tượng', '2', <FontAwesomeIcon icon={faChildren} />),
+  getItem('Đối tượng', 'Object', <FontAwesomeIcon icon={faChildren} />),
   getItem('Kế hoạch', '3', <FontAwesomeIcon icon={faCalendar} />),
-  getItem('Nhập xuất', 'sub1', <FontAwesomeIcon icon={faWarehouse} />, [
-    getItem('Nhập', '4'),
-    getItem('Xuất', '5'),
-  ]),
-  getItem('Vaccine', '6', <FontAwesomeIcon icon={faSyringe} />),
-  getItem('Nhà cung cấp', '7', <FontAwesomeIcon icon={faIndustry} />),
+  getItem('Nhập xuất', '4', <FontAwesomeIcon icon={faWarehouse} />),
+  getItem('Vaccine', 'Vaccine', <FontAwesomeIcon icon={faSyringe} />),
+  getItem('Nhà cung cấp', 'Manufacturer', <FontAwesomeIcon icon={faIndustry} />),
   getItem('Danh sách các mũi tiêm', '8', <UnorderedListOutlined />),
   getItem('Nhân viên', 'staff', <UserOutlined />),
   getItem('Thống kê báo cáo', '10', <LineChartOutlined />),

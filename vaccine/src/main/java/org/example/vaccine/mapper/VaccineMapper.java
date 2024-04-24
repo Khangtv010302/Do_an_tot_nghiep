@@ -10,16 +10,16 @@ import java.util.List;
 
 @Mapper
 public interface VaccineMapper {
-    @Insert("INSERT INTO vaccine(manufacturer_id, name, image, antigen, packing, unit, description, origin, contraindicated, use_with_caution, unwanted_effect, preserve)" +
-            "value (#{manufacturerId},#{name},#{image},#{antigen},#{packing},#{unit},#{description},#{origin},#{contraindicated},#{useWithCaution},#{unwantedEffect},#{preserve})")
-    int insert(VaccineRequest vaccineRequest);
+    @Insert("INSERT INTO vaccine(manufacturer_id, name, image, antigen, packing, unit, description, origin, contraindicated, unwanted_effect, preserve)" +
+            "value (#{manufacturerId},#{name},#{image},#{antigen},#{packing},#{unit},#{description},#{origin},#{contraindicated},#{unwantedEffect},#{preserve})")
+    int insert(VaccineRequest request);
 
-    @Update("UPDATE vaccine SET name=#{name} , image = #{image}, packing = #{packing}, unit = #{unit}, antigen = #{antigen}, description=#{description}, origin = #{origin}, contraindicated = #{contraindicated},use_with_caution =  #{useWithCaution}, unwanted_effect = #{unwantedEffect}, preserve = #{preserve}, manufacturer_id = #{manufacturerId}  WHERE id = #{id}")
+    @Update("UPDATE vaccine SET name=#{name} , image = #{image}, packing = #{packing}, unit = #{unit}, antigen = #{antigen}, description=#{description}, origin = #{origin}, contraindicated = #{contraindicated}, unwanted_effect = #{unwantedEffect}, preserve = #{preserve}, manufacturer_id = #{manufacturerId}  WHERE id = #{id}")
     int updateById(Vaccine vaccine);
     @Delete("DELETE FROM vaccine WHERE id = #{id}")
     int deleteById(String id);
-    @Select("SELECT va.id,va.name,va.antigen,va.unit,va.packing,va.image,ma.name as 'manufacturerName' FROM vaccine as va INNER JOIN manufacturer as ma ON va.manufacturer_id = ma.id")
-    List<VaccineResponse> selectAll();
+    @Select("SELECT * FROM vaccine")
+    List<Vaccine> selectAll();
     @Select("SELECT * FROM vaccine WHERE name LIKE CONCAT('%',#{name},'%') OR manufacturer_id = #{manufacturerId}")
     List<Vaccine> selectByNameOrManufacturerId(VaccineSearchRequest request);
     @Select("SELECT * FROM vaccine WHERE id = #{id}")

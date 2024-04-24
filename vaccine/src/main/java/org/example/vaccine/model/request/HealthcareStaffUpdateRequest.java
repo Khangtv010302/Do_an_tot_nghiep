@@ -12,7 +12,6 @@ public class HealthcareStaffUpdateRequest {
     private Boolean sex;
     private String email;
     private String phoneNumber;
-    private String placeOfOrigin;
     private String placeOfResidence;
     private String roleId;
     private String id;

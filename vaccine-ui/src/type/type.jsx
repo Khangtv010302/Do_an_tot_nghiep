@@ -209,7 +209,7 @@ function Type() {
                 },
               ]}
             >
-              <Input name="name" disabled={isModalOpen.Delete}/>
+              <Input name="name" readOnly={isModalOpen.Delete}/>
             </Form.Item>
             <Form.Item
               label="Mã loại nhân viên"
@@ -220,7 +220,7 @@ function Type() {
                 },
               ]}
             >
-              <Input name="code" disabled={isModalOpen.Delete}/>
+              <Input name="code" readOnly={isModalOpen.Delete}/>
             </Form.Item>
             <Form.Item label=" ">
               <div className="submit">

@@ -59,16 +59,12 @@ public class ObjectInjectionServiceImp implements ObjectInjectionService {
     @Override
     public ResponseEntity<ResponseBase> selectByObjectIdAndId(String objectId,String id) {
         ObjectInjectionDetailResponse objectInjection = objectInjectionMapper.selectByObjectIdAndId(objectId,id);
-        if (objectInjection == null)
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(objectInjection));
     }
 
     @Override
     public ResponseEntity<ResponseBase> selectByObjectID(String objectId) {
         List<ObjectInjectionResponse> objectInjectionList = objectInjectionMapper.selectByObjectID(objectId);
-        if(objectInjectionList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(objectInjectionList));
     }
 }

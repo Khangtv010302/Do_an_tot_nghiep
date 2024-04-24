@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum CommonResponseCode implements IResponseCode {
     // Common
     SUCCESS(1, "Success",HttpStatus.OK),
-    NO_FOUND(0, "No found data",HttpStatus.INTERNAL_SERVER_ERROR),
+    NO_FOUND(0, "No found data",HttpStatus.NOT_FOUND),
 
     ERROR_EXCEPTION(2, "Error exception",HttpStatus.INTERNAL_SERVER_ERROR),
     EXISTING(3, "Existing data",HttpStatus.BAD_REQUEST),

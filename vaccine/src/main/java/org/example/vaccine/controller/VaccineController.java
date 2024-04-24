@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class VaccineController {
     private final VaccineService vaccineService;
-    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseBase> insert(@RequestParam("file")MultipartFile file,
+    @PostMapping(value = "")
+    public ResponseEntity<ResponseBase> insert(
+            @RequestParam("file") MultipartFile file,
                                                @RequestParam String name,
                                                @RequestParam String antigen,
                                                @RequestParam int packing,
@@ -26,8 +27,7 @@ public class VaccineController {
                                                @RequestParam String description,
                                                @RequestParam String origin,
                                                @RequestParam String contraindicated,
-                                               @RequestParam String useWithCaution,
-                                               @RequestParam String unWantedEffect,
+                                               @RequestParam(value = "effect")  String unwantedEffect,
                                                @RequestParam String preserve,
                                                @RequestParam String manufacturerId
                                                ){
@@ -35,17 +35,17 @@ public class VaccineController {
                 .contraindicated(contraindicated)
                 .description(description)
                 .manufacturerId(manufacturerId)
-                .unwantedEffect(unWantedEffect)
+                .unwantedEffect(unwantedEffect)
                 .antigen(antigen)
                 .origin(origin)
                 .packing(packing)
                 .preserve(preserve)
                 .name(name)
                 .unit(unit)
-                .useWithCaution(useWithCaution).build();
+               .build();
         return vaccineService.insert(vaccineRequest,file);
     }
-    @PutMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping("")
     public ResponseEntity<ResponseBase> updateById(@RequestParam(required = false)MultipartFile file,
                                                @RequestParam String name,
                                                @RequestParam String antigen,
@@ -54,15 +54,14 @@ public class VaccineController {
                                                @RequestParam String description,
                                                @RequestParam String origin,
                                                @RequestParam String contraindicated,
-                                               @RequestParam String useWithCaution,
-                                               @RequestParam String unWantedEffect,
+                                               @RequestParam String unwantedEffect,
                                                @RequestParam String preserve,
                                                @RequestParam String manufacturerId,
                                                @RequestParam String id,
                                                @RequestParam String image
     ){
 //
-        Vaccine vaccine = new Vaccine(manufacturerId,name,antigen,packing,unit,description,origin,contraindicated,useWithCaution,unWantedEffect,preserve,image,id);
+        Vaccine vaccine = new Vaccine(manufacturerId,name,antigen,packing,unit,description,origin,contraindicated,unwantedEffect,preserve,image,id);
         return vaccineService.updateById(vaccine,file);
     }
     @DeleteMapping("")

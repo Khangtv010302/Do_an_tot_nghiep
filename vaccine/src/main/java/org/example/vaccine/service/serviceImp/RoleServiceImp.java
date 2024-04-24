@@ -48,8 +48,6 @@ public class RoleServiceImp implements RoleService {
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
         List<Role> roleList = roleMapper.selectAll();
-        if (roleList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(roleList));
     }
 

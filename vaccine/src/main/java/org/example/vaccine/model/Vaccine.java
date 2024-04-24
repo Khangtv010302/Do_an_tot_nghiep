@@ -2,6 +2,8 @@ package org.example.vaccine.model;
 
 import lombok.*;
 import org.example.vaccine.model.request.VaccineRequest;
+import org.springframework.web.multipart.MultipartFile;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -21,8 +23,9 @@ public class Vaccine extends VaccineRequest{
 //    private String preserve;
 //    private String image;
 
-    public Vaccine(String manufacturerId, String name, String antigen, int packing, String unit, String description, String origin, String contraindicated, String useWithCaution, String unwantedEffect, String preserve, String image, String id) {
-        super(manufacturerId, name, antigen, packing, unit, description, origin, contraindicated, useWithCaution, unwantedEffect, preserve, image);
+
+    public Vaccine(String manufacturerId, String name, String antigen, int packing, String unit, String description, String origin, String contraindicated, String unwantedEffect, String preserve, String image, String id) {
+        super(manufacturerId, name, antigen, packing, unit, description, origin, contraindicated, unwantedEffect, preserve, image);
         this.id = id;
     }
 }
