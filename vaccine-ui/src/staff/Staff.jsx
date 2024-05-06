@@ -1,6 +1,7 @@
 import axios, { Axios } from "axios";
 import App from "../App";
 import "./Staff.css";
+import LoadingModal from "../loading/Loading";
 import {
   Space,
   Table,
@@ -16,9 +17,17 @@ import {
   Tooltip,
 } from "antd";
 import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faEye,
+  faPencil,
+  faTrashCan,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "antd/es/form/Form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { render } from "react-dom";
+import Operation from "antd/es/transfer/operation";
 
 function Staff() {
   //alert
@@ -41,6 +50,7 @@ function Staff() {
   //Add Staff
   const addStaff = useMutation({
     mutationFn: (values) => {
+      console.log(values);
       return axios({
         method: "post",
         url: "http://localhost:8080/API/HealthcareStaff",
@@ -55,9 +65,12 @@ function Staff() {
     // }
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoStaff"] });
+      setShowLoading(false)
+      setOperation("")
       openNotification("Thành công", "Đã thêm vào danh sách");
     },
     onError: (error) => {
+      setShowLoading(false)
       openNotification("Thất bại", error.response.data.message);
     },
   });
@@ -75,10 +88,13 @@ function Staff() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoStaff"] });
-      openNotification("Thành công", "Đã sủa thông tin");
+      setShowLoading(false)
+      setOperation("")
+      openNotification("Thành công", "Đã sửa thông tin");
     },
     onError: (error) => {
       openNotification("Thất bại", error.response.data.message);
+      setShowLoading(false)
     },
   });
   const deleteStaff = useMutation({
@@ -94,13 +110,18 @@ function Staff() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoStaff"] });
-      openNotification("Thành công", "Đã sủa thông tin");
+      openNotification("Thành công", "Đã xóa nhân viên");
+       setShowLoading(false)
+      setOperation("")
     },
     onError: (error) => {
       openNotification("Thất bại", error.response.data.message);
+      setShowLoading(false)
     },
   });
   //Declare variable
+  const [page, setPage] = React.useState(1);
+  const [showLoading,setShowLoading]= useState(false);
   const [response, setResponse] = useState();
   const [operation, setOperation] = useState("");
   const [listRole, setListRole] = useState([]);
@@ -131,6 +152,12 @@ function Staff() {
   };
   
   const columns = [
+    {
+      title: "#",
+      dataIndex: "",
+      key: "index",
+      render: (_, __, index) => ((page - 1) * 4 + index+1),
+    },
     {
       title: "Tên nhân viên",
       dataIndex: "fullname",
@@ -168,32 +195,21 @@ function Staff() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Tooltip title="Sửa" color={"blue"}>
-            <Button
-              onClick={() => {
-                handleUpdate(record);
-              }}
-            >
-              <img className="operation" src="/public/assets/update.png"></img>
-            </Button>
-          </Tooltip>
           <Tooltip title="Xem chi tiết" color={"blue"}>
-            <Button
-             onClick={() => {
-              handleDetail(record);
-            }}
-            >
-              <img className="operation" src="/public/assets/detail.png"></img>
-            </Button>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faEye}  onClick={() => {
+                handleDetail(record);
+              }}/>
+          </Tooltip>
+          <Tooltip title="Sửa" color={"blue"}>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faPencil}  onClick={() => {
+                 handleUpdate(record);
+              }}/>
+           
           </Tooltip>
           <Tooltip title="Xóa" color={"blue"}>
-            <Button
-             onClick={() => {
-              handleDelete(record);
-            }}
-            >
-              <img className="operation" src="/public/assets/delete.png"></img>
-            </Button>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faTrashCan}  onClick={() => {
+               handleDelete(record);
+              }}/>
           </Tooltip>
         </Space>
       ),
@@ -210,20 +226,22 @@ function Staff() {
   //Onfinish
   function onFinish(values) {
     if (operation === "Add") {
-      console.log(values);
+      setShowLoading(true)
       addStaff.mutate(values);
     }
     if (operation === "Update") {
+      setShowLoading(true)
       updateStaff.mutate(values);
     }
     if (operation === "Delete") {
+      setShowLoading(true)
       console.log(dataById.id);
       deleteStaff.mutate(dataById.id);
     }
-    setOperation("");
   }
   const onFinishFailed = (errorInfo) => {
-    openNotification("Thất bại", "Không thể thêm nhân viên");
+    console.log(errorInfo)
+    openNotification("Thất bại", "Không thể thao tác");
   };
   const validateRePassword = ({ getFieldValue }) => ({
     validator(_, value) {
@@ -298,7 +316,9 @@ function Staff() {
     setOperation("Delete");
   };
   return (
-    <App>
+    <App
+    onChose={"staff"}
+    >
       {contextHolder}
       <h2 className="header">Quản lý nhân viên</h2>
       <div className="center">
@@ -309,20 +329,24 @@ function Staff() {
             marginBottom: "1%",
             textAlign: "left",
           }}
-        >
+        ><FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
           Thêm
         </Button>
         <Table
+          loading={isLoading}
           columns={columns}
           dataSource={data}
           rowKey="id"
           pagination={{
-            defaultPageSize: 5,
+            defaultPageSize: 4,
             position: ["bottomCenter"],
+            onChange(current) {
+              setPage(current);
+            }
           }}
         />
       </div>
-      <Modal
+      {operation === "Add" || operation === "Update" ? <Modal
         title={
           operation === "Add"
             ? "Thêm nhân viên"
@@ -347,14 +371,14 @@ function Staff() {
           wrapperCol={{
             flex: 1,
           }}
-          colon={false}
+          // colon={false}
           style={{
             maxWidth: 700,
           }}
           form={form}
         >
-          <Form.Item name="id" style={{display:"none"}}></Form.Item>
-          <Row gutter={20}>
+           <Form.Item name="id" style={{display:"none"}}></Form.Item> 
+           <Row gutter={20}>
             <Col span={12}>
               <Form.Item
                 label="Tên nhân viên:"
@@ -369,7 +393,7 @@ function Staff() {
                   },
                 ]}
               >
-               <Input readOnly={operation !== "Add" && operation !== "Update"}   readOnly={operation !== "Add" && operation !== "Update"}  name="fullname" />
+               <Input readOnly={operation !== "Add" && operation !== "Update"}    name="fullname" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -402,6 +426,10 @@ function Staff() {
                   {
                     required: true,
                     message: "Vui lòng nhập email",
+                  },
+                  {
+                    type: 'email',
+                    message: 'Email kkhông đúng định dạng',
                   },
                 ]}
               >
@@ -518,6 +546,7 @@ function Staff() {
              <Input.Password  name="password" maxlength="30" size="30" />
             </Form.Item>
           ) : null}
+          
           {operation === "Add" ? (
             <Form.Item
               label="Nhập lại Mật khẩu:"
@@ -535,15 +564,15 @@ function Staff() {
             >
              <Input.Password name="rePassword" maxlength="30" size="30" />
             </Form.Item>
-          ) : null}
-          <Form.Item label=" ">
+          ) : null} 
+          <Form.Item label="">
             <div className="submit">
               {operation === "Detail" ? null : 
               <Button
               style={{ textAlign: "right" }}
               type="primary"
               htmlType="submit"
-            >
+             >
               {operation === "Add" ? "Thêm" : null}
               {operation === "Update" ? "Sửa" : null}
               {operation === "Delete" ? "Xóa" : null}
@@ -560,7 +589,8 @@ function Staff() {
             </div>
           </Form.Item>
         </Form>
-      </Modal>
+      </Modal> : null}
+      
       <Modal
         title={
           operation === "Detail"
@@ -712,20 +742,26 @@ function Staff() {
             </Form.Item>
           ) : null}
           <Form.Item name="id"style={{display:"none"}}></Form.Item>
-          <Form.Item label=" ">
-            <div className="submit">
-              {operation === "Detail" ? null : 
+          <Form.Item label="">
+            <Row>
+            <Col
+            span={12}
+            style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
+          >
+           {operation === "Delete" ? "Bạn có muốn xóa nhân viên này !" : null} 
+          </Col>
+              <Col span={12}> <div className="submit" >
+               {operation === "Detail" ? null : 
               <Button
               style={{ textAlign: "right" }}
               type="primary"
               htmlType="submit"
-            >
+             >
               {operation === "Add" ? "Thêm" : null}
               {operation === "Update" ? "Sửa" : null}
               {operation === "Delete" ? "Xóa" : null}
             </Button>
-              }
-              
+                }
               <Button
                 style={{ textAlign: "right", marginLeft: "10px" }}
                 type="primary"
@@ -733,10 +769,16 @@ function Staff() {
               >
                 Quay lại
               </Button>
-            </div>
+            </div></Col>
+            </Row>
+         
+           
           </Form.Item>
         </Form>
       </Modal>
+      <LoadingModal
+        showLoading={showLoading}
+        />
     </App>
   );
 }

@@ -1,0 +1,26 @@
+.ant-switch{
+    border-radius: 2px !important;
+}
+.ant-switch-handle::before{
+    border-radius: 0px !important;
+}
+.gender-icon {
+    font-size: 24px; /* Điều chỉnh kích thước của biểu tượng giới tính */
+  }
+  
+  .gender-icon.male {
+    color: blue; /* Màu sắc cho biểu tượng giới tính nam */
+  }
+  
+  .gender-icon.female {
+    color: pink; /* Màu sắc cho biểu tượng giới tính nữ */
+  }
+.table-row{
+  cursor: pointer;
+}
+.rotate-icon{
+  color: #808080;
+}
+.rotate-icon:hover {
+   color: #9c8e8e;
+}

@@ -1,10 +1,16 @@
 import axios from "axios";
 import App from "../App";
 import "./type.css";
-import { Space, Table, Input, Button, Modal, Form, notification,Pagination } from "antd";
+import { Space, Table, Input, Button, Modal, Form, notification,Pagination,Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
+import LoadingModal from "../loading/Loading";
 import { useForm } from "antd/es/form/Form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faTrashCan
+} from '@fortawesome/free-solid-svg-icons';
+// import { LoadingModal } from "react-native-loading-modal";
 
 function Type() {
   //Querry
@@ -31,9 +37,12 @@ function Type() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoType"] });
+      setShowLoading(false);
+      setOperation("")
       openNotification('Thành công','Đã thêm vào danh sách');
     },
     onError:(error) => {
+      setShowLoading(false);
       openNotification("Thất bại", error.response.data.message);
     }
   });
@@ -52,22 +61,20 @@ function Type() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoType"] });
+      setShowLoading(false)
+      setOperation("")
+      openNotification('Thành công','Đã xóa khỏi danh sách')
     },
     onError:(error) => {
+      console.log(error.response.data);
+      setShowLoading(false)
       openNotification("Thất bại", error.response.data.message);
     }
   });
   //openModal
-  const [isModalOpen, setIsModalOpen] = useState({
-    Add: false,
-    Delete: false,
-  });
+  const [showLoading,setShowLoading] =useState(false);
+  const [operation, setOperation] = useState("");
   //setDataUpdateOrDelete
-  const [dataById, setDataById] = useState({
-    name: "",
-    code: "",
-    id: "",
-  });
   const [form] = Form.useForm();
   const columns = [
     {
@@ -85,55 +92,45 @@ function Type() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            onClick={() => {
-              setIsModalOpen({ ...isModalOpen, Delete: true });
-              handleDelete(record);
-            }}
-          >
-            Xóa
-          </Button>
+            <Tooltip title="Xóa" color={"blue"}>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faTrashCan}  onClick={() => {
+               handleDelete(record);
+              }}/>
+           </Tooltip>
         </Space>
       ),
     },
   ];
   const handleDelete = (record) => {
-    setDataById({
+    form.setFieldsValue({
       name: record.name,
       code: record.code,
-      id: record.id,
+      id: record.id
     });
-    console.log(record);
+    setOperation("Delete")
   };
-  const showModal = () => {
-    setIsModalOpen({ ...isModalOpen, Add: true });
+  const handleAdd = () => {
+    form.setFieldsValue({
+      name: '',
+      code: ''
+    })
+   setOperation("Add")
   };
   const handleCancel = () => {
-    setIsModalOpen({ Add: false, Delete: false });
+      setOperation("")
   };
-  useEffect(() => {
-    form.setFieldsValue({
-      name: dataById.name,
-      code: dataById.code,
-    });
-    if(isModalOpen.Add===true){
-      form.setFieldsValue({
-        name: '',
-        code: ''
-      })
-    }
-  }, [form, dataById, isModalOpen.Add]);
   const onFinish = (values) => {
-    if (isModalOpen.Add === true) {
+    if (operation === "Add") {
+      setShowLoading(true);
       mutation.mutate(values);
     }
-    if (isModalOpen.Delete === true) {
-      const id = dataById.id;
-      deleteType.mutate(id);
-      openNotification('Thành công','Đã xóa khỏi danh sách')
+    if (operation === "Delete") {
+      setShowLoading(true);
+      deleteType.mutate(values.id);
+    
     }
 
-    setIsModalOpen(false);
+    setOperation(false);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -145,32 +142,29 @@ function Type() {
       description: description
     });
   }
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5; // số lượng hàng trên mỗi trang
+  const [confirmLoading,setConfirmLoading]=useState(false)
+ 
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
   return (
-    <App>
+    <App
+    onChose={"type"}
+    >
       <div>
       {contextHolder}
         <h2 className="header">Quản lý loại nhân viên</h2>
         <div className="center">
           <Button
             type="primary"
-            onClick={showModal}
+            onClick={handleAdd}
             style={{
               marginBottom: "1%",
               textAlign: "left",
             }}
           >
+            
             Thêm
           </Button>
-          <Table columns={columns} dataSource={data} rowKey="id" pagination={{
+          <Table loading={isLoading} columns={columns} dataSource={data} rowKey="id" pagination={{
             defaultPageSize: 5,
             position: ['bottomCenter']
           }} />
@@ -178,7 +172,8 @@ function Type() {
         </div>
         <Modal
           title="Loại nhân viên"
-          open={!!(isModalOpen.Add || isModalOpen.Delete)}
+          confirmLoading={confirmLoading}
+          open={operation !=="" }
           onCancel={handleCancel}
           footer={null}
         >
@@ -206,21 +201,28 @@ function Type() {
               rules={[
                 {
                   required: true,
+                  message:"Chưa loại nhân viên"
                 },
               ]}
             >
-              <Input name="name" readOnly={isModalOpen.Delete}/>
+              <Input name="name" readOnly={operation==="Delete"}/>
             </Form.Item>
+            {operation==="Delete" ?  <Form.Item style={{display:"none"}}
+              name="id"
+            >
+            </Form.Item> : null}
+           
             <Form.Item
               label="Mã loại nhân viên"
               name="code"
               rules={[
                 {
                   required: true,
+                  message:"Chưa nhập mã loại nhân viên"
                 },
               ]}
             >
-              <Input name="code" readOnly={isModalOpen.Delete}/>
+              <Input name="code" readOnly={operation==="Delete"}/>
             </Form.Item>
             <Form.Item label=" ">
               <div className="submit">
@@ -229,7 +231,7 @@ function Type() {
                   type="primary"
                   htmlType="submit"
                 >
-                  {isModalOpen.Add === true ? "Thêm" : "Xóa"}
+                  {operation === "Add" ? "Thêm" : "Xóa"}
                 </Button>
                 <Button
                   style={{ textAlign: "right", marginLeft: "10px" }}
@@ -242,6 +244,9 @@ function Type() {
             </Form.Item>
           </Form>
         </Modal>
+        <LoadingModal
+        showLoading={showLoading}
+        />
       </div>
     </App>
   );

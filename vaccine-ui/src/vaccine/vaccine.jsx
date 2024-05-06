@@ -2,6 +2,9 @@ import App from "../App";
 import axios, { Axios } from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
+
+import LoadingModal from "../loading/Loading";
+import "./vaccine.css";
 import {
   Space,
   Table,
@@ -17,6 +20,13 @@ import {
   Tooltip,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faEye,
+  faPencil,
+  faTrashCan,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 function Vaccine() {
   //notification
@@ -39,20 +49,22 @@ function Vaccine() {
       openNotification("Thất bại", "Không có dữ liệu");
     },
   });
+
   const addVaccine = useMutation({
     mutationFn: (values) => {
-      console.log(values)
-      formData.append('file', file);
-      formData.append('name', values.name);
-      formData.append('antigen', values.antigen);
-      formData.append('packing', values.packing); // Assuming packing is a number
-      formData.append('unit', values.unit);
-      formData.append('description', values.description);
-      formData.append('origin', values.origin);
-      formData.append('contraindicated', values.contraindicated);
-      formData.append('effect', values.unwantedEffect);
-      formData.append('preserve', values.preserve);
-      formData.append('manufacturerId', values.manufacturerId);
+      console.log(values);
+      formData.append("file", file);
+
+      formData.append("name", values.name);
+      formData.append("antigen", values.antigen);
+      formData.append("packing", values.packing); // Assuming packing is a number
+      formData.append("unit", values.unit);
+      formData.append("description", values.description);
+      formData.append("origin", values.origin);
+      formData.append("contraindicated", values.contraindicated);
+      formData.append("unwantedEffect", values.unwantedEffect);
+      formData.append("preserve", values.preserve);
+      formData.append("manufacturerId", values.manufacturerId);
       return axios
         .post("http://localhost:8080/API/Vaccine", formData, {
           headers: {
@@ -62,14 +74,54 @@ function Vaccine() {
         .then((response) => console.log(response.data));
     },
     onSuccess: () => {
+      setShowLoading(false);
       queryClient.invalidateQueries({ queryKey: ["repoVaccine"] });
+      setOperation("");
       openNotification("Thành công", "Đã thêm vào danh sách");
     },
     onError: (error) => {
+      setShowLoading(false);
       openNotification("Thất bại", error.response.data.message);
       console.log(error.response);
     },
   });
+  const updateVaccine = useMutation({
+    mutationFn: (values) => {
+      formData.append("id", values.id);
+      formData.append("file", file);
+      formData.append("name", values.name);
+      formData.append("antigen", values.antigen);
+      formData.append("packing", values.packing); // Assuming packing is a number
+      formData.append("unit", values.unit);
+      formData.append("description", values.description);
+      formData.append("origin", values.origin);
+      formData.append("contraindicated", values.contraindicated);
+      formData.append("unwantedEffect", values.unwantedEffect);
+      formData.append("preserve", values.preserve);
+      formData.append("manufacturerId", values.manufacturerId);
+      formData.append("image", imageUrl);
+      return axios
+        .put("http://localhost:8080/API/Vaccine", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => console.log(response.data));
+    },
+    onSuccess: () => {
+      setShowLoading(false);
+      setOperation("");
+      queryClient.invalidateQueries({ queryKey: ["repoVaccine"] });
+      openNotification("Thành công", "Đã chỉnh thông tin");
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      openNotification("Thất bại", error.response.data.message);
+      console.log(error.response);
+    },
+  });
+  const updateMutation = useMutation(updateVaccine.mutate);
+
   const deleteVaccine = useMutation({
     mutationFn: (id) => {
       return axios({
@@ -84,14 +136,23 @@ function Vaccine() {
       }).then((response) => setResponse(response.data));
     },
     onSuccess: () => {
+      setOperation("");
+      setShowLoading(false);
       queryClient.invalidateQueries({ queryKey: ["repoVaccine"] });
       openNotification("Thành công", "Xóa thành công");
     },
     onError: (error) => {
-      openNotification("Thất bại", "Không thể xóa");
+      setShowLoading(false);
+      openNotification("Thất bại", error.response.data.message);
     },
   });
   const columns = [
+    {
+      title: "#",
+      dataIndex: "",
+      key: "index",
+      render: (_, __, index) => ((page - 1) * 4 + index+1),
+    },
     {
       title: "Tên vaccine",
       dataIndex: "name",
@@ -126,36 +187,27 @@ function Vaccine() {
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="Xem chi tiết" color={"blue"}>
-            <Button
-              // onClick={() => {
-              // }}
-            >
-              <img className="operation" src="/public/assets/detail.png"></img>
-            </Button>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faEye}  onClick={() => {
+                handleDetail(record);
+              }}/>
           </Tooltip>
           <Tooltip title="Sửa" color={"blue"}>
-            <Button
-              onClick={() => {
-                handleUpdate(record);
-              }}
-            >
-              <img className="operation" src="/public/assets/update.png"></img>
-            </Button>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faPencil}  onClick={() => {
+                 handleUpdate(record);
+              }}/>
+           
           </Tooltip>
           <Tooltip title="Xóa" color={"blue"}>
-            <Button
-              onClick={() => {
-                handleDelete(record);
-              }}
-            >
-              <img className="operation" src="/public/assets/delete.png"></img>
-            </Button>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faTrashCan}  onClick={() => {
+               handleDelete(record);
+              }}/>
           </Tooltip>
         </Space>
       ),
     },
   ];
   //declair variable
+  const [page, setPage] = React.useState(1);
   const [fileList, setFileList] = useState([]);
   const [listManufacturer, setListManufacturer] = useState([]);
   const [operation, setOperation] = useState("");
@@ -163,31 +215,46 @@ function Vaccine() {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const formData = new FormData();
-  const [imageUrl,setImageUrl]= useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
+  const [dataById, setDataById] = useState({
+    id: "",
+    name: "",
+    manufacturer: "",
+    antigen: "",
+    packing: "",
+    unit: "",
+    description: "",
+    origin: "",
+    contraindicated: "",
+    unwantedEffect: "",
+    preserve: "",
+    image: "",
+  });
 
   //function
   const handleCancel = () => {
-    setFileList([])
+    setFile(null);
+    setFileList([]);
     setOperation("");
   };
-  const handleDelete = (record) => {
 
-    deleteVaccine.mutate(record.id);
-  };
   function handleFileChange(e) {
-    setFileList(e.fileList)
+    setFileList(e.fileList);
     if (e.fileList[0].originFileObj.name !== "") {
       setFile(e.fileList[0].originFileObj);
     }
   }
   const handleAdd = () => {
+    setFile(null);
     getlistManufacturer();
     form.resetFields();
+    setFileList([]);
     setOperation("Add");
   };
   const handleUpdate = (record) => {
+    setFile(null);
     getlistManufacturer();
-    console.log(record)
     form.setFieldsValue({
       id: record.id,
       name: record.name,
@@ -195,40 +262,86 @@ function Vaccine() {
       packing: record.packing,
       unit: record.unit,
       description: record.description,
-      unwantedEffect:record.unwantedEffect,
+      unwantedEffect: record.unwantedEffect,
       origin: record.origin,
       contraindicated: record.contraindicated,
-      preserve:record.preserve,
+      preserve: record.preserve,
       manufacturerId: record.manufacturerId,
     });
-      setImageUrl(record.image)
-      setFileList([{
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: record.image,
-    },])
+    setImageUrl(record.image);
+    setFileList([
+      {
+        uid: "-1",
+        name: "image.png",
+        status: "done",
+        url: record.image,
+      },
+    ]);
+    setFile(fileList[0]);
     setOperation("Update");
   };
+  const handleDetail = (record) => {
+    const manufacturer = listManufacturer.find(
+      (manufacturer) => manufacturer.id === record.manufacturerId
+    );
+    console.log(manufacturer.name);
+    console.log(record);
+    setDataById({
+      id: record.id,
+      name: record.name,
+      manufacturer: manufacturer.name,
+      antigen: record.antigen,
+      packing: record.packing,
+      unit: record.unit,
+      description: record.description,
+      origin: record.origin,
+      contraindicated: record.contraindicated,
+      unwantedEffect: record.unwantedEffect,
+      preserve: record.preserve,
+      image: record.image,
+    });
+    setOperation("Detail");
+  };
+  const handleDelete = (record) => {
+    const manufacturer = listManufacturer.find(
+      (manufacturer) => manufacturer.id === record.manufacturerId
+    );
+    console.log(manufacturer.name);
+    console.log(record);
+    setDataById({
+      id: record.id,
+      name: record.name,
+      manufacturer: manufacturer.name,
+      antigen: record.antigen,
+      packing: record.packing,
+      unit: record.unit,
+      description: record.description,
+      origin: record.origin,
+      contraindicated: record.contraindicated,
+      unwantedEffect: record.unwantedEffect,
+      preserve: record.preserve,
+      image: record.image,
+    });
+    setOperation("Delete");
+  };
   function onFinish(values) {
-    console.log(values);
-    console.log(values.antigen);
     if (operation === "Add") {
+      setShowLoading(true);
       addVaccine.mutate(values);
     }
     if (operation === "Update") {
-      console.log(values);
-      setImageUrl("");
-      setFileList([])
+      setShowLoading(true);
+      console.log(fileList);
+      updateVaccine.mutate(values);
     }
     if (operation === "Delete") {
-    
+      setShowLoading(true);
+      deleteVaccine.mutate(dataById.id);
+     
     }
-     setFileList([])
-     setOperation("");
   }
   const onFinishFailed = (errorInfo) => {
-    openNotification("Thất bại", "Không thể thêm");
+    openNotification("Thất bại", "Không thể thao tác");
   };
   const getlistManufacturer = () => {
     axios({
@@ -241,9 +354,62 @@ function Vaccine() {
       setListManufacturer(response.data.data);
     });
   };
+  //Effect
+  useEffect(
+    () => {
+      getlistManufacturer();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [dataById],
+    onFinish
+  );
+  //edit title
+  let titleText;
+  let titleStyle = {};
 
+  if (operation === "Detail") {
+    titleText = "Thông tin vắc xin";
+    titleStyle = {
+      fontSize: "24px",
+      color: "orange",
+      backgroundColor: "darkblue",
+      fontWeight: "bold",
+      borderRadius: "8px",
+      paddingLeft: "10px",
+      marginTop: "20px",
+    };
+  } else if (operation === "Delete") {
+    titleText = "Xóa vắc xin !!";
+    titleStyle = {
+      fontSize: "24px",
+      color: "orange",
+      backgroundColor: "darkblue",
+      fontWeight: "bold",
+      borderRadius: "8px",
+      paddingLeft: "10px",
+      marginTop: "20px",
+    };
+  } else {
+    titleText = null;
+  }
+  //contraidicated
+  const sentences = dataById.contraindicated
+    .split(";")
+    .filter((sentence) => sentence.trim() !== ""); // Split the text by period and remove empty sentences
+  const listItems = sentences.map((sentence, index) => (
+    <li key={index}>{sentence.trim()}</li>
+  ));
+  const sentences2 = dataById.unwantedEffect
+    .split(";")
+    .filter((sentence) => sentence.trim() !== ""); // Split the text by period and remove empty sentences
+  const listItems1 = sentences2.map((sentence, index) => (
+    <li key={index}>{sentence.trim()}</li>
+  ));
+  
   return (
-    <App>
+    <App
+    onChose={"Vaccine"}
+    >
       {contextHolder}
       <h2 className="header">Quản lý vaccine</h2>
       <div className="center">
@@ -255,16 +421,24 @@ function Vaccine() {
             textAlign: "left",
           }}
         >
+           <FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
           Thêm
         </Button>
         <Table
+          loading={isLoading}
           columns={columns}
           dataSource={data}
           rowKey="id"
           pagination={{
-            defaultPageSize: 5,
+            defaultPageSize: 4,
             position: ["bottomCenter"],
+            onChange(current) {
+              setPage(current);
+            }
           }}
+          // pagination={{
+           
+          // }}
         />
       </div>
       <Modal
@@ -274,14 +448,13 @@ function Vaccine() {
             maxHeight: "calc(100vh - 200px)",
           },
         }}
+        closeIcon={null}
         title={
           operation === "Add"
             ? "Thêm vắc xin"
             : operation === "Update"
             ? "Sửa thông tin vắc xin"
-            : operation === "Detail"
-            ? "Xem thôn tin vắc xin"
-            : "Xóa vắc xin"
+            : null
         }
         open={operation === "Add" || operation === "Update"}
         onCancel={handleCancel}
@@ -306,14 +479,15 @@ function Vaccine() {
           }}
           form={form}
         >
-          {operation === "Add "? <Form.Item
-                name="id"
-                style={{
-                 display:"none" // Adjust width as needed
-                }} 
-              >
-              </Form.Item>: null}
-          
+          {operation !== "Add " ? (
+            <Form.Item
+              name="id"
+              style={{
+                display: "none", // Adjust width as needed
+              }}
+            ></Form.Item>
+          ) : null}
+
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item
@@ -372,7 +546,7 @@ function Vaccine() {
                   },
                 ]}
               >
-                <Input name="antigen"  />
+                <Input name="antigen" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -396,7 +570,7 @@ function Vaccine() {
             </Col>
             <Col span={8}>
               <Form.Item
-                initialValue="liều"
+                initialValue="Liều"
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 20 }}
                 label="Đơn vị"
@@ -406,7 +580,6 @@ function Vaccine() {
                 }}
               >
                 <Input
-                  readOnly
                   name="unit"
                   maxLength="30"
                   size="30"
@@ -424,7 +597,7 @@ function Vaccine() {
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập địa chỉ",
+                message: "Vui lòng mô tả",
               },
             ]}
           >
@@ -443,12 +616,12 @@ function Vaccine() {
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập địa chỉ",
+                message: "Vui lòng nhập nguồn gốc",
               },
             ]}
           >
             <Input.TextArea
-              rows={2}
+              rows={3}
               disabled={operation === "Delete"}
               name="origin"
             />
@@ -462,12 +635,12 @@ function Vaccine() {
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập địa chỉ",
+                message: "Vui lòng nhập chống chỉ định",
               },
             ]}
           >
             <Input.TextArea
-              rows={2}
+              rows={4}
               disabled={operation === "Delete"}
               name="contraindicated"
             />
@@ -510,20 +683,25 @@ function Vaccine() {
               name="preserver"
             />
           </Form.Item>
-          <Form.Item label="Tải ảnh"
+          <Form.Item
+            label="Tải ảnh"
             name="fileList"
             valuePropName=""
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng chọn ảnh",
-              },
-            ]}
+            rules={
+              operation === "Add"
+                ? [
+                    {
+                      required: true,
+                      message: "Vui lòng chọn ảnh",
+                    },
+                  ]
+                : []
+            }
           >
             <Upload
               listType="picture-card"
               showUploadList={{
-                showPreviewIcon:false
+                showPreviewIcon: false,
               }}
               fileList={fileList}
               maxCount={1}
@@ -531,31 +709,32 @@ function Vaccine() {
               beforeUpload={() => false}
             >
               {fileList.length === 0 && (
-            <Button
-              style={{
-                border: 0,
-                background: "none",
-              }}
-              type="button"
-            >
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </Button>
-          )}
+                <Button
+                  style={{
+                    border: 0,
+                    background: "none",
+                  }}
+                  type="button"
+                >
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </Button>
+              )}
             </Upload>
           </Form.Item>
           <Form.Item label=" ">
             <div className="submit">
               <Button
+          
                 style={{ textAlign: "right" }}
                 type="primary"
                 htmlType="submit"
               >
                 {operation === "Add" ? "Thêm" : null}
-                {operation === "Delete" ? "Xóa" : null}
                 {operation === "Update" ? "Sửa" : null}
               </Button>
               <Button
+            
                 style={{ textAlign: "right", marginLeft: "10px" }}
                 type="primary"
                 onClick={handleCancel}
@@ -566,6 +745,134 @@ function Vaccine() {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+      closeIcon={null}
+        styles={{
+          body: {
+            overflowY: "auto",
+            maxHeight: "calc(100vh - 200px)",
+          },
+        }}
+        title={<div style={titleStyle}>{titleText}</div>}
+        open={operation === "Detail" || operation === "Delete"}
+        onCancel={handleCancel}
+        footer={null}
+        width={1200}
+      >
+        <Row>
+          <Col span={6} className="contentBody">
+            Tên vắc xin: {dataById.name}
+          </Col>
+          <Col span={12} className="contentBody">
+            Nhà cung cấp: {dataById.manufacturer}
+          </Col>
+          <Col span={6} className="contentBody">
+            Phương thức đóng gói: {dataById.packing} {dataById.unit} 1 lọ
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+            Kháng nguyên: {dataById.antigen}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="titleHeader">
+            Mô tả
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+            {dataById.description}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="titleHeader">
+            Nguồn gốc
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+            {dataById.origin}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="titleHeader">
+            Chống chỉ định
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+            <ul>{listItems}</ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="titleHeader">
+            Tác dụng không mong muốn
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+          <ul>{listItems1}</ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="titleHeader">
+            Bảo quản
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24} className="contentBody">
+            {dataById.preserve}
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            span={24}
+            style={{
+              textAlign: "center",
+            }}
+          >
+            <img alt="" src={dataById.image} style={{ width: "30%" }}></img>
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            span={12}
+            style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
+          >
+           {operation === "Delete" ? "Bạn có muốn xóa vắc xin này !" : null} 
+          </Col>
+          <Col
+            span={12}
+            style={{
+              textAlign: "right",
+            }}
+          >
+            {operation === "Delete" ? (
+              <Button
+           
+                style={{ textAlign: "right" }}
+                type="primary"
+                onClick={onFinish}
+              >
+                Xóa
+              </Button>
+            ) : null}
+
+            <Button
+             
+              style={{ textAlign: "right", marginLeft: "10px" }}
+              type="primary"
+              onClick={handleCancel}
+            >
+              Quay lại
+            </Button>
+          </Col>
+        </Row>
+      </Modal>
+       <LoadingModal
+        showLoading={showLoading}
+        />
     </App>
   );
 }

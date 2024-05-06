@@ -3,7 +3,9 @@ import App from '../App'
 import './Home.css'
 const Home = () => {
   return (
-    <App>
+    <App
+    onChose={"Home"}
+    >
        <div className="homepage-container">
       <div className="feature-section">
         <h2>Chào mừng đến với trang chủ tiêm chủng</h2>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../src/App.css';
 import {
@@ -7,7 +7,7 @@ import {
   LineChartOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, theme,Grid } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faWarehouse,
@@ -18,6 +18,7 @@ import {
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import Type from './type/type';
+import HeaderPage from './header/header';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -30,29 +31,36 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem('Trang chủ', 'Home', <HomeOutlined />),
   getItem('Đối tượng', 'Object', <FontAwesomeIcon icon={faChildren} />),
-  getItem('Kế hoạch', '3', <FontAwesomeIcon icon={faCalendar} />),
+  getItem('Kế hoạch', 'Plan', <FontAwesomeIcon icon={faCalendar} />),
   getItem('Nhập xuất', '4', <FontAwesomeIcon icon={faWarehouse} />),
-  getItem('Vaccine', 'Vaccine', <FontAwesomeIcon icon={faSyringe} />),
   getItem('Nhà cung cấp', 'Manufacturer', <FontAwesomeIcon icon={faIndustry} />),
-  getItem('Danh sách các mũi tiêm', '8', <UnorderedListOutlined />),
-  getItem('Nhân viên', 'staff', <UserOutlined />),
+  getItem('Lịch tiêm chủng', 'Schedule', <UnorderedListOutlined />),
   getItem('Thống kê báo cáo', '10', <LineChartOutlined />),
+  getItem('Vaccine', 'Vaccine', <FontAwesomeIcon icon={faSyringe} />),
+  getItem('Nhân viên', 'staff', <UserOutlined />),
   getItem('Loại nhân viên', 'type', <FontAwesomeIcon icon={faUsers} />),
 ];
+
 // eslint-disable-next-line react/prop-types
-const App = ({children}) => {
+const App = ({children,onChose}) => {
   const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
+  const [selected,setSelected] = useState();
+  const navigate = useNavigate()
+
+
 
   const onClick = (e) => {
-    
-    navigate("/"+e.key, { state: { key: "value" } });
-    console.log(e.key);
-
+    setSelected(e.key);
+   onNavigate(e);
   };
+  const onNavigate = (e) => {
+    navigate("/"+e.key, { state: { key: "value" } });
+  }
   const {
     token: { colorBgContainer,borderRadiusLG },
   } = theme.useToken();
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   return (
     <Layout
       style={{
@@ -60,11 +68,11 @@ const App = ({children}) => {
       }}
     > 
        
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="demo-logo-vertical" >
+      <Sider collapsible collapsed={screens.lg ? collapsed : true} onCollapse={(value) => setCollapsed(value)}>
+        <div className="demo-logo-vertical" > 
           <img src='/public/assets/VaccineLogo.png' alt='' className='Logo' ></img>
         </div>
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} 
+        <Menu theme="dark" selectedKeys={[onChose]} mode="inline" items={items} 
         onClick={onClick}
         />
       </Sider>
@@ -74,16 +82,10 @@ const App = ({children}) => {
             padding: 0,
             background: colorBgContainer,
           }}
-        />
-        <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+          // <HeaderPage/>
+        >
+          <HeaderPage/>
+        </Header>
         <Content
            style={{
             padding: 24,

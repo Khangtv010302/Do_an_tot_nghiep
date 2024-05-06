@@ -7,11 +7,19 @@ import {
   Table,
   Input,
   Button,
+  Row,
+  Col,
   Modal,
   Form,
   notification,
   Tooltip,
 } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faPencil,
+  faTrashCan,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 function Manufacturer() {
    //alert 
@@ -23,6 +31,7 @@ function Manufacturer() {
      });
    };
   //declaire variable
+  const [page, setPage] = React.useState(1);
   const [operation, setOperation] = useState("");
   const [response, setResponse] = useState();
   const [form] = Form.useForm();
@@ -95,7 +104,16 @@ function Manufacturer() {
     }
   });
   //columns
-  const columns =[{
+  const columns =[
+    {
+      title: "#",
+      dataIndex: "",
+      width: '1%',
+      key: "index",
+      render: (_, __, index) => (<span style={{fontSize:"12px"}}>{(page - 1) * 4 + index+1}</span>),
+      
+    },
+    {
     title: "Tên nhà cung cấp",
     dataIndex: "name",
     key: "name",
@@ -120,24 +138,17 @@ function Manufacturer() {
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <Tooltip title="Sửa" color={"blue"} >
-          <Button
-            onClick={() => {
-              handleUpdate(record);
-            }}
-          >
-            <img className="operation" src="/public/assets/update.png"></img>
-          </Button>
-        </Tooltip>
-        <Tooltip title="Xóa" color={"blue"} >
-          <Button
-            onClick={() => {
-             handleDelete(record)
-            }}
-          >
-            <img className="operation" src="/public/assets/delete.png"></img>
-          </Button>
-        </Tooltip>
+          <Tooltip title="Sửa" color={"blue"}>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}} icon={faPencil}   onClick={() => {
+                 handleUpdate(record);
+              }}/>
+           
+          </Tooltip>
+          <Tooltip title="Xóa" color={"blue"}>
+          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faTrashCan}  onClick={() => {
+               handleDelete(record);
+              }}/>
+          </Tooltip>
       </Space>
     ),
   },
@@ -197,7 +208,9 @@ const handleDelete = async (record) => {
   setOperation('Delete');
 };
     return ( 
-        <App>
+        <App
+        onChose={"Manufacturer"}
+        >
              {contextHolder}
             <h2 className="header">Quản lý nhà cung cấp</h2>
       <div className="center">
@@ -209,6 +222,7 @@ const handleDelete = async (record) => {
             textAlign: "left",
           }}
         >
+           <FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
           Thêm
         </Button>
         <Table
@@ -216,8 +230,11 @@ const handleDelete = async (record) => {
           dataSource={data}
           rowKey="id"
           pagination={{
-            defaultPageSize: 5,
+            defaultPageSize: 4,
             position: ["bottomCenter"],
+            onChange(current) {
+              setPage(current);
+            }
           }}
         />
          <Modal
@@ -247,8 +264,7 @@ const handleDelete = async (record) => {
           form={form}
         >
           <Form.Item
-                name="id"
-              >
+                name="id" style={{display:"none"}}>
               </Form.Item>
            <Form.Item
                 label="Tên nhà cung cấp"
@@ -300,8 +316,15 @@ const handleDelete = async (record) => {
               >
                 <Input readOnly={operation === "Delete"} name="address" />
               </Form.Item>
-          <Form.Item label=" ">
-            <div className="submit">
+          <Form.Item label="">
+            <Row>
+            <Col
+            span={12}
+            style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
+          >
+           {operation === "Delete" ? "Bạn có muốn xóa nhà cung cấp này !" : null} 
+          </Col>
+              <Col span={12}> <div className="submit" >
               <Button
                 style={{ textAlign: "right" }}
                 type="primary"
@@ -318,7 +341,10 @@ const handleDelete = async (record) => {
               >
                 Quay lại
               </Button>
-            </div>
+            </div></Col>
+            </Row>
+         
+           
           </Form.Item>
         </Form>
       </Modal>

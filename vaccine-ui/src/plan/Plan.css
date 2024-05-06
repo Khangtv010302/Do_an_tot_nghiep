@@ -1,0 +1,44 @@
+.button-add {
+    background: #048730 !important; /* Màu nền mặc định */
+  }
+  
+  .button-add:hover {
+    background: #00e64d !important; /* Màu nền khi hover */
+  }
+  .button-operation {
+    display: flex;
+    align-items: cenfter;
+    border-radius: 5px; /* Đường viền cong */
+  }
+  .button-operation-icon{
+    color: #0f4396;
+    margin-top: 4px;
+    margin-left: 10px; 
+  }
+.ant-dropdown-menu-item {
+  padding-right: 1px !important;
+}
+  
+  .button-operation-text {
+    color: #0f4396; /* Màu của văn bản */
+    cursor: pointer; /* Con trỏ khi di chuột */
+    
+  }
+  .ant-modal-title{
+    font-size: 18px; /* Adjust font size */
+    color: #333; /* Set font color */
+    text-align: center; /* Align title to center */
+    padding: 10px 0; /* Add padding */
+  }
+  .ant-checkbox-wrapper {
+
+    font-size: 16px;
+  }
+  
+  .ant-checkbox-inner {
+x
+  }
+  
+  .ant-checkbox-checked .ant-checkbox-inner {
+
+  }

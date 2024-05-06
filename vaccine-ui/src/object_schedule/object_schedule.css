@@ -1,0 +1,32 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50%; /* Điều chỉnh chiều cao container tùy ý */
+    text-align: center;
+  }
+  .loading {
+    border: 4px solid #f3f3f3; /* Màu nền loading */
+    border-top: 4px solid #3498db; /* Màu đường viền loading */
+    border-radius: 50%;
+    width: 20px; /* Đường kính của vòng tròn loading */
+    height: 20px; /* Đường kính của vòng tròn loading */
+    animation: spin 1s linear infinite; /* Sử dụng animation với tên là "spin" */
+  }
+  
+  .loading-text {
+    margin-top: 1%; /* Khoảng cách giữa loading và văn bản */
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .button-icon {
+    color: blue;
+    cursor: pointer;
+  }
