@@ -16,6 +16,5 @@ public class ReceiveDeliverUpdateRequest   {
     private int quantityReceiving;
     private String lotNumber;
     private LocalDate expiredDate;
-    private int quantityDestroy;
     private int quantityDelivering;
 }

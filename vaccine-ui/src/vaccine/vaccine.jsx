@@ -2,6 +2,7 @@ import App from "../App";
 import axios, { Axios } from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
+import Cookies from "js-cookie";
 
 import LoadingModal from "../loading/Loading";
 import "./vaccine.css";
@@ -21,12 +22,12 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
+import {
   faEye,
   faPencil,
   faTrashCan,
-  faPlus
-} from '@fortawesome/free-solid-svg-icons';
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 function Vaccine() {
   //notification
@@ -43,7 +44,11 @@ function Vaccine() {
     queryKey: ["repoVaccine"],
     queryFn: () =>
       axios
-        .get("http://localhost:8080/API/Vaccine")
+        .get("http://localhost:8080/API/Vaccine",{
+          headers:{
+            Authorization: `Bearer ${getJwtToken()}`,
+          }
+        })
         .then((res) => res.data.data),
     onError: () => {
       openNotification("Thất bại", "Không có dữ liệu");
@@ -68,7 +73,8 @@ function Vaccine() {
       return axios
         .post("http://localhost:8080/API/Vaccine", formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+              "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getJwtToken()}`,
           },
         })
         .then((response) => console.log(response.data));
@@ -103,7 +109,8 @@ function Vaccine() {
       return axios
         .put("http://localhost:8080/API/Vaccine", formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+              "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getJwtToken()}`,
           },
         })
         .then((response) => console.log(response.data));
@@ -128,7 +135,8 @@ function Vaccine() {
         method: "delete",
         url: "http://localhost:8080/API/Vaccine",
         headers: {
-          "Content-type": "application/json",
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         params: {
           id,
@@ -151,7 +159,7 @@ function Vaccine() {
       title: "#",
       dataIndex: "",
       key: "index",
-      render: (_, __, index) => ((page - 1) * 4 + index+1),
+      render: (_, __, index) => (page - 1) * 8 + index + 1,
     },
     {
       title: "Tên vaccine",
@@ -162,11 +170,13 @@ function Vaccine() {
       title: "Tên nhà cung cấp",
       dataIndex: "manufacturerName",
       key: "manufacturerName",
+      responsive: ["md"],
     },
     {
       title: "Kháng nguyên",
       dataIndex: "antigen",
       key: "antigen",
+      responsive: ["md"],
     },
     {
       title: "Phương thức đống gối",
@@ -187,20 +197,34 @@ function Vaccine() {
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="Xem chi tiết" color={"blue"}>
-          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faEye}  onClick={() => {
+            <FontAwesomeIcon
+              className="button-icon"
+              style={{ fontSize: "20px" }}
+              icon={faEye}
+              onClick={() => {
                 handleDetail(record);
-              }}/>
+              }}
+            />
           </Tooltip>
           <Tooltip title="Sửa" color={"blue"}>
-          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faPencil}  onClick={() => {
-                 handleUpdate(record);
-              }}/>
-           
+            <FontAwesomeIcon
+              className="button-icon"
+              style={{ fontSize: "20px" }}
+              icon={faPencil}
+              onClick={() => {
+                handleUpdate(record);
+              }}
+            />
           </Tooltip>
           <Tooltip title="Xóa" color={"blue"}>
-          <FontAwesomeIcon className="button-icon" style={{fontSize:"20px"}}  icon={faTrashCan}  onClick={() => {
-               handleDelete(record);
-              }}/>
+            <FontAwesomeIcon
+              className="button-icon"
+              style={{ fontSize: "20px" }}
+              icon={faTrashCan}
+              onClick={() => {
+                handleDelete(record);
+              }}
+            />
           </Tooltip>
         </Space>
       ),
@@ -233,6 +257,11 @@ function Vaccine() {
   });
 
   //function
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
+  };
   const handleCancel = () => {
     setFile(null);
     setFileList([]);
@@ -337,19 +366,21 @@ function Vaccine() {
     if (operation === "Delete") {
       setShowLoading(true);
       deleteVaccine.mutate(dataById.id);
-     
     }
   }
   const onFinishFailed = (errorInfo) => {
     openNotification("Thất bại", "Không thể thao tác");
   };
   const getlistManufacturer = () => {
+    const name="";
     axios({
       method: "get",
       url: "http://localhost:8080/API/Manufacturer",
       headers: {
-        "Content-type": "application/json",
+          "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getJwtToken()}`,
       },
+      params:{name}
     }).then((response) => {
       setListManufacturer(response.data.data);
     });
@@ -405,11 +436,9 @@ function Vaccine() {
   const listItems1 = sentences2.map((sentence, index) => (
     <li key={index}>{sentence.trim()}</li>
   ));
-  
+
   return (
-    <App
-    onChose={"Vaccine"}
-    >
+    <App onChose={"Vaccine"}>
       {contextHolder}
       <h2 className="header">Quản lý vaccine</h2>
       <div className="center">
@@ -421,23 +450,28 @@ function Vaccine() {
             textAlign: "left",
           }}
         >
-           <FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
+          <FontAwesomeIcon
+            className="button-icon"
+            icon={faPlus}
+            style={{ marginRight: "5%", color: "white" }}
+          />
           Thêm
         </Button>
         <Table
+             style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
           loading={isLoading}
           columns={columns}
           dataSource={data}
           rowKey="id"
           pagination={{
-            defaultPageSize: 4,
+            defaultPageSize: 8,
             position: ["bottomCenter"],
             onChange(current) {
               setPage(current);
-            }
+            },
           }}
           // pagination={{
-           
+
           // }}
         />
       </div>
@@ -725,7 +759,6 @@ function Vaccine() {
           <Form.Item label=" ">
             <div className="submit">
               <Button
-          
                 style={{ textAlign: "right" }}
                 type="primary"
                 htmlType="submit"
@@ -734,8 +767,13 @@ function Vaccine() {
                 {operation === "Update" ? "Sửa" : null}
               </Button>
               <Button
-            
-                style={{ textAlign: "right", marginLeft: "10px" }}
+                style={{
+                  textAlign: "right",
+                  marginLeft: "10px",
+                  color: "#4d79ff",
+                  fontWeight: "500",
+                  backgroundColor: "#f2f2f2",
+                }}
                 type="primary"
                 onClick={handleCancel}
               >
@@ -746,7 +784,7 @@ function Vaccine() {
         </Form>
       </Modal>
       <Modal
-      closeIcon={null}
+        closeIcon={null}
         styles={{
           body: {
             overflowY: "auto",
@@ -760,19 +798,20 @@ function Vaccine() {
         width={1200}
       >
         <Row>
-          <Col span={6} className="contentBody">
+          <Col span={10} className="contentBody">
             Tên vắc xin: {dataById.name}
           </Col>
-          <Col span={12} className="contentBody">
+          <Col span={14} className="contentBody">
             Nhà cung cấp: {dataById.manufacturer}
           </Col>
-          <Col span={6} className="contentBody">
-            Phương thức đóng gói: {dataById.packing} {dataById.unit} 1 lọ
-          </Col>
+         
         </Row>
         <Row>
-          <Col span={24} className="contentBody">
+          <Col span={10} className="contentBody">
             Kháng nguyên: {dataById.antigen}
+          </Col>
+          <Col span={12} className="contentBody">
+            Phương thức đóng gói: {dataById.packing} {dataById.unit} 1 lọ
           </Col>
         </Row>
         <Row>
@@ -812,7 +851,7 @@ function Vaccine() {
         </Row>
         <Row>
           <Col span={24} className="contentBody">
-          <ul>{listItems1}</ul>
+            <ul>{listItems1}</ul>
           </Col>
         </Row>
         <Row>
@@ -840,7 +879,7 @@ function Vaccine() {
             span={12}
             style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
           >
-           {operation === "Delete" ? "Bạn có muốn xóa vắc xin này !" : null} 
+            {operation === "Delete" ? "Bạn có muốn xóa vắc xin này !" : null}
           </Col>
           <Col
             span={12}
@@ -850,7 +889,6 @@ function Vaccine() {
           >
             {operation === "Delete" ? (
               <Button
-           
                 style={{ textAlign: "right" }}
                 type="primary"
                 onClick={onFinish}
@@ -860,8 +898,9 @@ function Vaccine() {
             ) : null}
 
             <Button
-             
-              style={{ textAlign: "right", marginLeft: "10px" }}
+              style={{ textAlign: "right", marginLeft: "10px",color: "#4d79ff",
+              fontWeight: "500",
+              backgroundColor: "#f2f2f2", }}
               type="primary"
               onClick={handleCancel}
             >
@@ -870,9 +909,7 @@ function Vaccine() {
           </Col>
         </Row>
       </Modal>
-       <LoadingModal
-        showLoading={showLoading}
-        />
+      <LoadingModal showLoading={showLoading} />
     </App>
   );
 }

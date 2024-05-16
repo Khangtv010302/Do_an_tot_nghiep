@@ -1,5 +1,6 @@
 import axios from "axios";
 import { format } from "date-fns";
+import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import App from "../App";
@@ -32,14 +33,14 @@ import {
   faEye,
   faPencil,
   faTrashCan,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { PlusOutlined } from "@ant-design/icons";
-import { render } from "react-dom";
+
 import LoadingModal from "../loading/Loading";
-import ObjectSchedule from "../object_schedule/Object_Schedule";
+
 
 function Plan() {
   const formatDate = (date) => {
@@ -72,6 +73,7 @@ function Plan() {
   const [showLoading, setShowLoading] = useState(false);
   const today = new Date();
   const [form] = Form.useForm();
+  const [subForm] = Form.useForm();
   const [operation, setOperation] = useState("");
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -156,8 +158,7 @@ function Plan() {
         const itemsWithRecord = (record) => [  {
           key: "1",
           label: (
-            <div className="button-operation" onClick={()=>handleDetail(record)}>
-              <FontAwesomeIcon />
+            <div  className="button-operation" onClick={()=>handleDetail(record)} >
               <span className="button-operation-text">Xem chi tiết</span>
               <div style={{ flexGrow: "1" }}></div>
               <FontAwesomeIcon className="button-operation-icon" icon={faEye} />
@@ -179,7 +180,7 @@ function Plan() {
         {
           key: "3",
           label: (
-            <div className="button-operation" onClick={()=>handleDelete(record)}>
+            <div  className="button-operation" onClick={()=>handleDelete(record)} >
               <FontAwesomeIcon />
     
               <span className="button-operation-text">Xóa</span>
@@ -191,12 +192,27 @@ function Plan() {
             </div>
           ),
         },
+        {
+          key: "4",
+          label: (
+            <div className="button-operation" onClick={()=>handleReminder(record)}>
+              <FontAwesomeIcon />
+    
+              <span className="button-operation-text">Nhắc hẹn</span>
+              <div style={{ flexGrow: "1" }}></div>
+              <FontAwesomeIcon
+                className="button-operation-icon"
+                icon={faBell}
+              />
+            </div>
+          ),
+        },
       ];
     
       return (
         <div style={{ textAlign: "center" }}>
-          <Space size="middle">
-            <Dropdown menu={{ items: itemsWithRecord(record) }} placement="bottom" arrow>
+          <Space size="middle" style={{cursor: "pointer"}}>
+            <Dropdown menu={{ items: itemsWithRecord(record) }} placement="bottom" arrow >
               <FontAwesomeIcon icon={faGear} style={{ fontSize: "16px" }} />
             </Dropdown>
           </Space>
@@ -219,7 +235,9 @@ function Plan() {
         method: "get",
         url: "http://localhost:8080/API/Plan",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
+        
         },
         params: { fromDay: firstDay, toDay: lastDay },
       }).then((response) => {
@@ -234,7 +252,8 @@ function Plan() {
         method: "post",
         url: "http://localhost:8080/API/Plan",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -256,7 +275,8 @@ function Plan() {
         method: "put",
         url: "http://localhost:8080/API/Plan",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -278,7 +298,8 @@ function Plan() {
         method: "delete",
         url: "http://localhost:8080/API/Plan",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         params:{id},
       });
@@ -295,6 +316,25 @@ function Plan() {
     },
   });
   //function
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
+  };
+  const disabledDateFirstDay = (currentDate) => {
+    const minDate = dayjs(firstDay, 'YYYY-MM-DD');
+    return currentDate.isBefore(minDate, 'day');
+};
+
+  const handleReminder = (record) => {
+    console.log(record);
+    setOperation("Reminder");
+    form.setFieldsValue(record);
+    form.setFieldValue(
+      "scheduledDate",
+      dayjs(record.scheduledDate, "YYYY-MM-DD")
+    );
+  };
   const handleDelete = (record) => {
     console.log(record);
     setOperation("Delete");
@@ -325,9 +365,10 @@ function Plan() {
   const getListVaccine = () => {
     axios({
       method: "get",
-      url: "http://localhost:8080/API/Vaccine/OnlyName",
+      url: "http://localhost:8080/API/General/Vaccine",
       headers: {
-        "Content-type": "application/json",
+         "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
       },
     }).then((response) => {
       setListVaccine(response.data.data);
@@ -343,7 +384,8 @@ function Plan() {
         method: "get",
         url: "http://localhost:8080/API/Plan",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { fromDay: firstDay, toDay: lastDay },
       }).then((response) => {
@@ -390,13 +432,13 @@ function Plan() {
     }
   }
   const onFinishFailed = (errorInfo) => {
-    openNotification("Thất bại", "Không thể thêm nhân viên");
+    openNotification("Thất bại", "Không thể thêm kế hoạch");
   };
 
   return (
-    <App>
+    <App onChose={"Plan"}>
       {contextHolder}
-      <Row style={{ border: "1px solid" }}>
+      <Row style={{ border: "1px solid",borderColor:"#A9A9A9" }}>
         <Col span={24}>
           <Row>
             <Col span={10}>
@@ -420,7 +462,7 @@ function Plan() {
         </Col>
         <Col
           span={24}
-          style={{ borderTop: "1px solid", padding: "1%", paddingTop: "2%" }}
+          style={{ borderTop: "1px solid",borderColor:"#A9A9A9", padding: "1%", paddingTop: "2%" }}
         >
           <Row>
             <Col xs={24} sm={24} md={11} lg={9} xl={9}>
@@ -447,7 +489,9 @@ function Plan() {
                 }}
               >
                 <DatePicker
+                allowClear={false}
                   defaultValue={dayjs(lastDay, dateFormat)}
+                  disabledDate={disabledDateFirstDay}
                   style={{ width: "100%" }}
                   format={"DD/MM/YYYY"}
                   minDate={dayjs(firstDay, "DD/MM/YYYY")}
@@ -472,19 +516,19 @@ function Plan() {
           </Row>
         </Col>
       </Row>
-      <Row style={{ border: "1px solid", marginTop: "1%" }}>
+      <Row style={{ border: "1px solid",borderColor:"#A9A9A9", marginTop: "1%" }}>
         <Col
           span={24}
           style={{ margin: "1%", fontSize: "150%", fontWeight: "500" }}
         >
           Danh sách kế hoạch tiêm
         </Col>
-        <Col span={24} style={{ borderTop: "1px solid" }}>
+        <Col span={24} style={{ borderTop: "1px solid",borderColor:"#A9A9A9" }}>
           {" "}
           <Table
             style={{ margin: "1%" }}
             scroll={{ x: 120, y: 400 }}
-            rowClassName="table-row"
+         
             locale={customLocale}
             loading={isLoading}
             showSorterTooltip={{ target: "sorter-icon" }}
@@ -509,6 +553,8 @@ function Plan() {
             ? "Thêm kế hoạch"
             : operation === "Update"
             ? "Cập nhật kế hoạch"
+            : operation === "Reminder"
+            ? "Nhắc hẹn lịch tiêm chủng"
             : null
         }
         open={operation !== ""}
@@ -540,7 +586,7 @@ function Plan() {
             <Form.Item style={{ display: "none" }} name="id"></Form.Item>
           ) : null}
           <Row>
-            <Col span={6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 label="Đợt tiêm"
@@ -557,6 +603,7 @@ function Plan() {
                 ]}
               >
                 <DatePicker
+                //  disabledDate={disabledDate}
                   preserveInvalidOnBlur={true}
                   format={"DD/MM/YYYY"}
                   style={
@@ -570,7 +617,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 initialValue={"TYT Vĩnh Thọ"}
@@ -593,7 +640,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={5} style={{ marginLeft: "4%" }}>
+            <Col   span={screens.xs ? 8 :5} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={"Thường xuyên"}
                 labelCol={1}
@@ -622,7 +669,7 @@ function Plan() {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 initialValue={1}
@@ -647,7 +694,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 label="Tổng số đối tượng:"
@@ -671,7 +718,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={5} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 :5} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={false}
                 labelCol={1}
@@ -710,14 +757,16 @@ function Plan() {
                 ]}
               >
                 <Checkbox.Group
-                  style={{
-                    width: "100%",
-                  }}
+       
+         
+                  style={
+                    operation === "Detail" || operation==="Delete" ? {pointerEvents:"none"}:{}
+                  }
                 >
                   <Row>
                     {listVaccine.map((item) => (
                       <Col span={8} key={item.id}>
-                        <Checkbox value={item.id}>{item.name}</Checkbox>
+                        <Checkbox value={item.id}>{item.name}  </Checkbox>
                       </Col>
                     ))}
                   </Row>
@@ -756,6 +805,7 @@ function Plan() {
                       ? "Xác nhận chỉnh sửa thông tin"
                       : null}
                     {operation === "Delete" ? "Xóa" : null}
+                    {operation === "Reminder" ? "Nhắc hẹn" : null}
                   </Button>
                 )}
                 <Button
@@ -776,6 +826,7 @@ function Plan() {
           </Row>
         </Form>
       </Modal>
+     
       <LoadingModal showLoading={showLoading} />
     </App>
   );

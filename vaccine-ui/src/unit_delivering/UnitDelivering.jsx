@@ -11,7 +11,6 @@ import {
   Row,
   Col,
   Modal,
-  
   Form,
   notification,
   Tooltip,
@@ -24,7 +23,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import LoadingModal from "../loading/Loading";
-function Manufacturer() {
+
+function UnitDelivering() {
+    
    //alert 
    const [api, contextHolder] = notification.useNotification();
    const openNotification = (state, description) => {
@@ -34,43 +35,42 @@ function Manufacturer() {
      });
    };
   //declaire variable
-
+  const { Search } = Input;
+  const [showLoading, setShowLoading] = useState(false);
   const [page, setPage] = React.useState(1);
   const [operation, setOperation] = useState("");
   const [response, setResponse] = useState([]);
-  const { Search } = Input;
-  const [showLoading, setShowLoading] = useState(false);
   const [form] = Form.useForm();
   //tanstackquerry
   const queryClient = useQueryClient();
   const { isLoading, error, data, isFetching, isSuccess } = useQuery({
-    queryKey: ["repoManufacturer"],
+    queryKey: ["repoUnitDelivering"],
     queryFn: () =>
       {
         const name="";
         return axios({
           method: "get",
-          url: "http://localhost:8080/API/Manufacturer",
+          url: "http://localhost:8080/API/UnitDelivering",
           headers: {
-            "Content-type": "application/json",
-          Authorization: `Bearer ${getJwtToken()}`,
-       
+             "Content-type": "application/json",
+           Authorization: `Bearer ${getJwtToken()}`,
+           
           },
           params: { name },
         }).then((response) => {
           console.log(response.data.data);
           setResponse(response.data.data);
+          return response.data.data
         });
       }
   });
-
-  const searchManufacturer = useMutation({
+  const searchUnitDelivering = useMutation({
     mutationFn: (name) => {
       return axios({
         method: "get",
-        url: "http://localhost:8080/API/Manufacturer",
+        url: "http://localhost:8080/API/UnitDelivering",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
           Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { name },
@@ -87,35 +87,13 @@ function Manufacturer() {
       openNotification("Thất bại", error.response.data.message);
     },
   });
-  const addManufacturer = useMutation({
+  const addUnitDelivering = useMutation({
     mutationFn: (values) => {
       return axios({
         method: "post",
-        url: "http://localhost:8080/API/Manufacturer",
+        url: "http://localhost:8080/API/UnitDelivering",
         headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${getJwtToken()}`,
-        },
-        data: values,
-      }).then((response) =>response);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["repoManufacturer"] });
-      setShowLoading(false);
-      openNotification("Thành công", "Đã thêm vào danh sách");
-    },
-    onError: (error) => {
-      setShowLoading(false);
-      openNotification("Thất bại", error.response.data.message);
-    },
-  });
-  const updateManufacturer = useMutation({
-    mutationFn: (values) => {
-      return axios({
-        method: "put",
-        url: "http://localhost:8080/API/Manufacturer",
-        headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
           Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
@@ -123,7 +101,29 @@ function Manufacturer() {
     },
     onSuccess: () => {
       setShowLoading(false);
-      queryClient.invalidateQueries({ queryKey: ["repoManufacturer"] });
+      queryClient.invalidateQueries({ queryKey: ["repoUnitDelivering"] });
+      openNotification("Thành công", "Đã thêm vào danh sách");
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      openNotification("Thất bại", error.response.data.message);
+    },
+  });
+  const updateUnitDelivering = useMutation({
+    mutationFn: (values) => {
+      return axios({
+        method: "put",
+        url: "http://localhost:8080/API/UnitDelivering",
+        headers: {
+           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
+        },
+        data: values,
+      }).then((response) => response);
+    },
+    onSuccess: () => {
+      setShowLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["repoUnitDelivering"] });
       openNotification("Thành công", "Chỉnh sửa thành công");
     },
     onError: (error) => {
@@ -131,23 +131,23 @@ function Manufacturer() {
       openNotification("Thất bại", error.response.data.message);
     },
   });
-  const deleteManufacturer = useMutation({
+  const deleteUnitDelivering = useMutation({
     mutationFn: (id) => {
       return axios({
         method: "delete",
-        url: "http://localhost:8080/API/Manufacturer",
+        url: "http://localhost:8080/API/UnitDelivering",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
           Authorization: `Bearer ${getJwtToken()}`,
         },
         params: {
           id,
         },
-      }).then((response) => response.data);
+      }).then((response) => response);
     },
     onSuccess: () => {
       setShowLoading(false);
-      queryClient.invalidateQueries({ queryKey: ["repoManufacturer"] });
+      queryClient.invalidateQueries({ queryKey: ["repoUnitDelivering"] });
       openNotification("Thành công", "Xóa thành công");
     },
     onError:(error) => {
@@ -166,7 +166,7 @@ function Manufacturer() {
       
     },
     {
-    title: "Tên nhà cung cấp",
+    title: "Tên đơn vị xuất",
     dataIndex: "name",
     key: "name",
   },
@@ -209,7 +209,7 @@ function Manufacturer() {
 
 //function
 const getJwtToken = () => {
- if (sessionStorage.getItem("jwtToken") !== null)
+  if (sessionStorage.getItem("jwtToken") !== null)
     return sessionStorage.getItem("jwtToken");
   if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
 };
@@ -223,26 +223,27 @@ const handleAdd = () => {
 function onFinish(values) {
   if (operation === "Add") {
     setShowLoading(true);
-    const manufacturer = {
+    const UnitDelivering = {
       name: values.name,
       phoneNumber: values.phoneNumber,
       address: values.address,
     };
-    addManufacturer.mutate(manufacturer);
+    addUnitDelivering.mutate(UnitDelivering);
   }
   if (operation === "Update") {
     setShowLoading(true);
-    const manufacturer = {
+    const UnitDelivering = {
       name: values.name,
       phoneNumber: values.phoneNumber,
       address: values.address,
       id:values.id
     };
-    updateManufacturer.mutate(manufacturer)
+    updateUnitDelivering.mutate(UnitDelivering)
   }
   if (operation === "Delete") {
     setShowLoading(true);
-    deleteManufacturer.mutate(values.id)
+  
+    deleteUnitDelivering.mutate(values.id)
   }
   setOperation("");
 }
@@ -267,14 +268,13 @@ const handleDelete = async (record) => {
   });
   setOperation('Delete');
 };
-    return ( 
-        <App
-        onChose={"Manufacturer"}
-        >
-             {contextHolder}
-            <h2 className="header">Quản lý nhà cung cấp</h2>
+    return ( <App
+    onChose={"UnitDelivering"}
+    >
+   {contextHolder}
+            <h2 className="header">Quản lý đơn vị xuất</h2>
       <div className="center">
-        <Row>
+      <Row>
           <Col span={12}><Button
           type="primary"
           onClick={handleAdd}
@@ -288,20 +288,17 @@ const handleDelete = async (record) => {
         </Button></Col>
           <Col span={12} style={{textAlign:"right"}}> <Search
                 allowClear={true}
-                placeholder="Nhập tên nhà cung cấp"
+                placeholder="Nhập tên đơn vị xuất"
                 onSearch={(value, _e, info) => {
                   console.log(info?.source, value);
                   setShowLoading(true);
-                  searchManufacturer.mutate(value);
-                  setOperation("");
+                  searchUnitDelivering.mutate(value);
                 }}
                 style={{
                   width: "90%",
                 }}
               /></Col>
         </Row>
-        
-       
         <Table
              style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
           columns={columns}
@@ -316,12 +313,12 @@ const handleDelete = async (record) => {
           }}
         />
          <Modal
-        title={operation==='Add' ? "Thêm nhà cung cấp": operation === 'Update' ? "Sửa thông tin nhà cung cấp" : operation === 'Detail' ? "Xem thôn tin nhà cung cấp" : 'Xóa nhà cung cấp' }
+        title={operation==='Add' ? "Thêm đơn vị xuất": operation === 'Update' ? "Sửa thông tin đơn vị xuất" : operation === 'Detail' ? "Xem thôn tin đơn vị xuất" : 'Xóa đơn vị xuất' }
         
         open={operation !== ""}
         onCancel={handleCancel}
         footer={null}
-        width={800}
+        width={600}
       >
         <Form
           onFinish={onFinish}
@@ -332,12 +329,10 @@ const handleDelete = async (record) => {
           }}
           labelAlign="left"
           labelWrap
-          wrapperCol={{
-            flex: 1,
-          }}
+       
           colon={false}
           style={{
-            maxWidth: 700,
+            maxWidth: 600,
           }}
           form={form}
         >
@@ -345,7 +340,7 @@ const handleDelete = async (record) => {
                 name="id" style={{display:"none"}}>
               </Form.Item>
            <Form.Item
-                label="Tên nhà cung cấp"
+                label="Tên đơn vị xuất"
                 name="name"
                 style={{
                   width: "100%", // Adjust width as needed
@@ -353,7 +348,7 @@ const handleDelete = async (record) => {
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập tên nhà cung cấp",
+                    message: "Vui lòng nhập tên đơn vị xuất",
                   },
                 ]}
               >
@@ -363,7 +358,7 @@ const handleDelete = async (record) => {
                 label="Số điện thoại"
                 name="phoneNumber"
                 style={{
-                  width: "50%", // Adjust width as needed
+                  width: "60%", // Adjust width as needed
                 }}
                 rules={[
                   {
@@ -383,7 +378,7 @@ const handleDelete = async (record) => {
                 label="Địa chỉ"
                 name="address"
                 style={{
-                  width: "80%", // Adjust width as needed
+                  width: "100%", // Adjust width as needed
                 }}
                 rules={[
                   {
@@ -400,7 +395,7 @@ const handleDelete = async (record) => {
             span={12}
             style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
           >
-           {operation === "Delete" ? "Bạn có muốn xóa nhà cung cấp này !" : null} 
+           {operation === "Delete" ? "Bạn có muốn xóa đơn vị xuất này !" : null} 
           </Col>
               <Col span={12}> <div className="submit" >
               <Button
@@ -416,7 +411,6 @@ const handleDelete = async (record) => {
                 style={{ textAlign: "right", marginLeft: "10px", color: "#4d79ff",
                 fontWeight: "500",
                 backgroundColor: "#f2f2f2", }}
-               
                 type="primary"
                 onClick={handleCancel}
               >
@@ -430,11 +424,11 @@ const handleDelete = async (record) => {
         </Form>
       </Modal>
       <LoadingModal
-      showLoading={showLoading}
-      ></LoadingModal>
+      
+      showLoading={showLoading}></LoadingModal>
       </div>
-        </App>
-     );
+
+    </App> );
 }
 
-export default Manufacturer;
+export default UnitDelivering;

@@ -2,6 +2,7 @@ import axios, { Axios } from "axios";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Cookies from "js-cookie";
 import App from "../App";
 import "./object_schedule.css";
 import {
@@ -12,7 +13,7 @@ import {
   Modal,
   Form,
   notification,
-  message ,
+  message,
   Select,
   Row,
   Col,
@@ -31,7 +32,7 @@ import LoadingModal from "../loading/Loading";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { height } from "@mui/system";
 
-function ObjectSchedule({ objectId,isExistObjectSchedule}) {
+function ObjectSchedule({ objectId}) {
   //alert
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (state, description) => {
@@ -42,16 +43,17 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
   };
   //declare variable
   const { useBreakpoint } = Grid;
-  const [fontSizeHeader,setFontSizeHeader]= useState("13px");
+  const [fontSizeHeader, setFontSizeHeader] = useState("13px");
   const screens = useBreakpoint();
   const { Search } = Input;
   const [listVaccine, setListVaccine] = useState([]);
   const [page, setPage] = React.useState(1);
   const [showLoading, setShowLoading] = useState(false);
-  const [response, setResponse] = useState();
+  const [response, setResponse] = useState([]);
   const [form] = Form.useForm();
   const [operation, setOperation] = useState("");
-  const [onSelected, setOnSelected] = useState("object");
+  const [isExist, setIsExist] = useState(3);
+
   const colors3 = ["#40e495", "#30dd8a", "#2bb673"];
   const listMonths = [
     { id: 0, name: "Sơ sinh" },
@@ -83,11 +85,11 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
 
   const columns = [
     {
-      title:<span style={{fontSize:fontSizeHeader}}>#</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>#</span>,
       dataIndex: "",
       key: "index",
-      
-      width: '6%',
+
+      width: "6%",
       render: (_, __, index) => (
         <span style={{ fontSize: "12px" }}>{(page - 1) * 10 + index + 1}</span>
       ),
@@ -95,7 +97,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
       defaultSortOrder: "ascend",
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Vắc xin</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Vắc xin</span>,
       dataIndex: "name",
       key: "name",
       render: (_, record) => (
@@ -119,31 +121,30 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
       ),
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Tháng tiêm</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Tháng tiêm</span>,
       dataIndex: "monthOld",
-      width: '14%',
+      width: "14%",
       responsive: ["md"],
       key: "monthOld",
       render: (monthOld) => (
-        <div style={{ textAlign: "center",fontSize:"12px" }}>
+        <div style={{ textAlign: "center", fontSize: "12px" }}>
           {monthOld === 0 ? "Sơ sinh" : monthOld}{" "}
         </div>
       ),
-   
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Mũi</span>,
-      width: '8%',
+      title: <span style={{ fontSize: fontSizeHeader }}>Mũi</span>,
+      width: "8%",
       responsive: ["sm"],
       dataIndex: "quantity",
-      
+
       key: "quantity",
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Trạng thái</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Trạng thái</span>,
       dataIndex: "state",
       key: "state",
-          responsive: ["sm"],
+      responsive: ["sm"],
       render: (state) => (
         <div>
           {state ? (
@@ -181,7 +182,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
     },
 
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Ngày tiêm</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Ngày tiêm</span>,
       dataIndex: "vaccinationDate",
       key: "vaccinationDate",
       render: (vaccinationDate) =>
@@ -195,7 +196,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         ),
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Địa điểm</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Địa điểm</span>,
       dataIndex: "vaccinationLocation",
       key: "vaccinationLocation",
       render: (vaccinationLocation) =>
@@ -209,7 +210,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         ),
     },
     {
-      title: <span style={{fontSize:fontSizeHeader}}>Thao tác</span>,
+      title: <span style={{ fontSize: fontSizeHeader }}>Thao tác</span>,
       key: "action",
       render: (_, record) => (
         <Space size="middle">
@@ -223,31 +224,40 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
             />
           </Tooltip>
           <Tooltip title="Chỉnh sửa" color={"blue"}>
-            <FontAwesomeIcon className="button-icon" icon={faPencil} onClick={() => {
+            <FontAwesomeIcon
+              className="button-icon"
+              icon={faPencil}
+              onClick={() => {
                 handleUpdate(record);
-              }} />
+              }}
+            />
           </Tooltip>
           <Tooltip title="Xóa mũi tiêm" color={"blue"}>
-            <FontAwesomeIcon className="button-icon" icon={faTrashCan} onClick={() => {
+            <FontAwesomeIcon
+              className="button-icon"
+              icon={faTrashCan}
+              onClick={() => {
                 handleDelete(record);
-              }}  />
+              }}
+            />
           </Tooltip>
         </Space>
       ),
     },
   ];
 
-  
   //useEffect
+  useEffect(() => {
+    checkIsExistObjectSchedule();
+  }, [showLoading]);
   useEffect(() => {
     getListVaccine();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operation]);
   useEffect(() => {
-    if(screens.lg)
-      setFontSizeHeader("13px");
-    else  setFontSizeHeader("10px");
+    if (screens.lg) setFontSizeHeader("13px");
+    else setFontSizeHeader("10px");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screens]);
   //schedule object
@@ -258,9 +268,17 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
     queryFn: () =>
       axios
         .get(
-          `http://localhost:8080/API/ObjectInjection/SelectByObjectId?objectId=${objectId}`
+          `http://localhost:8080/API/ObjectInjection/SelectByObjectId?objectId=${objectId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${getJwtToken()}`,
+            },
+          }
         )
-        .then((res) => setResponse(res.data.data) ),
+        .then((res) => {
+          setResponse(res.data.data);
+          return res.data.data;
+        }),
   });
   const searchObjectSchedule = useMutation({
     mutationFn: (info) => {
@@ -269,11 +287,12 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         url: "http://localhost:8080/API/ObjectInjection/SelectByObjectIdAndName",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: info,
       }).then((response) => {
-        console.log(response.data.data)
-        setResponse(response.data.data)
+        console.log(response.data.data);
+        setResponse(response.data.data);
       });
     },
     onSuccess: () => {
@@ -291,6 +310,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         url: "http://localhost:8080/API/ObjectInjection/InsertAll",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { objectId },
       }).then((response) => console.log(response.data.data));
@@ -299,13 +319,14 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
       queryClient.invalidateQueries({ queryKey: ["repoObjectSchedule"] });
       setShowLoading(false);
       openNotification("Thành công", "Đã tạo thành công sổ tiêm cho trẻ");
+      setIsExist(false);
     },
     onError: (error) => {
       setShowLoading(false);
       openNotification("Thất bại", error.response.data.message);
     },
   });
- 
+
   const addObjectSchedule = useMutation({
     mutationFn: (values) => {
       return axios({
@@ -313,6 +334,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         url: "http://localhost:8080/API/ObjectInjection",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -336,6 +358,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         url: "http://localhost:8080/API/ObjectInjection",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -359,8 +382,9 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
         url: "http://localhost:8080/API/ObjectInjection",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
-        params:{id}
+        params: { id },
       });
     },
     onSuccess: () => {
@@ -371,35 +395,57 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
     },
     onError: (error) => {
       setShowLoading(false);
-      console.log(error.response.data)
+      console.log(error.response.data);
       openNotification("Thất bại", "Không xóa mũi tiêm được");
     },
   });
   //function
+  const checkIsExistObjectSchedule = () => {
+    return axios({
+      method: "get",
+      url: "http://localhost:8080/API/Object/isExistObjectIdInjection",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${getJwtToken()}` 
+      },
+      params: { objectId: objectId }
+    }).then((response) => {
+      console.log(response.data.data)
+      setIsExist(response.data.data)
+      return response.data.data;
+    });
+};
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
+  };
   const handleDetail = (record) => {
-    if(record.vaccinationDate !== null)
+    if (record.vaccinationDate !== null)
       record = {
         ...record,
         vaccinationDate: dayjs(record.vaccinationDate, "YYYY-MM-DD"),
       };
     console.log(record);
-   
+
     form.setFieldsValue(record);
     setOperation("Detail");
   };
   const handleUpdate = (record) => {
-   
-    if(record.vaccinationDate !== null)
+    if (record.vaccinationDate !== null){
       record = {
         ...record,
         vaccinationDate: dayjs(record.vaccinationDate, "YYYY-MM-DD"),
       };
+    }
+     
     form.setFieldsValue(record);
+    form.setFieldValue("state",!record.state)
+  
     setOperation("Update");
   };
   const handleDelete = (record) => {
-   
-    if(record.vaccinationDate !== null)
+    if (record.vaccinationDate !== null)
       record = {
         ...record,
         vaccinationDate: dayjs(record.vaccinationDate, "YYYY-MM-DD"),
@@ -410,9 +456,10 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
   const getListVaccine = () => {
     axios({
       method: "get",
-      url: "http://localhost:8080/API/Vaccine/OnlyName",
+      url: "http://localhost:8080/API/General/Vaccine",
       headers: {
         "Content-type": "application/json",
+        Authorization: `Bearer ${getJwtToken()}`,
       },
     }).then((response) => {
       setListVaccine(response.data.data);
@@ -442,16 +489,17 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
       addObjectSchedule.mutate(values);
     }
     if (operation === "Update") {
-      const updateInfo ={
-        id:values.id,
-        monthOld:values.monthOld,
+      console.log(values);
+      const updateInfo = {
+        id: values.id,
+        monthOld: values.monthOld,
         vaccinationDate: values.vaccinationDate,
-        vaccinationLocation:values.vaccinationLocation,
-        quantity:1,
-        state:values.state,
+        vaccinationLocation: values.vaccinationLocation,
+        quantity: 1,
+        state: values.state,
         reaction: values.reaction,
-        lotNumber:values.lotNumber,
-      }
+        lotNumber: values.lotNumber,
+      };
       setShowLoading(true);
       updateObjectSchedule.mutate(updateInfo);
     }
@@ -468,7 +516,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
   return (
     <>
       {contextHolder}
-      {isExistObjectSchedule === undefined || isExistObjectSchedule <= 0 ? (
+      {isExist <= 0 ? (
         <Space
           style={{
             margin: "2%",
@@ -501,56 +549,54 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
       ) : (
         <div>
           <div style={{ margin: "1%" }}>
-          
-              <Row>
-                <Col span={12}> 
+            <Row>
+              <Col span={12}>
                 <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(116deg,  ${colors3.join(
-                      ", "
-                    )})`,
-                    colorPrimaryHover: `linear-gradient(116deg, ${colors3.join(
-                      ", "
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(116deg, ${colors3.join(
-                      ", "
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
-              }}
-            > 
-                <Button type="primary" onClick={handleAdd}>
-                Thêm mũi tiêm
-              </Button>
-              </ConfigProvider></Col>
-                <Col span={12} >
-                <div style={{  }}>
-              <Search
-                allowClear={true}
-                placeholder="Nhập tên vắc xin"
-                
-                onSearch={(value, _e, info) =>{
-                   console.log(info?.source, value);
-                   setShowLoading(true);
-                   searchObjectSchedule.mutate({name:value,objectId:objectId})
-                  setOperation("");
-                }
-                }
-                style={{
-                  width: "100%",
-                }}
-              />
-            </div>
-                </Col>
-              </Row>
-            
-           
+                  theme={{
+                    components: {
+                      Button: {
+                        colorPrimary: `linear-gradient(116deg,  ${colors3.join(
+                          ", "
+                        )})`,
+                        colorPrimaryHover: `linear-gradient(116deg, ${colors3.join(
+                          ", "
+                        )})`,
+                        colorPrimaryActive: `linear-gradient(116deg, ${colors3.join(
+                          ", "
+                        )})`,
+                        lineWidth: 0,
+                      },
+                    },
+                  }}
+                >
+                  <Button type="primary" onClick={handleAdd}>
+                    Thêm mũi tiêm
+                  </Button>
+                </ConfigProvider>
+              </Col>
+              <Col span={12}>
+                <div style={{}}>
+                  <Search
+                    allowClear={true}
+                    placeholder="Nhập tên vắc xin"
+                    onSearch={(value, _e, info) => {
+                      console.log(info?.source, value);
+                      setShowLoading(true);
+                      searchObjectSchedule.mutate({
+                        name: value,
+                        objectId: objectId,
+                      });
+                      setOperation("");
+                    }}
+                    style={{
+                      width: "100%",
+                    }}
+                  />
+                </div>
+              </Col>
+            </Row>
           </div>
           <Table
-        
             scroll={{ x: 120, y: 350 }}
             loading={isLoading}
             showSorterTooltip={{ target: "sorter-icon" }}
@@ -564,7 +610,6 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
                 setPage(current);
               },
             }}
-            
           />
         </div>
       )}
@@ -599,12 +644,9 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
             }}
             form={form}
           >
-           {operation !== "Add" ? <Form.Item
-                      style={{display:"none"}}
-                      name="id"
-                    >
-                     
-                    </Form.Item> :null}
+            {operation !== "Add" ? (
+              <Form.Item style={{ display: "none" }} name="id"></Form.Item>
+            ) : null}
             <Form.Item
               label="Vắc xin:"
               name="vaccineId"
@@ -619,11 +661,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
               ]}
             >
               <Select
-                style={
-                  operation !== "Add" 
-                    ? { pointerEvents: "none" }
-                    : {}
-                }
+                style={operation !== "Add" ? { pointerEvents: "none" } : {}}
               >
                 {listVaccine.map((item) => (
                   <Select.Option key={item.id} value={item.id}>
@@ -654,7 +692,19 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
                 ))}
               </Select>
             </Form.Item>
-
+            <Form.Item
+              label="Số lô:"
+              name="lotNumber"
+              style={{
+                width: "100%", // Adjust width as needed
+              }}
+              
+            >
+              <Input
+                readOnly={operation !== "Add" && operation !== "Update"}
+                name="lotNumber"
+              />
+            </Form.Item>
             <Form.Item
               label="Trạng thái:"
               initialValue={true}
@@ -668,9 +718,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
             >
               <Select
                 style={
-                  operation === "Detail" || operation === "Delete"
-                    ? { pointerEvents: "none" }
-                    : {}
+                  operation ==="Update" ?   { pointerEvents: "none" } :{}
                 }
               >
                 <Select.Option value={true}>Đã tiêm chủng</Select.Option>
@@ -681,14 +729,14 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
               label="Ngày tiêm:"
               name="vaccinationDate"
               initialValue={dayjs(undefined)}
-              preserveInvalidOnBlur={true}
+         
               rules={[
                 { required: true, message: "Vui lòng nhập ngày tiêm chủng" },
               ]}
             >
               <DatePicker
-              preserveInvalidOnBlur={true}
-               format={"DD/MM/YYYY"}
+             
+                format={"DD/MM/YYYY"}
                 style={
                   operation === "Detail" || operation === "Delete"
                     ? { pointerEvents: "none" }
@@ -745,24 +793,7 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
                 name="vaccinationLocation"
               />
             </Form.Item>
-            <Form.Item
-              label="Số lô:"
-              name="lotNumber"
-              style={{
-                width: "100%", // Adjust width as needed
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập số lô vaccine",
-                },
-              ]}
-            >
-              <Input
-                readOnly={operation !== "Add" && operation !== "Update"}
-                name="lotNumber"
-              />
-            </Form.Item>
+            
             {operation === "Detail" || operation === "Delete" ? (
               <Form.Item
                 label="Phản ứng sau tiêm:"
@@ -789,7 +820,12 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
               >
                 <Input.TextArea
                   rows={4}
-                  style={{ pointerEvents:  operation !== "Add" && operation !== "Update" ? "none" :null }}
+                  style={{
+                    pointerEvents:
+                      operation !== "Add" && operation !== "Update"
+                        ? "none"
+                        : null,
+                  }}
                   name="reaction"
                 />
               </Form.Item>
@@ -812,7 +848,13 @@ function ObjectSchedule({ objectId,isExistObjectSchedule}) {
                 )}
 
                 <Button
-                  style={{ textAlign: "right", marginLeft: "10px" }}
+                  style={{
+                    textAlign: "right",
+                    marginLeft: "10px",
+                    color: "#4d79ff",
+                    fontWeight: "500",
+                    backgroundColor: "#f2f2f2",
+                  }}
                   type="primary"
                   onClick={handleCancel}
                 >

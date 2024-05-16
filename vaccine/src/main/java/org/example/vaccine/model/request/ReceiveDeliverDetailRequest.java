@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReceiveDeliverDetailRequest {
+public class eceiveDeliverDetailRequest {
     private String vaccineId;
     private int quantityReceiving;
     private String lotNumber;

@@ -18,3 +18,7 @@
     font-size: 16px;
     line-height: 1.5;
   }
+  .custom-card .ant-card-head {
+    border-bottom: 2px solid #1890ff; /* Đổi màu của đường phân cách */
+  }
+  

@@ -1,6 +1,7 @@
 import axios, { Axios } from "axios";
 import App from "../App";
 import "./Staff.css";
+import Cookies from "js-cookie";
 import LoadingModal from "../loading/Loading";
 import {
   Space,
@@ -44,8 +45,39 @@ function Staff() {
     queryKey: ["repoStaff"],
     queryFn: () =>
       axios
-        .get("http://localhost:8080/API/HealthcareStaff")
-        .then((res) => res.data.data),
+        .get("http://localhost:8080/API/HealthcareStaff",{
+          headers: {
+             "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
+           
+          },
+        })
+        .then((res) => {
+          setResponse(res.data.data)
+          return res.data.data}),
+  });
+  const searchStaff = useMutation({
+    mutationFn: (info) => {
+      return axios({
+        method: "get",
+        url: "http://localhost:8080/API/HealthcareStaff/Search",
+        headers: {
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
+        },
+        params: { info },
+      }).then((response) => {
+        console.log(response.data.data);
+        setResponse(response.data.data);
+      });
+    },
+    onSuccess: () => {
+      setShowLoading(false);
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      openNotification("Thất bại", error.response.data.message);
+    },
   });
   //Add Staff
   const addStaff = useMutation({
@@ -55,10 +87,11 @@ function Staff() {
         method: "post",
         url: "http://localhost:8080/API/HealthcareStaff",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
-      }).then((response) => setResponse(response));
+      }).then((response) => response);
     },
     // isLoading: ()=>{
     //   openNotification("DDa", "Đã thêm vào danh sách");
@@ -81,10 +114,11 @@ function Staff() {
         method: "put",
         url: "http://localhost:8080/API/HealthcareStaff",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
-      }).then((response) => setResponse(response));
+      }).then((response) => response);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoStaff"] });
@@ -103,10 +137,11 @@ function Staff() {
         method: "delete",
         url: "http://localhost:8080/API/HealthcareStaff",
         headers: {
-          "Content-type": "application/json",
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         params:{id}
-      }).then((response) => setResponse(response));
+      }).then((response) => response);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repoStaff"] });
@@ -121,8 +156,9 @@ function Staff() {
   });
   //Declare variable
   const [page, setPage] = React.useState(1);
+  const { Search } = Input;
   const [showLoading,setShowLoading]= useState(false);
-  const [response, setResponse] = useState();
+  const [response, setResponse] = useState([]);
   const [operation, setOperation] = useState("");
   const [listRole, setListRole] = useState([]);
   const [listProvince, setListProvince] = useState([]);
@@ -144,7 +180,8 @@ function Staff() {
       method: "get",
       url: "http://localhost:8080/API/Role",
       headers: {
-        "Content-type": "application/json",
+         "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
       },
     }).then((response) => {
       setListRole(response.data.data);
@@ -164,12 +201,14 @@ function Staff() {
       key: "fullname",
     },
     {
+      responsive: ["md"],
       title: "Giới tính",
       dataIndex: "sex",
       key: "sex",
       render: (sex) => (sex === true ? "Nam" : "Nữ"),
     },
     {
+      responsive: ["md"],
       title: "Email",
       dataIndex: "email",
       key: "email",
@@ -178,6 +217,7 @@ function Staff() {
       title: "Số điện thoại",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
+      responsive: ["md"],
     },
     {
       title: "Username",
@@ -215,13 +255,24 @@ function Staff() {
       ),
     },
   ];
+  //useEffect
+  useEffect(() => {
+    getListRole()
+  }, []);
   const handleAdd = () => {
     form.resetFields();
-    getListRole();
+   
     setOperation("Add");
   };
   const handleCancel = () => {
     setOperation("");
+  };
+  //function
+  
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
   };
   //Onfinish
   function onFinish(values) {
@@ -253,7 +304,7 @@ function Staff() {
   });
 
   const handleUpdate = async (record) => {
-    getListRole()
+
     let sex = "";
     if (record.sex === true) {
       sex = "true";
@@ -273,7 +324,7 @@ function Staff() {
     setOperation("Update");
   };
   const handleDetail =  (record) => {
-    getListRole();
+
     const role = listRole.filter(role => role.id === record.roleId ? role.name : null);
     let sex = "";
     if (record.sex === true) {
@@ -294,7 +345,7 @@ function Staff() {
     setOperation("Detail");
   };
   const handleDelete =  (record) => {
-    getListRole()
+
     const role = listRole.filter(role => role.id === record.roleId ? role.name : null);
     let sex = "";
     if (record.sex === true) {
@@ -322,20 +373,38 @@ function Staff() {
       {contextHolder}
       <h2 className="header">Quản lý nhân viên</h2>
       <div className="center">
-        <Button
+      <Row>
+          <Col span={12}><Button
           type="primary"
           onClick={handleAdd}
           style={{
             marginBottom: "1%",
             textAlign: "left",
           }}
-        ><FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
+        >
+           <FontAwesomeIcon className="button-icon"  icon={faPlus} style={{marginRight:"5%",color:"white"}}/>
           Thêm
-        </Button>
-        <Table
+        </Button></Col>
+          <Col span={12} style={{textAlign:"right"}}> <Search
+                allowClear={true}
+                placeholder="Nhập tên nhà cung cấp"
+                onSearch={(value, _e, info) => {
+                  console.log(info?.source, value);
+                  setShowLoading(true);
+                  searchStaff.mutate(value);
+                  setOperation("");
+                }}
+                style={{
+                  width: "90%",
+                }}
+              /></Col>
+        </Row>
+        <Row>
+          <Col span={24}><Table
+               style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
           loading={isLoading}
           columns={columns}
-          dataSource={data}
+          dataSource={response}
           rowKey="id"
           pagination={{
             defaultPageSize: 4,
@@ -344,7 +413,9 @@ function Staff() {
               setPage(current);
             }
           }}
-        />
+        /></Col>
+        </Row>
+        
       </div>
       {operation === "Add" || operation === "Update" ? <Modal
         title={
@@ -580,7 +651,9 @@ function Staff() {
               }
               
               <Button
-                style={{ textAlign: "right", marginLeft: "10px" }}
+                style={{ textAlign: "right", marginLeft: "10px" , color: "#4d79ff",
+                fontWeight: "500",
+                backgroundColor: "#f2f2f2",}}
                 type="primary"
                 onClick={handleCancel}
               >

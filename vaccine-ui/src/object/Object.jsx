@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import App from "../App";
+import Cookies from 'js-cookie'
 import "./object.css";
 import {
   Space,
@@ -54,6 +55,7 @@ function Objects() {
   const [form] = Form.useForm();
   const [operation, setOperation] = useState("");
   const [onSelected, setOnSelected] = useState("");
+  const [isExistObjectSchedule, setIsExistObjectSchedule] = useState(0);
   //alert
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (state, description) => {
@@ -78,12 +80,15 @@ function Objects() {
   const { isLoading, error, data, isFetching } = useQuery({
     queryKey: ["repoObject"],
     queryFn: () =>
-      axios.get("http://localhost:8080/API/Object").then((res) => {
+      axios.get("http://localhost:8080/API/Object", {
+    headers: {
+      Authorization: `Bearer ${getJwtToken()}` 
+    }
+  }).then((res) => {
         setResponse(res.data.data);
         return res.data.data;
       }),
   });
-
   const searchObject = useMutation({
     mutationFn: (info) => {
       return axios({
@@ -91,6 +96,7 @@ function Objects() {
         url: "http://localhost:8080/API/Object/Info",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}` 
         },
         params: { info },
       }).then((response) => {
@@ -114,6 +120,7 @@ function Objects() {
         url: "http://localhost:8080/API/Object",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}` 
         },
         data: values,
       });
@@ -136,6 +143,7 @@ function Objects() {
         url: "http://localhost:8080/API/Object",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}` 
         },
         data: values,
       });
@@ -158,6 +166,7 @@ function Objects() {
         url: "http://localhost:8080/API/Object",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}` 
         },
         params: {
           id,
@@ -176,7 +185,9 @@ function Objects() {
       openNotification("Thất bại", error.response.data.message);
     },
   });
-
+  // useEffect(() => {
+  //   checkIsExistObjectSchedule();
+  // }, [dataById]);
   //Column
   const columns = [
     {
@@ -217,18 +228,14 @@ function Objects() {
   ];
 
   //fucntion
-  const getListObjectSchedule = () => {
-    console.log(dataById.id);
-    return axios({
-      method: "get",
-      url: "http://localhost:8080/API/ObjectInjection/SelectByObjectId",
-      headers: {
-        "Content-type": "application/json",
-      },
-      params: { objectId: dataById.id }
-    }).then((response) => response.data.data);
-  };
-  console.log(getListObjectSchedule)
+  const getJwtToken = ()=>{
+   if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if(Cookies.get("jwtToken") !== undefined)
+      return Cookies.get("jwtToken");
+  }
+  
+
   const handleChange = (e) => {
     setShowLoading(true);
     if (e.key === "object") {
@@ -348,8 +355,8 @@ function Objects() {
     <App onChose={"Object"}>
       {contextHolder}
       <Row>
-        <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-          <div style={{ width: "100%", border: "1px solid" }}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={8} style={{border: "1px solid",borderColor:"#A9A9A9" }}>
+          <div style={{ width: "100%"}}>
             <div style={{ width: "100%", margin: "2%" }}>
               <Search
                 allowClear={true}
@@ -366,7 +373,7 @@ function Objects() {
               />
             </div>
           </div>
-          <div style={{ width: "100%", border: "1px solid" }}>
+          <div style={{ width: "100%", borderTop: "1px solid", borderColor:"#A9A9A9", }}>
             <Table
               scroll={{ x: 120, y: 400 }}
               rowClassName="table-row"
@@ -374,7 +381,7 @@ function Objects() {
                 return {
                   onClick: (detail) => {
                     setShowLoading(true);
-                    console.log(record);
+                
                     setDataById({ record });
                     handleDetail(record);
                   },
@@ -404,7 +411,7 @@ function Objects() {
           xl={15}
           style={screens.xl ? { marginLeft: "1%" } : { marginTop: "2%" }}
         >
-          <div style={{ width: "100%", border: "1px solid" }}>
+          <div style={{ width: "100%", border: "1px solid",borderColor:"#A9A9A9" }}>
             <Row>
               <Col span={12}>
                 <div
@@ -481,7 +488,7 @@ function Objects() {
               </Col>
             </Row>
             {operation !== "" ? (
-              <div style={{ width: "100%", borderTop: "1px solid" }}>
+              <div style={{ width: "100%", borderTop: "1px solid",borderColor:"#A9A9A9" }}>
                 <Menu
                   onClick={handleChange}
                   selectedKeys={[onSelected]}
@@ -905,6 +912,9 @@ function Objects() {
                                 textAlign: "right",
                                 marginLeft: "1%",
                                 marginRight: "1%",
+                                color: "#4d79ff",
+                                fontWeight: "500",
+                                backgroundColor: "#f2f2f2",
                               }}
                               type="primary"
                               onClick={handleCancel}
@@ -917,15 +927,16 @@ function Objects() {
                     </Row>
                   </Form>
                 ) : (
-                  <ObjectSchedule objectId={dataById.id} 
-                  listSchedule={getListObjectSchedule()} />
+                  <ObjectSchedule 
+                  objectId={dataById.id}  />
                 )}
               </div>
             ) : (
               <div
                 style={{
                   width: "100%",
-                  borderTop: "1px solid",
+                  borderTop: "1px solid", 
+                  borderColor:"#A9A9A9",
                   height: "20%",
                   paddingLeft: "1%",
                   paddingTop: "1%",
@@ -940,6 +951,7 @@ function Objects() {
       </Row>
 
       <LoadingModal showLoading={showLoading} />
+     
     </App>
   );
 }

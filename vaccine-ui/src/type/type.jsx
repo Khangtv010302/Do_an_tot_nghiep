@@ -5,6 +5,7 @@ import { Space, Table, Input, Button, Modal, Form, notification,Pagination,Toolt
 import React, { useEffect, useState } from "react";
 import LoadingModal from "../loading/Loading";
 import { useForm } from "antd/es/form/Form";
+import Cookies from 'js-cookie'
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
@@ -22,15 +23,25 @@ function Type() {
   const { isLoading, error, data, isFetching } = useQuery({
     queryKey: ["repoType"],
     queryFn: () =>
-      axios.get("http://localhost:8080/API/Role").then((res) => res.data.data),
+      axios.get("http://localhost:8080/API/Role",{
+    headers: {
+      Authorization: `Bearer ${getJwtToken()}`,
+    },
+      }).then((res) => res.data.data),
   });
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
+  };
   const mutation = useMutation({
     mutationFn: (values) => {
       return axios({
         method: "post",
         url: "http://localhost:8080/API/Role",
         headers: {
-          "Content-type": "application/json",
+            "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       }).then((response) => setResponse(response)) ;
@@ -52,7 +63,8 @@ function Type() {
         method: "delete",
         url: "http://localhost:8080/API/Role",
         headers: {
-          "Content-type": "application/json",
+            "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
         },
         params: {
           id,
@@ -129,8 +141,6 @@ function Type() {
       deleteType.mutate(values.id);
     
     }
-
-    setOperation(false);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -164,7 +174,9 @@ function Type() {
             
             Thêm
           </Button>
-          <Table loading={isLoading} columns={columns} dataSource={data} rowKey="id" pagination={{
+          <Table
+               style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
+          loading={isLoading} columns={columns} dataSource={data} rowKey="id" pagination={{
             defaultPageSize: 5,
             position: ['bottomCenter']
           }} />
@@ -172,7 +184,6 @@ function Type() {
         </div>
         <Modal
           title="Loại nhân viên"
-          confirmLoading={confirmLoading}
           open={operation !=="" }
           onCancel={handleCancel}
           footer={null}
@@ -234,7 +245,9 @@ function Type() {
                   {operation === "Add" ? "Thêm" : "Xóa"}
                 </Button>
                 <Button
-                  style={{ textAlign: "right", marginLeft: "10px" }}
+                  style={{ textAlign: "right", marginLeft: "10px", color: "#4d79ff",
+                  fontWeight: "500",
+                  backgroundColor: "#f2f2f2", }}
                   type="primary"
                   onClick={handleCancel}
                 >

@@ -1,0 +1,8 @@
+.menu-item a {
+    color: #333; /* Set your desired color */
+    text-decoration: none;
+  }
+  
+  .menu-item a:hover {
+    color: #007bff; /* Change color on hover */
+  }

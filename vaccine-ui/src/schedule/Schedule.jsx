@@ -2,6 +2,7 @@ import axios from "axios";
 import App from "../App";
 import LoadingModal from "../loading/Loading";
 import "./Schedule.css";
+import Cookies from "js-cookie";
 import {
   Space,
   Table,
@@ -82,7 +83,11 @@ function Schedule() {
     queryKey: ["repoSchedule"],
     queryFn: () =>
       axios
-        .get("http://localhost:8080/API/GeneralInjection")
+        .get("http://localhost:8080/API/GeneralInjection",{
+          headers: {
+            Authorization: `Bearer ${getJwtToken()}`,
+          },
+        })
         .then((res) => res.data.data),
   });
   const addSchedule = useMutation({
@@ -92,6 +97,7 @@ function Schedule() {
         url: "http://localhost:8080/API/GeneralInjection",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       }).then((response) => setResponse(response));
@@ -115,6 +121,7 @@ function Schedule() {
         url: "http://localhost:8080/API/GeneralInjection/VaccineId-MonthOld",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: param,
       }).then((response) => setResponse(response));
@@ -137,6 +144,7 @@ function Schedule() {
         url: "http://localhost:8080/API/GeneralInjection/VaccineId",
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { vaccineId },
       }).then((response) => setResponse(response));
@@ -159,7 +167,7 @@ function Schedule() {
       title: "#",
       dataIndex: "",
       key: "index",
-      render: (_, __, index) => (page - 1) * 4 + index + 1,
+      render: (_, __, index) => (page - 1) * 8 + index + 1,
     },
     {
       title: "Vắc xin",
@@ -225,6 +233,11 @@ function Schedule() {
     });
   }
   //function
+  const getJwtToken = () => {
+    if (sessionStorage.getItem("jwtToken") !== null)
+      return sessionStorage.getItem("jwtToken");
+    if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
+  };
   const renderMonthOlds = (monthOlds) => {
     const monthArray = monthOlds.split(",").map((month) => parseInt(month.trim()));
     const sortedMonthArray = monthArray.sort((a, b) => a - b);
@@ -235,9 +248,10 @@ function Schedule() {
   const getListVaccine = () => {
     axios({
       method: "get",
-      url: "http://localhost:8080/API/Vaccine/OnlyName",
+      url: "http://localhost:8080/API/General/Vaccine",
       headers: {
         "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
       },
     }).then((response) => {
       setListVaccine(response.data.data);
@@ -266,6 +280,7 @@ function Schedule() {
     setOperation("Delete");
   };
   const onFinish = (values) => {
+    console.log(values);
     if (operation === "Add") {
       setShowLoading(true);
       addSchedule.mutate(values);
@@ -310,13 +325,14 @@ function Schedule() {
           Thêm
         </Button>
         <Table
+             style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
           loading={isLoading}
           showSorterTooltip={{ target: "sorter-icon" }}
           columns={columns}
           dataSource={newData}
           rowKey="id"
           pagination={{
-            defaultPageSize: 4,
+            defaultPageSize: 8,
             position: ["bottomCenter"],
             onChange(current) {
               setPage(current);
@@ -447,7 +463,9 @@ function Schedule() {
                   {operation === "Add" ? "Thêm" : "Xóa"}
                 </Button>
                 <Button
-                  style={{ textAlign: "right", marginLeft: "10px" }}
+                  style={{ textAlign: "right", marginLeft: "10px", color: "#4d79ff",
+                  fontWeight: "500",
+                  backgroundColor: "#f2f2f2", }}
                   type="primary"
                   onClick={handleCancel}
                 >
