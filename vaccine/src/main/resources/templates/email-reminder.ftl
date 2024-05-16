@@ -24,7 +24,7 @@
         }
         .content {
             padding: 20px;
-            text-align: center;
+            text-align: left;
             line-height: 1.6;
         }
         .footer {
@@ -46,11 +46,20 @@
 <body>
 <div class="container">
     <div class="header">
-        <h2>Mã xác nhận</h2>
+        <h2>Nhắc hẹn tiêm chủng ở trạm y tế phường Vĩnh Thọ</h2>
     </div>
     <div class="content">
-        <p>Mã xác nhận của bạn là: <span class="verification-code">${code}</span></p>
-        <p style="font-weight: bold">Lưu ý: <span style="color: #cc0000">Mã xác nhận chỉ sử dụng 1 lần và thời gian tồn tại là 15 phút !!</span> </p>
+        <p>Kính gửi Quý phụ huynh,</p>
+
+        <p>Chúng tôi xin nhắc nhở Quý phụ huynh về lịch hẹn tiêm chủng sắp tới của bé ${name}.
+            Lịch tiêm chủng sẽ diễn ra vào ngày ${scheduledDate}. Trong lần tiêm này, bé ${name}
+            sẽ được tiêm vắc xin ${vaccineName} nhằm bảo vệ sức khỏe và ngăn ngừa các bệnh nguy hiểm.
+            Chúng tôi khuyến khích Quý phụ huynh đưa bé đến đúng giờ để quá trình tiêm chủng diễn ra
+            thuận lợi và hiệu quả nhất.</p>
+
+        <p>Nếu có bất kỳ thắc mắc hay cần hỗ trợ thêm thông tin, vui lòng liên hệ với chúng tôi qua số điện thoại 0258 3834 009.</p>
+
+        <p>Trân trọng,</p>
     </div>
     <div class="footer">
         Trạm y tế phường Vĩnh Thọ

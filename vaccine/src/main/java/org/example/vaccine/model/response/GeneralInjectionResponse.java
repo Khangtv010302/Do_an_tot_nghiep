@@ -11,4 +11,5 @@ import org.example.vaccine.model.GeneralInjection;
 @NoArgsConstructor
 public class GeneralInjectionResponse extends GeneralInjection {
     private String name;
+    private String antigen;
 }

@@ -665,17 +665,12 @@ function Staff() {
       </Modal> : null}
       
       <Modal
-        title={
-          operation === "Detail"
-            ? "Xem thông tin nhân viên"
-            : operation === "Delete"
-            ? "Xóa thông tin nhân viên"
-            : null
-        }
         open={operation === "Delete" || operation === "Detail"}
         onCancel={handleCancel}
+        visible={false}
+        closeIcon={null}
         footer={null}
-        width={800}
+        width={600}
       >
         <Form
           onFinish={onFinish}
@@ -684,6 +679,7 @@ function Staff() {
           labelCol={{
             flex: "140px",
           }}
+          cl
           labelAlign="left"
           labelWrap
           wrapperCol={{
@@ -691,131 +687,25 @@ function Staff() {
           }}
           colon={false}
           style={{
-            maxWidth: 700,
+            maxWidth: "100%",
           }}
           form={form}
         >
-          
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="Tên nhân viên:"
-                name="fullname"
-                style={{
-                  width: "100%", // Adjust width as needed
-                }}
-              >
-                <text> {dataById.fullname} </text>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Giới tính:"
-                name="sex"
-              >
-                <text> {dataById.sex} </text>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="Email:"
-                name="email"
-                style={{
-                  width: "100%", // Adjust width as needed
-                }}
-                
-              >
-               <text> {dataById.email} </text>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Số điện thoại:"
-                name="phoneNumber"
-                style={{
-                  width: "100%", // Adjust width as needed
-                }}
-              >
-                <text> {dataById.phoneNumber} </text>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="Username:"
-                name="username"
-                style={{
-                  width: "100%", // Adjust width as needed
-                }}
-              
-              >
-              <text> {dataById.username} </text>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Vai trò:"
-                name="roleId"
-              >
-                 <text> {dataById.role} </text>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item
-            label="Địa chỉ:"
-            name="placeOfResidence"
-            style={{
-              width: "80%", // Adjust width as needed
-            }}
-          >
-            <text> {dataById.address} </text>
-              </Form.Item>
-          {operation === "Add" ? (
-            <Form.Item
-              label="Mật khẩu:"
-              name="password"
-              style={{
-                width: "50%", // Adjust width as needed
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập mật khẩu",
-                },
-                {
-                  pattern: /^(?=.*[A-Z])[A-Za-z0-9]*$/,
-                  message:
-                    "Mật khẩu phải bắt đầu bằng chữ cái in hoa và chỉ chứa chữ cái và số",
-                },
-              ]}
-            >
-             <Input  name="password" maxlength="30" size="30" />
-            </Form.Item>
-          ) : null}
-          {operation === "Add" ? (
-            <Form.Item
-              label="Nhập lại Mật khẩu:"
-              name="rePassword"
-              style={{
-                width: "50%", // Adjust width as needed
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập mật khẩu",
-                },
-                validateRePassword,
-              ]}
-            >
-             <Input.Password name="rePassword" maxlength="30" size="30" />
-            </Form.Item>
-          ) : null}
-          <Form.Item name="id"style={{display:"none"}}></Form.Item>
-          <Form.Item label="">
+         
+            <h2>{
+          operation === "Detail"
+            ? "Thông tin nhân viên"
+            : operation === "Delete"
+            ? "Xóa thông tin nhân viên"
+            : null
+        }</h2>
+            <p><label>Tên nhân viên:</label> {dataById.fullname}</p>
+            <p><label>Giới tính:</label> {dataById.sex}</p>
+            <p><label>Email:</label> {dataById.email}</p>
+            <p><label>Số điện thoại:</label> {dataById.phoneNumber}</p>
+            <p><label>Username:</label> {dataById.username}</p>
+            <p><label>Vai trò:</label> {dataById.role}</p>
+            <p><label>Địa chỉ:</label> {dataById.address}</p>
             <Row>
             <Col
             span={12}
@@ -844,9 +734,7 @@ function Staff() {
               </Button>
             </div></Col>
             </Row>
-         
-           
-          </Form.Item>
+        
         </Form>
       </Modal>
       <LoadingModal

@@ -315,6 +315,29 @@ function Plan() {
       openNotification("Thất bại", error.response.data.message);
     },
   });
+  const reminderPlan = useMutation({
+    mutationFn: (scheduledDate) => {
+      return axios({
+        method: "get",
+        url: "http://localhost:8080/API/Plan/Reminder",
+        headers: {
+           "Content-type": "application/json",
+            Authorization: `Bearer ${getJwtToken()}`,
+        },
+        params:{scheduledDate},
+      });
+    },
+    onSuccess: () => {
+      
+      setShowLoading(false);
+      setOperation("");
+      openNotification("Thành công", "Đã nhắc hẹn theo kế hoạch thành công");
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      openNotification("Thất bại", error.response.data.message);
+    },
+  });
   //function
   const getJwtToken = () => {
     if (sessionStorage.getItem("jwtToken") !== null)
@@ -429,6 +452,10 @@ function Plan() {
       setShowLoading(true);
       deletePlan.mutate(values.id)
      
+    }
+    if (operation === "Reminder") {
+      setShowLoading(true);
+      reminderPlan.mutate(values.scheduledDate)
     }
   }
   const onFinishFailed = (errorInfo) => {

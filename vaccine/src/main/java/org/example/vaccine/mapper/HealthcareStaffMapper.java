@@ -5,6 +5,7 @@ import org.example.vaccine.model.HealthcareStaff;
 import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
 import org.example.vaccine.model.response.HealthcareStaffResponse;
+import org.example.vaccine.model.response.UserResponse;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public interface HealthcareStaffMapper {
     List<HealthcareStaff> selectByNameOrEmailOrUsername(String info);
     @Select("SELECT  * FROM healthcare_staff WHERE id = #{id}")
     HealthcareStaff selectById(String id);
+    @Select("SELECT username,password,code as roleCode FROM healthcare_staff as he INNER JOIN role as ro ON he.role_id = ro.id WHERE username= #{username}")
+    UserResponse selectUserByUsername(String username);
+    @Select("CALL CheckUsernameAndEmail(#{username},#{email})")
+    int checkUsernameAndEmail(String username,String email);
 }

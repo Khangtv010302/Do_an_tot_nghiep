@@ -27,7 +27,7 @@ public class ManufacturerController {
         return manufacturerService.deleteById(id);
     }
     @GetMapping("")
-    public ResponseEntity<ResponseBase> selectAll(){
-        return manufacturerService.selectAll();
+    public ResponseEntity<ResponseBase> selectAll(@RequestParam String name){
+        return manufacturerService.selectByName(name);
     }
 }

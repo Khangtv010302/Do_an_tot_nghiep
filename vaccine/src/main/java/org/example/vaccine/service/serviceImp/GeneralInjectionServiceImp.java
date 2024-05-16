@@ -34,10 +34,18 @@ public class GeneralInjectionServiceImp implements GeneralInjectionService {
     }
 
     @Override
-    public ResponseEntity<ResponseBase> deleteById(String id) {
-        CommonResponseCode code = handle.response(generalInjectionMapper.delete(id));
+    public ResponseEntity<ResponseBase> deleteByVaccineIdAndMonthOld(String vaccineId, int monthOld) {
+        int isDelete = generalInjectionMapper.deletebyVaccineIdAndMonthOld(vaccineId,monthOld);
+        return ResponseEntity.ok().body(new ResponseBase("Xóa thành công"));
+    }
+
+    @Override
+    public ResponseEntity<ResponseBase> deleteByVaccineId(String vaccineId) {
+        CommonResponseCode code = handle.response(generalInjectionMapper.deletebyVaccineId(vaccineId));
         return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
     }
+
+
 
     @Override
     public ResponseEntity<ResponseBase> selectAll() {

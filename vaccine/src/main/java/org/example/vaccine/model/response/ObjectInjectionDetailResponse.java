@@ -16,4 +16,5 @@ public class ObjectInjectionDetailResponse extends ObjectInjectionResponse{
       private String lotNumber;
       private String reaction;
       private int monthOld;
+      private String vaccineId;
 }

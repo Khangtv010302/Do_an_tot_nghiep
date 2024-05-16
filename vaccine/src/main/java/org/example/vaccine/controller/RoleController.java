@@ -2,6 +2,7 @@ package org.example.vaccine.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.ResponseBase;
+import org.example.vaccine.exception.RoleConstraintException;
 import org.example.vaccine.model.Role;
 import org.example.vaccine.model.request.RoleRequest;
 import org.example.vaccine.service.RoleService;
@@ -17,16 +18,12 @@ public class RoleController {
     public ResponseEntity<ResponseBase> insertRole(@RequestBody RoleRequest request){
         return roleService.insert(request);
     }
-    @PutMapping("")
-    public ResponseEntity<ResponseBase> updateRole(@RequestBody Role role){
-        return roleService.updateById(role);
-    }
     @GetMapping("")
     public ResponseEntity<ResponseBase> selectAll(){
         return roleService.selectAll();
     }
     @DeleteMapping("")
-    public ResponseEntity<ResponseBase> deleteRoleById(@RequestParam String id){
+    public ResponseEntity<ResponseBase> deleteRoleById(@RequestParam String id)  {
     return roleService.deleteById(id);
     }
     @GetMapping("/id")

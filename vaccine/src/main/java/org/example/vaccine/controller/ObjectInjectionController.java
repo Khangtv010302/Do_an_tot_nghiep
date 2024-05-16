@@ -27,16 +27,21 @@ public class ObjectInjectionController {
         return objectInjectionService.updateById(request);
     }
     @DeleteMapping("")
-    ResponseEntity<ResponseBase> deleteByObjectIdAndId (@RequestParam String objectId,@RequestParam String id){
-        return objectInjectionService.deleteByObjectIdAndId(objectId,id);
+    ResponseEntity<ResponseBase> deleteByObjectIdAndId (@RequestParam String id){
+        return objectInjectionService.deleteByObjectIdAndId(id);
     }
     @GetMapping("/SelectByObjectId")
     ResponseEntity<ResponseBase> selectByObjectId (@RequestParam String objectId){
         return objectInjectionService.selectByObjectID(objectId);
     }
-    @GetMapping("/SelectByObjectIdAnId")
+    @GetMapping("/SelectByObjectIdAndId")
     ResponseEntity<ResponseBase> selectByObjectId (@RequestParam String objectId,@RequestParam String id){
         return objectInjectionService.selectByObjectIdAndId(objectId,id);
     }
+    @GetMapping("/SelectByObjectIdAndName")
+    ResponseEntity<ResponseBase> selectByObjectIdAndName (@RequestParam String objectId,@RequestParam String name){
+        return objectInjectionService.selectByObjectIdAndName(objectId,name);
+    }
+
 
 }

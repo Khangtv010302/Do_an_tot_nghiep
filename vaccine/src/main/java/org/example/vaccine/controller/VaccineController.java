@@ -1,5 +1,6 @@
 package org.example.vaccine.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Delete;
 import org.example.vaccine.base.ResponseBase;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/API/Vaccine")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "userAuth")
 public class VaccineController {
     private final VaccineService vaccineService;
     @PostMapping(value = "")
@@ -27,7 +29,7 @@ public class VaccineController {
                                                @RequestParam String description,
                                                @RequestParam String origin,
                                                @RequestParam String contraindicated,
-                                               @RequestParam(value = "effect")  String unwantedEffect,
+                                               @RequestParam String unwantedEffect,
                                                @RequestParam String preserve,
                                                @RequestParam String manufacturerId
                                                ){
@@ -80,4 +82,5 @@ public class VaccineController {
     public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(@RequestBody VaccineSearchRequest request){
         return vaccineService.selectByNameOrManufacturerId(request);
     }
+
 }

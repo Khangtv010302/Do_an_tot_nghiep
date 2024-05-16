@@ -1,4 +1,4 @@
-package org.example.vaccine.model;
+package org.example.vaccine.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

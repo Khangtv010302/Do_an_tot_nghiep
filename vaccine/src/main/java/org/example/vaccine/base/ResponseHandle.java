@@ -12,8 +12,7 @@ public class ResponseHandle {
             case 3 -> CommonResponseCode.EXISTING;
             case 18 -> CommonResponseCode.WRONG_TOKEN;
             case 20 -> CommonResponseCode.TOKEN_EXPIRED;
-            case 21 -> CommonResponseCode.FORBIDDEN;
-            default -> CommonResponseCode.WRONG_USER;
+            default -> CommonResponseCode.WRONG_LOGIN;
         };
     }
 }

@@ -15,7 +15,7 @@ public interface ReceiveDeliverService {
     ResponseEntity<ResponseBase> updateById(ReceiveDeliver receiveDeliver) throws UpdateException;
     ResponseEntity<ResponseBase> deleteByReceiveDeliverID(String receiveDeliverID) throws DeleteException;
     ResponseEntity<ResponseBase> deleteDetailByReceiveDeliverIDAndVaccineId(String receiveDeliverID,String vaccineId);
-    ResponseEntity<ResponseBase> selectAll();
+
     ResponseEntity<ResponseBase> selectDateReceivingFromDateToDate(LocalDate fromDate,LocalDate toDate);
     ResponseEntity<ResponseBase> selectDetailByReceiveDeliverId(String receiveDeliveringId);
 }

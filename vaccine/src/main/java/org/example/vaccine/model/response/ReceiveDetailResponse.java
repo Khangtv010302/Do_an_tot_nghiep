@@ -17,4 +17,5 @@ public class ReceiveDetailResponse {
     private int packing;
     private String lotNumber;
     private LocalDate expiredDate;
+    private int quantityDelivering;
 }

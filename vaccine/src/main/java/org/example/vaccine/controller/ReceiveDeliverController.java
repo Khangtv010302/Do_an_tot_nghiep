@@ -37,13 +37,9 @@ public class ReceiveDeliverController {
     ResponseEntity<ResponseBase> deleteByReceiverDeliverId(@RequestParam String receiverDeliverId,@RequestParam String vaccineId) throws DeleteException {
         return receiveDeliverService.deleteDetailByReceiveDeliverIDAndVaccineId(receiverDeliverId,vaccineId);
     }
-    @GetMapping("")
-    ResponseEntity<ResponseBase> selectALL()  {
-        return receiveDeliverService.selectAll();
-    }
     @GetMapping("/FromDate-ToDateByDateReceiving")
-    ResponseEntity<ResponseBase> selectDateReceivingFromDateToDate(@RequestParam LocalDate fromDate,@RequestParam LocalDate toDate)  {
-        return receiveDeliverService.selectDateReceivingFromDateToDate(fromDate,toDate);
+    ResponseEntity<ResponseBase> selectDateReceivingFromDateToDate(@RequestParam LocalDate fromDay,@RequestParam LocalDate toDay)  {
+        return receiveDeliverService.selectDateReceivingFromDateToDate(fromDay,toDay);
     }
     @GetMapping("/DetailByReceiveDeliverId")
     ResponseEntity<ResponseBase> selectDetailByReceiveDeliverId(@RequestParam String receiveDeliverId)  {

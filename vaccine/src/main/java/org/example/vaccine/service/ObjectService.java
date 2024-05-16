@@ -12,4 +12,5 @@ public interface ObjectService {
     ResponseEntity<ResponseBase> selectAll();
     ResponseEntity<ResponseBase> selectByNameOrEmailOrGuardianName(String info);
     ResponseEntity<ResponseBase> selectById(String id);
+    ResponseEntity<ResponseBase> isExistObjectInjection(String objectId);
 }

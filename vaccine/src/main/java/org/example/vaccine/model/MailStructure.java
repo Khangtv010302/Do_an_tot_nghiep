@@ -1,4 +1,4 @@
-package org.example.sendmail.model;
+package org.example.vaccine.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

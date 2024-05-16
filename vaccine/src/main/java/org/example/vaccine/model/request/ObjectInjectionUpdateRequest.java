@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ObjectInjectionUpdateRequest {
     private String id;
-    private String objectId;
     private int monthOld;
     private LocalDate vaccinationDate;
     private String vaccinationLocation;

@@ -18,5 +18,5 @@ public class PlanResponse {
     private String location;
     private int numberObject;
     private Boolean state;
-    List<PlanDetailResponse> detailResponses;
+    private List<String> vaccineId;
 }

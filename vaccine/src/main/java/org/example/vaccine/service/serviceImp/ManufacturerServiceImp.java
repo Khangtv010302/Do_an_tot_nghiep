@@ -5,11 +5,13 @@ import org.example.vaccine.base.CommonResponseCode;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.base.ResponseData;
 import org.example.vaccine.base.ResponseHandle;
+import org.example.vaccine.exception.RoleConstraintException;
 import org.example.vaccine.mapper.ManufacturerMapper;
 import org.example.vaccine.model.Manufacturer;
 import org.example.vaccine.model.request.ManufacturerRequest;
 import org.example.vaccine.service.ManufacturerService;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class ManufacturerServiceImp implements ManufacturerService {
 
     @Override
     public ResponseEntity<ResponseBase> insert(ManufacturerRequest request) {
+            if(manufacturerMapper.isExistName(request.getName())> 0)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Tên nhà cung cấp đã tồn tại"));
             CommonResponseCode code = handle.response(manufacturerMapper.insertManufacturer(request));
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
 
@@ -37,13 +41,17 @@ public class ManufacturerServiceImp implements ManufacturerService {
 
     @Override
     public ResponseEntity<ResponseBase> deleteById(String id) {
-        CommonResponseCode code = handle.response(manufacturerMapper.deleteManufacturer(id));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        try {
+            CommonResponseCode code = handle.response(manufacturerMapper.deleteManufacturer(id));
+            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        } catch (DataIntegrityViolationException e) {
+            throw new RoleConstraintException("");
+        }
     }
 
     @Override
-    public ResponseEntity<ResponseBase> selectAll() {
-        List<Manufacturer> manufacturerList = manufacturerMapper.selectAll();
+    public ResponseEntity<ResponseBase> selectByName(String name) {
+        List<Manufacturer> manufacturerList = manufacturerMapper.selectByName(name);
         return ResponseEntity.ok().body(new ResponseData<>(manufacturerList));
     }
 }

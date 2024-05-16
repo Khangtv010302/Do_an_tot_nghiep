@@ -22,5 +22,6 @@ public class ObjectRequest {
     private int guardianYearBirth;
     private String guardianPhoneNumber;
     private String guardianCard;
+    private String guardianType;
     private String note;
 }

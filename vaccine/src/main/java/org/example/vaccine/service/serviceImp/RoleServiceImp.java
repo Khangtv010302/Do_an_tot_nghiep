@@ -5,10 +5,12 @@ import org.example.vaccine.base.CommonResponseCode;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.base.ResponseData;
 import org.example.vaccine.base.ResponseHandle;
+import org.example.vaccine.exception.RoleConstraintException;
 import org.example.vaccine.mapper.RoleMapper;
 import org.example.vaccine.model.Role;
 import org.example.vaccine.model.request.RoleRequest;
 import org.example.vaccine.service.RoleService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -28,21 +30,23 @@ public class RoleServiceImp implements RoleService {
             CommonResponseCode code = handle.response(roleMapper.insertRole(request));
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
         }catch (Exception e){
-            return ResponseEntity.status(CommonResponseCode.EXISTING.getHttp()).body(new ResponseBase(CommonResponseCode.EXISTING));
+            return ResponseEntity.status(CommonResponseCode.EXISTING_ROLE_CODE.getHttp()).body(new ResponseBase(CommonResponseCode.EXISTING_ROLE_CODE));
         }
 
     }
 
-    @Override
-    public ResponseEntity<ResponseBase> updateById(Role role) {
-        CommonResponseCode code = handle.response(roleMapper.updateRole(role));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
-    }
+
 
     @Override
     public ResponseEntity<ResponseBase> deleteById(String id) {
-        CommonResponseCode code = handle.response(roleMapper.deleteRole(id));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        try {
+            CommonResponseCode code = handle.response(roleMapper.deleteRole(id));
+            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        } catch (DataIntegrityViolationException e) {
+            throw new RoleConstraintException("");
+        }
+
+
     }
 
     @Override

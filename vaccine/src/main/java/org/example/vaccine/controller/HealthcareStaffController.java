@@ -29,7 +29,7 @@ public class HealthcareStaffController {
     ResponseEntity<ResponseBase> selectAll(){
         return healthcareStaffService.selectAll();
     }
-    @PostMapping("/Search")
+    @GetMapping("/Search")
     ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(@RequestParam String info){
         return healthcareStaffService.selectByNameOrEmailOrUsername(info);
     }

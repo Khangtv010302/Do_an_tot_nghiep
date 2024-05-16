@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReceiveDeliverRequest {
     private String unitReceiving;
-    private String unitDelivering;
+    private String unitDeliveringId;
     private String officerReceiving;
     private String officerDelivering;
     private LocalDate dateReceiving;

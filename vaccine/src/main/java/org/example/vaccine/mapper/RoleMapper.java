@@ -10,8 +10,6 @@ import java.util.List;
 public interface RoleMapper {
     @Insert("INSERT INTO role (name, code) VALUE (#{name},#{code})")
     int insertRole(RoleRequest request);
-    @Update("UPDATE role SET name = #{name}, code = #{code} WHERE id = #{id} ")
-    int updateRole (Role role);
     @Delete("DELETE FROM role WHERE id = #{id}")
     int deleteRole (String id);
     @Select("Select * FROM role")

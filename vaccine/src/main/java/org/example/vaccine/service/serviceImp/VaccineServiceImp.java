@@ -11,6 +11,7 @@ import org.example.vaccine.mapper.VaccineMapper;
 import org.example.vaccine.model.Vaccine;
 import org.example.vaccine.model.request.VaccineRequest;
 import org.example.vaccine.model.request.VaccineSearchRequest;
+import org.example.vaccine.model.response.VaccineOnlyNameResponse;
 import org.example.vaccine.model.response.VaccineResponse;
 import org.example.vaccine.service.VaccineService;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class VaccineServiceImp implements VaccineService {
             CommonResponseCode code = handle.response(vaccineMapper.insert(request));
             return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(2,"Upload images failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Upload hình ảnh thất bại"));
         }
     }
 
@@ -57,7 +58,7 @@ public class VaccineServiceImp implements VaccineService {
            CommonResponseCode code = handle.response(vaccineMapper.updateById(vaccine));
            return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(2,"Upload images failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Upload hình ảnh thất bại"));
         }
     }
 
@@ -73,7 +74,7 @@ public class VaccineServiceImp implements VaccineService {
 
     @Override
     public ResponseEntity<ResponseBase> selectAll() {
-        List<Vaccine> vaccineList = vaccineMapper.selectAll();
+        List<VaccineResponse> vaccineList = vaccineMapper.selectAll();
         return ResponseEntity.ok().body(new ResponseData<>(vaccineList));
     }
 
@@ -90,6 +91,9 @@ public class VaccineServiceImp implements VaccineService {
             return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok().body(new ResponseData<>(vaccine));
     }
+
+
+
     public Object deleteImage(String url) {
         try {
             String[] parts = url.split("/");
@@ -99,7 +103,7 @@ public class VaccineServiceImp implements VaccineService {
             var result = cloudinary.uploader().destroy(imageName, ObjectUtils.emptyMap());
             return result.get("result");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(2,"Delete image failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Xóa hình ảnh thất bại"));
         }
     }
 }

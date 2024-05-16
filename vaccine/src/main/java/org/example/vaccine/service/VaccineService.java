@@ -14,4 +14,5 @@ public interface VaccineService {
     ResponseEntity<ResponseBase> selectAll();
     ResponseEntity<ResponseBase> selectByNameOrManufacturerId(VaccineSearchRequest request);
     ResponseEntity<ResponseBase> selectById(String id);
+
 }

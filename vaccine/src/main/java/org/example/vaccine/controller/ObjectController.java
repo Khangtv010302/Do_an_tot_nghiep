@@ -29,6 +29,10 @@ public class ObjectController {
     ResponseEntity<ResponseBase> selectById(@RequestParam String id){
         return objectService.selectById(id);
     }
+    @GetMapping("/isExistObjectIdInjection")
+    ResponseEntity<ResponseBase> isExistObjectIdInjection(@RequestParam String objectId){
+        return objectService.isExistObjectInjection(objectId);
+    }
     @GetMapping("")
     ResponseEntity<ResponseBase> selectAll(){
         return objectService.selectAll();

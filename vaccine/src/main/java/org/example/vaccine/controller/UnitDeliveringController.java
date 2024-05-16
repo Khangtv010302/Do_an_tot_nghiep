@@ -1,33 +1,35 @@
 package org.example.vaccine.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Delete;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.model.Manufacturer;
+import org.example.vaccine.model.UnitDelivering;
 import org.example.vaccine.model.request.ManufacturerRequest;
+import org.example.vaccine.model.request.UnitDeliveringRequest;
 import org.example.vaccine.service.ManufacturerService;
+import org.example.vaccine.service.UnitDeliveringService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/API/Manufacturer")
+@RequestMapping("/API/UnitDelivering")
 @RequiredArgsConstructor
-public class ManufacturerController {
-    private final ManufacturerService manufacturerService;
+public class UnitDeliveringController {
+    private final UnitDeliveringService unitDeliveringService;
     @PostMapping("")
-    public ResponseEntity<ResponseBase> insert(@RequestBody ManufacturerRequest request){
-        return manufacturerService.insert(request);
+    public ResponseEntity<ResponseBase> insert(@RequestBody UnitDeliveringRequest request){
+        return unitDeliveringService.insert(request);
     }
     @PutMapping("")
-    public ResponseEntity<ResponseBase> updateById(@RequestBody Manufacturer manufacturer){
-        return manufacturerService.updateById(manufacturer);
+    public ResponseEntity<ResponseBase> updateById(@RequestBody UnitDelivering manufacturer){
+        return unitDeliveringService.updateById(manufacturer);
     }
     @DeleteMapping("")
     public ResponseEntity<ResponseBase> deleteById(@RequestParam String id){
-        return manufacturerService.deleteById(id);
+        return unitDeliveringService.deleteById(id);
     }
     @GetMapping("")
-    public ResponseEntity<ResponseBase> selectAll(){
-        return manufacturerService.selectAll();
+    public ResponseEntity<ResponseBase> selectByName(@RequestParam String name){
+        return unitDeliveringService.selectByName(name);
     }
 }

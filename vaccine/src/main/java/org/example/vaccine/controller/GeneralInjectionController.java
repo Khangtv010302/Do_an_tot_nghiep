@@ -1,5 +1,6 @@
 package org.example.vaccine.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.model.request.GeneralInjectionRequest;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/API/GeneralInjection")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "userAuth")
 public class GeneralInjectionController {
     private final GeneralInjectionService generalInjectionService;
     @PostMapping("")
@@ -22,10 +24,15 @@ public class GeneralInjectionController {
     {
         return generalInjectionService.updateById(id,monthOld);
     }
-    @DeleteMapping("")
-    ResponseEntity<ResponseBase> deleteById (@RequestParam String id)
+    @DeleteMapping("/VaccineId-MonthOld")
+    ResponseEntity<ResponseBase> deleteById (@RequestParam String vaccineId,@RequestParam int monthOld)
     {
-        return generalInjectionService.deleteById(id);
+        return generalInjectionService.deleteByVaccineIdAndMonthOld(vaccineId,monthOld);
+    }
+    @DeleteMapping("/VaccineId")
+    ResponseEntity<ResponseBase> deleteById (@RequestParam String vaccineId)
+    {
+        return generalInjectionService.deleteByVaccineId(vaccineId);
     }
     @GetMapping("")
     ResponseEntity<ResponseBase> selectAll ()

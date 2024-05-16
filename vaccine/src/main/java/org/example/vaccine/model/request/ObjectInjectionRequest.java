@@ -15,7 +15,6 @@ public class ObjectInjectionRequest {
     private int monthOld;
     private LocalDate vaccinationDate;
     private String vaccinationLocation;
-    private int quantity;
     private Boolean state;
     private String reaction;
     private String lotNumber;

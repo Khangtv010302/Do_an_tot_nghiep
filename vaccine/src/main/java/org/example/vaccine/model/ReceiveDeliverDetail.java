@@ -14,14 +14,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReceiveDeliverDetail extends ReceiveDeliverDetailRequest {
-    private int quantityDestroy;
+
     private int quantityDelivering;
     private String receiveDeliverId;
 
     public ReceiveDeliverDetail(ReceiveDeliverUpdateRequest request, String receiveDeliverId) {
         super(request.getVaccineId(), request.getQuantityReceiving(), request.getLotNumber(), request.getExpiredDate());
         this.receiveDeliverId = receiveDeliverId;
-        this.quantityDestroy = request.getQuantityDestroy();
         this.quantityDelivering = request.getQuantityDelivering();
     }
 }

@@ -10,7 +10,8 @@ public interface ObjectInjectionService {
     ResponseEntity<ResponseBase> insertAll(String objectId);
     ResponseEntity<ResponseBase> insert(ObjectInjectionRequest request);
     ResponseEntity<ResponseBase> updateById(ObjectInjectionUpdateRequest request);
-    ResponseEntity<ResponseBase> deleteByObjectIdAndId(String objectId, String id);
+    ResponseEntity<ResponseBase> deleteByObjectIdAndId(String id);
     ResponseEntity<ResponseBase> selectByObjectIdAndId(String objectId,String id);
     ResponseEntity<ResponseBase> selectByObjectID(String objectID);
+    ResponseEntity<ResponseBase> selectByObjectIdAndName(String objectId,String name);
 }

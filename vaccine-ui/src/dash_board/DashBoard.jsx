@@ -144,7 +144,7 @@ const DashBoard = () => {
         >
           Số liệu tổng quan
         </div>
-        <Row>
+       <Row style={{ border: "1px solid",textAlign:"center",borderColor:"#A9A9A9",backgroundColor:"#fafafa", borderRadius:"10px", marginTop:"1%" }}>
           <Col xs={10} sm={10} md={10} lg={4} xl={4} style={{width:"80%",margin:"1%"}}>
           <Card
           hoverable
@@ -166,7 +166,7 @@ const DashBoard = () => {
 
             </Card>
           </Col>
-          <Col xs={13} sm={13} md={13} lg={5} xl={5}  style={{width:"100%",margin:"1%"}}>
+          <Col xs={13} sm={13} md={13} lg={5} xl={6}  style={{width:"100%",margin:"1%"}}>
           <Card
            hoverable
            onClick={()=>{
@@ -187,7 +187,7 @@ const DashBoard = () => {
 
             </Card>
           </Col>
-          <Col xs={11} sm={11} md={11} lg={5} xl={5}  style={{width:"100%",margin:"1%"}}>
+          <Col xs={11} sm={11} md={11} lg={5} xl={6}  style={{width:"100%",margin:"1%"}}>
           <Card
            hoverable
            onClick={()=>{
@@ -239,7 +239,8 @@ const DashBoard = () => {
         >
           Thống kê số lượng vắc xin đã tiêm
         </div>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "1% 0" }}>
+       
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "1% 0", }}>
         <BarChart width={600} height={300} data={ListNumberVaccineInjected}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />

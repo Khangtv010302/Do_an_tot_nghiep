@@ -13,7 +13,7 @@ import java.util.List;
 public class ReceiveResponse {
     private String id;
     private String unitReceiving;
-    private String unitDelivering;
+    private String unitDeliveringId;
     private String officerReceiving;
     private String officerDelivering;
     private LocalDate dateReceiving;

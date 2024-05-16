@@ -13,8 +13,10 @@ public interface GeneralInjectionMapper {
     int insert (GeneralInjectionRequest request);
     @Update("UPDATE general_injection SET month_old = #{monthOld} WHERE id =#{id}")
     int updateById(String id, String monthOld);
-    @Delete("DELETE FROM general_injection WHERE id=#{id}")
-    int delete (String id);
-    @Select("SELECT vaccine_id,month_old, general_injection.id, vaccine.name FROM general_injection INNER JOIN vaccine on general_injection.vaccine_id = vaccine.id")
+    @Delete("DELETE FROM general_injection WHERE vaccine_id=#{vaccineId} AND month_old = #{monthOld}")
+    int deletebyVaccineIdAndMonthOld (String vaccineId,int monthOld);
+    @Delete("DELETE FROM general_injection WHERE vaccine_id=#{vaccineId} ")
+    int deletebyVaccineId (String vaccineId);
+    @Select("SELECT vaccine_id,month_old, general_injection.id, vaccine.name, vaccine.antigen FROM general_injection INNER JOIN vaccine on general_injection.vaccine_id = vaccine.id")
     List<GeneralInjectionResponse> selectAll();
 }

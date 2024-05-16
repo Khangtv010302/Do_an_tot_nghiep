@@ -9,5 +9,5 @@ public interface ManufacturerService {
     ResponseEntity<ResponseBase> insert(ManufacturerRequest request);
     ResponseEntity<ResponseBase> updateById(Manufacturer manufacturer);
     ResponseEntity<ResponseBase> deleteById(String id);
-    ResponseEntity<ResponseBase> selectAll();
+    ResponseEntity<ResponseBase> selectByName(String name);
 }

@@ -1,8 +1,9 @@
 package org.example.vaccine.service;
 
-import org.apache.ibatis.annotations.Select;
-import org.example.vaccine.model.Vaccine;
+import org.example.vaccine.base.ResponseBase;
+import org.springframework.http.ResponseEntity;
 
-interface ListGeneralService {
-     selectByName(String name);
+public interface GeneralService {
+    ResponseEntity<ResponseBase> selectAllVaccine();
+    ResponseEntity<ResponseBase> selectAllRole();
 }

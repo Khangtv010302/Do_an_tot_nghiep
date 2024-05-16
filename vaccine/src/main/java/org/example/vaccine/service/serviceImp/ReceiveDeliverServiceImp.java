@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +33,23 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
     private final ResponseHandle handle;
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public ResponseEntity<ResponseBase> insert(ReceiveDeliverRequest request) {
         try {
-            receiveDeliverMapper.insert(request);
-            String receiveDeliverId = receiveDeliverMapper.selectIdByDateReceiving(request.getDateReceiving());
+            int isExistUnitDeliveringIdAndDateDelivering =
+                    receiveDeliverMapper.isExistUnitDeliveringIdAndDateDelivering
+                            (request.getUnitDeliveringId(), request.getDateDelivering());
+            if (isExistUnitDeliveringIdAndDateDelivering > 0)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Đã nhập trùng ngày xuất của đơn vị xuất"));
+            ReceiveDeliver receiveDeliver = new ReceiveDeliver(request);
+            receiveDeliver.setId(UUID.randomUUID().toString());
+            receiveDeliverMapper.insert(receiveDeliver);
             for (ReceiveDeliverDetailRequest deliverDetailRequest : request.getDeliverDetailRequests()) {
-                receiveDeliverMapper.insertDetail(deliverDetailRequest.getVaccineId(), receiveDeliverId, deliverDetailRequest.getQuantityReceiving(), deliverDetailRequest.getExpiredDate(), deliverDetailRequest.getLotNumber());
+                receiveDeliverMapper.insertDetail(deliverDetailRequest.getVaccineId(), receiveDeliver.getId(), deliverDetailRequest.getQuantityReceiving(), deliverDetailRequest.getExpiredDate(), deliverDetailRequest.getLotNumber());
             }
             return ResponseEntity.ok(new ResponseBase());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(0, "Insert failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Thêm vào thất bại"));
         }
 
     }
@@ -53,11 +61,10 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
         code = receiveDeliverMapper.updateById(receiveDeliver);
         if (code == 0)
             throw new UpdateException();
-        for (ReceiveDeliverUpdateRequest deliverUpdateRequest : receiveDeliver.getReceiveDeliverUpdateRequests()) {
-            ReceiveDeliverDetail receiveDeliverDetail = new ReceiveDeliverDetail(deliverUpdateRequest, receiveDeliver.getId());
-            code = receiveDeliverMapper.updateDetailById(receiveDeliverDetail);
-            if (code == 0)
-                throw new UpdateException();
+        receiveDeliverMapper.deleteAllDetailByReceiveDeliverId(receiveDeliver.getId());
+        for (ReceiveDeliverUpdateRequest deliverDetailRequest : receiveDeliver.getReceiveDeliverUpdateRequests()) {
+            receiveDeliverMapper.updateDetail(deliverDetailRequest.getVaccineId(), receiveDeliver.getId(), deliverDetailRequest.getQuantityReceiving()
+                    , deliverDetailRequest.getExpiredDate(), deliverDetailRequest.getLotNumber(),deliverDetailRequest.getQuantityDelivering());
         }
         return ResponseEntity.ok().body(new ResponseBase());
     }
@@ -77,31 +84,20 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
         int code;
         code = receiveDeliverMapper.deleteDetailByReceiveDeliverIdAndVaccineID(receiveDeliverID, vaccineId);
         if (code == 0)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase(0, "Delete failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Delete failed"));
         return ResponseEntity.ok().body(new ResponseBase());
     }
 
-    @Override
-    public ResponseEntity<ResponseBase> selectAll() {
-        List<ReceiveResponse> receiveResponseList = receiveDeliverMapper.selectALl();
-        if (receiveResponseList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
-        return ResponseEntity.ok(new ResponseData<>(receiveResponseList));
-    }
 
     @Override
     public ResponseEntity<ResponseBase> selectDateReceivingFromDateToDate(LocalDate fromDate, LocalDate toDate) {
-        List<ReceiveResponse> receiveResponseList = receiveDeliverMapper.selectDateReceivingFromDateToDate(fromDate,toDate);
-        if (receiveResponseList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
+        List<ReceiveResponse> receiveResponseList = receiveDeliverMapper.selectDateReceivingFromDateToDate(fromDate, toDate);
         return ResponseEntity.ok(new ResponseData<>(receiveResponseList));
     }
 
     @Override
     public ResponseEntity<ResponseBase> selectDetailByReceiveDeliverId(String receiveDeliveringId) {
         List<ReceiveDetailResponse> receiveDetailResponseList = receiveDeliverMapper.selectDetailByReceiveDeliverId(receiveDeliveringId);
-        if (receiveDetailResponseList.isEmpty())
-            return ResponseEntity.status(CommonResponseCode.NO_FOUND.getHttp()).body(new ResponseBase(CommonResponseCode.NO_FOUND));
         return ResponseEntity.ok(new ResponseData<>(receiveDetailResponseList));
     }
 

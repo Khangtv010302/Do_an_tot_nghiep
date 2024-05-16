@@ -11,6 +11,7 @@ import org.example.vaccine.model.request.HealthcareStaffRequest;
 import org.example.vaccine.model.request.HealthcareStaffUpdateRequest;
 import org.example.vaccine.model.response.HealthcareStaffResponse;
 import org.example.vaccine.service.HealthcareStaffService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class HealthcareStaffServiceImp implements HealthcareStaffService {
     private final ResponseHandle handle;
     @Override
     public ResponseEntity<ResponseBase> insert(HealthcareStaffRequest request) {
+        int checkUsernameAndEmail = healthcareStaffMapper.checkUsernameAndEmail(request.getUsername(), request.getEmail());
+        if (checkUsernameAndEmail == 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Username đã tồn tại"));
+        if (checkUsernameAndEmail == 1)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Email đã tồn tại"));
         request.setPassword(bCryptPasswordEncoder(request.getPassword()));
         CommonResponseCode code = handle.response(healthcareStaffMapper.insert(request));
         return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));

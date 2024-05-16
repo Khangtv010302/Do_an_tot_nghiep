@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 public interface GeneralInjectionService {
     ResponseEntity<ResponseBase> insert(GeneralInjectionRequest request);
     ResponseEntity<ResponseBase> updateById(String id,String monthOld);
-    ResponseEntity<ResponseBase> deleteById(String id);
+    ResponseEntity<ResponseBase> deleteByVaccineIdAndMonthOld(String vaccineId,int monthOld);
+    ResponseEntity<ResponseBase> deleteByVaccineId(String vaccineId);
     ResponseEntity<ResponseBase> selectAll();
 }
