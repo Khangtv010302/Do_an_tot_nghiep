@@ -1,4 +1,4 @@
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,37 +6,30 @@ import App from "../App";
 import Cookies from 'js-cookie'
 import "./object.css";
 import {
-  Space,
+  
   Table,
   Input,
   Button,
-  Modal,
+
   Form,
   notification,
-  Radio,
+
   Select,
   Switch,
   Menu,
   Row,
   Col,
   Grid,
-  Tooltip,
-  Upload,
   DatePicker,
-  message,
-  ConfigProvider,
+  
 } from "antd";
 import {
   faPlus,
   faPen,
   faTrash,
-  faRotate,
 } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
-import { useForm } from "antd/es/form/Form";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { PlusOutlined } from "@ant-design/icons";
-import { render } from "react-dom";
 import LoadingModal from "../loading/Loading";
 import ObjectSchedule from "../object_schedule/Object_Schedule";
 
@@ -55,7 +48,7 @@ function Objects() {
   const [form] = Form.useForm();
   const [operation, setOperation] = useState("");
   const [onSelected, setOnSelected] = useState("");
-  const [isExistObjectSchedule, setIsExistObjectSchedule] = useState(0);
+
   //alert
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (state, description) => {
@@ -77,7 +70,7 @@ function Objects() {
   //tanStackQuerry
   const queryClient = useQueryClient();
 
-  const { isLoading, error, data, isFetching } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["repoObject"],
     queryFn: () =>
       axios.get("http://localhost:8080/API/Object", {
@@ -224,7 +217,9 @@ function Objects() {
       key: "birthDate",
       width: "30%",
       render: (birthDate) => format(new Date(birthDate), "dd/MM/yyyy"),
+      sorter: (a, b) => new Date(a.birthDate) - new Date(b.birthDate),
     },
+    
   ];
 
   //fucntion
@@ -348,7 +343,7 @@ function Objects() {
     setShowLoading(false);
     setOperation("Detail");
   };
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = () => {
     openNotification("Thất bại", "Không thể thêm nhân viên");
   };
   return (
@@ -379,7 +374,7 @@ function Objects() {
               rowClassName="table-row"
               onRow={(record) => {
                 return {
-                  onClick: (detail) => {
+                  onClick: () => {
                     setShowLoading(true);
                 
                     setDataById({ record });
@@ -669,6 +664,30 @@ function Objects() {
                           />
                         </Form.Item>
                       </Col>
+                      <Col span={5} style={{ marginLeft: "4%" }}>
+                        <Form.Item
+                          labelCol={1}
+                          label="Tên người giám hộ"
+                          wrapperCol={1}
+                          name="guardianName"
+                          style={{
+                            width: "100%", // Adjust width as needed
+                          }}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Vui lòng nhập tên người giám hộ",
+                            },
+                          ]}
+                        >
+                          <Input
+                            name="guardianName"
+                            readOnly={
+                              operation !== "Add" && operation !== "Update"
+                            }
+                          />
+                        </Form.Item>
+                      </Col>
                       <Col span={8} style={{ marginLeft: "4%" }}>
                         <Form.Item
                           labelCol={1}
@@ -697,7 +716,7 @@ function Objects() {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={4} style={{ marginLeft: "4%" }}>
+                      <Col span={5} style={{ marginLeft: "4%" }}>
                         <Form.Item
                           labelCol={1}
                           label="Người giám hộ"
@@ -727,50 +746,8 @@ function Objects() {
                           </Select>
                         </Form.Item>
                       </Col>
-                      <Col span={5} style={{ marginLeft: "4%" }}>
-                        <Form.Item
-                          name="reminder"
-                          labelCol={1}
-                          label="Tạm ngừng gọi tiêm"
-                          valuePropName="checked"
-                        >
-                          <Switch
-                            style={
-                              operation === "Detail" || operation === "Delete"
-                                ? { pointerEvents: "none" }
-                                : {}
-                            }
-                            className="custom-switch"
-                            checkedChildren="Bật"
-                            unCheckedChildren="Tắt"
-                            defaultChecked={false}
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={5} style={{ marginLeft: "4%" }}>
-                        <Form.Item
-                          labelCol={1}
-                          label="Tên người giám hộ"
-                          wrapperCol={1}
-                          name="guardianName"
-                          style={{
-                            width: "100%", // Adjust width as needed
-                          }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Vui lòng nhập tên người giám hộ",
-                            },
-                          ]}
-                        >
-                          <Input
-                            name="guardianName"
-                            readOnly={
-                              operation !== "Add" && operation !== "Update"
-                            }
-                          />
-                        </Form.Item>
-                      </Col>
+                   
+                     
                       <Col span={3} style={{ marginLeft: "4%" }}>
                         <Form.Item
                           labelCol={1}
@@ -792,6 +769,7 @@ function Objects() {
                           ]}
                         >
                           <Input
+                          maxLength={4}
                             name="guardianYearBirth"
                             readOnly={
                               operation !== "Add" && operation !== "Update"
@@ -820,6 +798,7 @@ function Objects() {
                           ]}
                         >
                           <Input
+                          maxLength={12}
                             name="guardianPhoneNumber"
                             readOnly={
                               operation !== "Add" && operation !== "Update"
@@ -831,6 +810,7 @@ function Objects() {
                         <Form.Item
                           labelCol={1}
                           label="CMT/CCCD"
+                 
                           wrapperCol={1}
                           name="guardianCard"
                           style={{
@@ -849,10 +829,31 @@ function Objects() {
                           ]}
                         >
                           <Input
+                                   maxLength={20}
                             name="guardianCard"
                             readOnly={
                               operation !== "Add" && operation !== "Update"
                             }
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={5} style={{ marginLeft: "4%" }}>
+                        <Form.Item
+                          name="reminder"
+                          labelCol={1}
+                          label="Hẹn tiêm"
+                          valuePropName="checked"
+                        >
+                          <Switch
+                            style={
+                              operation === "Detail" || operation === "Delete"
+                                ? { pointerEvents: "none" }
+                                : {}
+                            }
+                            className="custom-switch"
+                            checkedChildren="Đang bật"
+                            unCheckedChildren="Đang tắt"
+                            defaultChecked={false}
                           />
                         </Form.Item>
                       </Col>

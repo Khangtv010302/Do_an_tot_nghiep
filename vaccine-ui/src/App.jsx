@@ -1,6 +1,6 @@
-import React, { useEffect, useState,useLayoutEffect } from 'react';
+import  { useEffect, useState,useLayoutEffect } from 'react';
 import { Navigate, useNavigate } from "react-router-dom";
-import axios, { Axios } from "axios";
+import axios from "axios";
 import '../src/App.css';
 import {
   HomeOutlined,
@@ -8,7 +8,7 @@ import {
   LineChartOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme,Grid,notification } from 'antd';
+import {  Layout, Menu, theme,Grid,notification } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Cookies from 'js-cookie'
 import { 
@@ -20,9 +20,9 @@ import {
   faUsers,
   faTruckMedical
 } from '@fortawesome/free-solid-svg-icons';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Type from './type/type';
+import {  useMutation } from "@tanstack/react-query";
 import HeaderPage from './header/header';
+import { Helmet } from 'react-helmet';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -60,7 +60,6 @@ const App = ({children,onChose}) => {
   //declare variable
   const [collapsed, setCollapsed] = useState(false);
   const [isLogin,setIsLogin]=useState(true);
-
   const navigate = useNavigate()
  
   useLayoutEffect(() => {
@@ -70,8 +69,14 @@ const App = ({children,onChose}) => {
   }, []);
   useEffect(() => {
     const interval  = setInterval(() => {
-      if (compareDates ()){
-        console.log("true");
+      const currentTime = new Date();
+      const dateObject = new Date(getExpiredDate());
+      const expiredDateMinus= new Date(dateObject.getTime() - (30*1000))
+      // console.log("Thời gian hiện tại: "+currentTime)
+      // console.log("Thời gian token chưa trừ: "+new Date(dateObject.getTime()))
+      // console.log("Thời gian token: "+expiredDateMinus)
+      console.log(currentTime>expiredDateMinus)
+      if (currentTime>expiredDateMinus){
       getNewToKen.mutate()
         }
       
@@ -107,9 +112,12 @@ const App = ({children,onChose}) => {
        });
      },
      onSuccess: () => {
+      console.log("Lấy thành công")
      },
      onError: (error) => {
        openNotification("Thất bại", error.response.data.message);
+       console.log("Lấy thất bại "+error)
+       console.log(error)
        sessionStorage.clear();
        const cookieKeys = Object.keys(Cookies.get());
        // Iterate over each key and remove the corresponding cookie
@@ -135,14 +143,7 @@ const App = ({children,onChose}) => {
         openNotification("Thất bại", "Bạn không có quyền truy cập vào mục: "+e.key)
     else navigate("/"+e.key, { state: { key: "value" } });
    };
-   
-  const compareDates = () => {
-    const currentTime = new Date();
-    const dateObject = new Date(getExpiredDate());
-    const expiredDateMinus= new Date(dateObject.getTime() - (30*100))
-    return  currentTime > expiredDateMinus
-    
-  };
+  
   const getExpiredDate = ()=>{
       if(sessionStorage.getItem("expiredDate") != null)
         return sessionStorage.getItem("expiredDate");
@@ -163,6 +164,7 @@ const App = ({children,onChose}) => {
         jwtToken: Cookies.get("jwtToken")
     }
   }
+  const currentLabel = items.find(item => item.key === onChose)?.label;
   return (
     isLogin === true ? <Layout
     style={{
@@ -170,6 +172,10 @@ const App = ({children,onChose}) => {
     }}
  
   > 
+              <Helmet>
+                <meta charSet="utf-8" />
+                <title>{currentLabel}</title>
+              </Helmet>
          {contextHolder}
     <Sider collapsible collapsed={screens.xs ?  true : collapsed} onCollapse={(value) => setCollapsed(value)}>
       <div className="demo-logo-vertical" > 

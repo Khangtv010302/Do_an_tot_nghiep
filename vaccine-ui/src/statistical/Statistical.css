@@ -1,0 +1,20 @@
+.custom-object-number {
+    padding: 8px;           /* Thêm khoảng cách bên trong */
+    color: #333;            /* Màu chữ đậm */
+    background-color: #fff; /* Nền màu trắng */
+    border-bottom: 1px solid #f0f0f0; /* Đường viền dưới nhẹ */
+    font-size: 14px;        /* Kích thước chữ */
+    font-weight: bold;      /* Chữ đậm */
+}
+.custom-header .ant-table-thead > tr > th {
+    background-color: #337ab7; /* Thay đổi màu nền của phần header */
+    color: #fff; /* Thay đổi màu chữ của tiêu đề */
+  }
+  .export-button {
+    background-color: #52c41a;
+    border-color: #52c41a;
+    color: #fff;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  
+ 

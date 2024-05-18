@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
 import App from "../App";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./DashBoard.css";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState,useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faReceipt,
@@ -134,6 +133,7 @@ const DashBoard = () => {
   return (
     <App onChose={"DashBoard"}>
       <div>
+     
         <div
           style={{
           

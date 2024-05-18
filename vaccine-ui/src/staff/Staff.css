@@ -2,3 +2,21 @@
     width: 100%;
     height: 100%;
 }
+.employee-info {
+ 
+    margin: 0 auto;
+   
+}
+
+.employee-info h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.employee-info label {
+    font-weight: bold;
+}
+
+.employee-info p {
+    margin-bottom: 10px;
+}

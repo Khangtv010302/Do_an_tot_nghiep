@@ -1,5 +1,5 @@
-import * as React from "react";
-import axios, { Axios } from "axios";
+
+import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import IconButton from '@mui/material/IconButton';
@@ -17,12 +17,12 @@ import "./Login.css";
 import { notification, Row, Col, Input, Modal } from "antd";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {  useMutation } from "@tanstack/react-query";
 import { useLayoutEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LoadingModal from "../loading/Loading";
-import Operation from "antd/es/transfer/operation";
+import { Helmet } from "react-helmet";
 
 function Copyright(props) {
   return (
@@ -59,7 +59,6 @@ function Login() {
   const navigate = useNavigate();
   const [isRemember, setIsRemember] = useState(false);
   const [isLogin,setIsLogin]= useState(false);
-  const [response, setResponse] = useState([]);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState('');
@@ -76,7 +75,6 @@ function Login() {
   }, []);
 
   //tanStackQuerry
-  const queryClient = useQueryClient();
   const loginWithUsernamePassword = useMutation({
     mutationFn: (login) => {
       return axios({
@@ -88,7 +86,7 @@ function Login() {
         params: login,
       }).then((response) => {
         handleStoreData(response.data.data);
-        setResponse(response.data.data);
+      
       });
     },
     onSuccess: () => {
@@ -109,8 +107,6 @@ function Login() {
           "Content-type": "application/json",
         },
         params: {email},
-      }).then((response) => {
-        setResponse(response.data.data);
       });
     },
     onSuccess: () => {
@@ -132,8 +128,6 @@ function Login() {
           "Content-type": "application/json",
         },
         params: verificationCode,
-      }).then((response) => {
-        setResponse(response.data.data);
       });
     },
     onSuccess: () => {
@@ -156,8 +150,6 @@ function Login() {
           "Content-type": "application/json",
         },
         data: UpdateForgotPasswordRequest,
-      }).then((response) => {
-        setResponse(response.data.data);
       });
     },
     onSuccess: () => {
@@ -292,6 +284,10 @@ function Login() {
   return (
     isLogin === true ? <Navigate to="/DashBoard" replace></Navigate> :
     <ThemeProvider theme={defaultTheme}>
+       <Helmet>
+                <meta charSet="utf-8" />
+                <title>Đăng nhập</title>
+        </Helmet>
        {contextHolder}
        <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />

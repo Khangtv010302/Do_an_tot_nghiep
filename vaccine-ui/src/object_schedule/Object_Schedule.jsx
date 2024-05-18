@@ -798,12 +798,7 @@ function ObjectSchedule({ objectId}) {
               <Form.Item
                 label="Phản ứng sau tiêm:"
                 name="reaction"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập phản ứng sau tiêm",
-                  },
-                ]}
+              
               >
                 <span>{form.getFieldValue("reaction")}</span>
               </Form.Item>
@@ -811,12 +806,7 @@ function ObjectSchedule({ objectId}) {
               <Form.Item
                 label="Phản ứng sau tiêm:"
                 name="reaction"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập phản ứng sau tiêm",
-                  },
-                ]}
+                
               >
                 <Input.TextArea
                   rows={4}

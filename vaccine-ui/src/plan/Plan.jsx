@@ -711,9 +711,15 @@ function Plan() {
                     required: true,
                     message: "Vui lòng nhập số ngày tiêm",
                   },
+                  {
+                    type: 'numberDate',
+                    min: 0,
+                    message: 'Giá trị phải lớn hơn hoặc bằng 0!',
+                  },
                 ]}
               >
                 <Input
+                 min={0}
                   type="Number"
                   style={{ width: "30%" }}
                   name="numberDate"
@@ -727,6 +733,7 @@ function Plan() {
                 label="Tổng số đối tượng:"
                 wrapperCol={1}
                 name="numberObject"
+                
                 style={{
                   width: "100%", // Adjust width as needed
                 }}
@@ -735,9 +742,15 @@ function Plan() {
                     required: true,
                     message: "Vui lòng nhập tổng số đối tượng tiêm",
                   },
+                  {
+                    type: 'numberObject',
+                    min: 0,
+                    message: 'Giá trị phải lớn hơn hoặc bằng 0!',
+                  },
                 ]}
               >
                 <Input
+                 min={0}
                   type="Number"
                   style={{ width: "50%" }}
                   name="numberObject"
@@ -756,6 +769,7 @@ function Plan() {
                     required: true,
                     message: "Vui lòng chọn trạng thái",
                   },
+                  
                 ]}
               >
                 <Select

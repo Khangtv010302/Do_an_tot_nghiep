@@ -24,3 +24,8 @@
 .rotate-icon:hover {
    color: #9c8e8e;
 }
+.ant-switch-inner {
+  font-size: 16px;  /* Thay đổi kích thước chữ */
+  color: red;      /* Thay đổi màu chữ */
+  font-weight: bold; /* Thay đổi độ đậm của chữ */
+}

@@ -54,6 +54,7 @@ function Storage() {
   };
 
   //declare variable
+  const [fullname,setFullname]=useState("");
   const [listVaccine, setListVaccine] = useState([]);
   const [listUnitDelivering, setListUnitDelivering] = useState([]);
   const [listStorageVaccine, setListStorageVaccine] = useState([]);
@@ -158,25 +159,26 @@ function Storage() {
       render: (vaccineId) =>
         listVaccine.find((vaccine) => vaccine.id === vaccineId).name,
     },
+    ...(operation !== "Add"
+    ? [
+        {
+          title: "SL tồn lúc xuất",
+          dataIndex: "",
+          responsive: ["md"],
+          key: "",
+          width: "7%",
+          render: (_, record) =>
+            record.quantityReceiving - record.quantityDelivering,
+        },
+      ]
+    : []),
     {
       title: "SL tồn",
       dataIndex: "quantityReceiving",
       width: "7%",
       key: "quantityReceiving",
     },
-    ...(operation !== "Add"
-      ? [
-          {
-            title: "SL tồn lúc xuất",
-            dataIndex: "",
-            responsive: ["md"],
-            key: "",
-            width: "7%",
-            render: (_, record) =>
-              record.quantityReceiving - record.quantityDelivering,
-          },
-        ]
-      : []),
+   
     ...(operation !== "Add"
       ? [
           {
@@ -260,6 +262,7 @@ function Storage() {
   useEffect(() => {
     getListVaccine();
     getListUnitDelivering();
+    getFullnameByUsername(getUsername());
   }, [operation]);
   //tanstack querry
   const queryClient = useQueryClient();
@@ -373,6 +376,26 @@ function Storage() {
     },
   });
   //function
+  const getUsername = () => {
+    if (sessionStorage.getItem("username") !== null)
+      return sessionStorage.getItem("username");
+    if (Cookies.get("username") !== undefined) return Cookies.get("username");
+  };
+  const getFullnameByUsername = (username) => {
+   
+    axios({
+      method: "get",
+      url: "http://localhost:8080/API/Account/getNameByUsername",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${getJwtToken()}`,
+      },
+      params:{username}
+    }).then((response) => {
+      // console.log(response.data.message);
+      setFullname(response.data.message);
+    });
+  };
   const getJwtToken = () => {
     if (sessionStorage.getItem("jwtToken") !== undefined)
       return sessionStorage.getItem("jwtToken");
@@ -502,6 +525,7 @@ function Storage() {
   const handleAdd = () => {
   
     form.resetFields();
+    form.setFieldValue("officerReceiving",fullname)
     setMinDate(dayjs());
     setListStorageVaccine([]);
     setOperation("Add");
@@ -1217,6 +1241,7 @@ function Storage() {
               ]}
             >
               <Input
+              min={0}
                 type="number"
                 name="quantityReceiving"
                 readOnly={subOperation !== "Add" && subOperation !== "Update"}
@@ -1237,6 +1262,7 @@ function Storage() {
                 ]}
               >
                 <Input
+                min={0}
                   type="number"
                   name="quantityDelivering"
                   readOnly={subOperation !== "Add" && subOperation !== "Update"}

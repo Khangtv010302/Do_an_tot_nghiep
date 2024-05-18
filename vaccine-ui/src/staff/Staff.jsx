@@ -667,8 +667,6 @@ function Staff() {
       <Modal
         open={operation === "Delete" || operation === "Detail"}
         onCancel={handleCancel}
-        visible={false}
-        closeIcon={null}
         footer={null}
         width={600}
       >
@@ -679,7 +677,6 @@ function Staff() {
           labelCol={{
             flex: "140px",
           }}
-          cl
           labelAlign="left"
           labelWrap
           wrapperCol={{
@@ -687,29 +684,33 @@ function Staff() {
           }}
           colon={false}
           style={{
-            maxWidth: "100%",
+            maxWidth: 600,
           }}
           form={form}
         >
-         
-            <h2>{
+          <div >
+            <h2 style={{textAlign:"center",marginBottom:"2%"}}>{
           operation === "Detail"
             ? "Thông tin nhân viên"
             : operation === "Delete"
-            ? "Xóa thông tin nhân viên"
+            ? "Xóa nhân viên"
             : null
         }</h2>
-            <p><label>Tên nhân viên:</label> {dataById.fullname}</p>
-            <p><label>Giới tính:</label> {dataById.sex}</p>
-            <p><label>Email:</label> {dataById.email}</p>
-            <p><label>Số điện thoại:</label> {dataById.phoneNumber}</p>
-            <p><label>Username:</label> {dataById.username}</p>
-            <p><label>Vai trò:</label> {dataById.role}</p>
-            <p><label>Địa chỉ:</label> {dataById.address}</p>
-            <Row>
+        <diV>
+          <Row className="employee-info">
+            <Col span={12}>  <p><label>Tên nhân viên:</label> {dataById.fullname}</p></Col>
+            <Col span={12}> <p><label>Giới tính:</label> {dataById.sex}</p></Col>
+            <Col span={12}>     <p><label>Email:</label> {dataById.email}</p></Col>
+            <Col span={12}>   <p><label>Số điện thoại:</label> {dataById.phoneNumber}</p></Col>
+            <Col span={12}>  <p><label>Username:</label> {dataById.username}</p> </Col>
+            <Col span={12}>   <p><label>Vai trò:</label> {dataById.role}</p></Col>
+            <Col span={12}>  <p><label>Địa chỉ:</label> {dataById.address}</p></Col>
+
+          </Row> 
+          <Row>
             <Col
             span={12}
-            style={{ color: "#ff0f0f", fontSize: "20px", fontWeight: "bold" }}
+            style={{ color: "#ff0f0f", fontSize: "17px", fontWeight: "bold" }}
           >
            {operation === "Delete" ? "Bạn có muốn xóa nhân viên này !" : null} 
           </Col>
@@ -734,6 +735,12 @@ function Staff() {
               </Button>
             </div></Col>
             </Row>
+         
+        </diV>
+          
+        </div>
+          
+          <Form.Item name="id"style={{display:"none"}}></Form.Item>
         
         </Form>
       </Modal>
