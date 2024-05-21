@@ -78,9 +78,9 @@ public class VaccineController {
     public ResponseEntity<ResponseBase> selectById(@RequestParam String id){
         return vaccineService.selectById(id);
     }
-    @PostMapping("/Search")
-    public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(@RequestBody VaccineSearchRequest request){
-        return vaccineService.selectByNameOrManufacturerId(request);
+    @GetMapping("/Search")
+    public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(@RequestParam String name,@RequestParam(required = false) String manufacturerId){
+        return vaccineService.selectByNameOrManufacturerId(name,manufacturerId);
     }
 
 }

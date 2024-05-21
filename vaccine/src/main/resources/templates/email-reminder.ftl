@@ -50,15 +50,12 @@
     </div>
     <div class="content">
         <p>Kính gửi Quý phụ huynh,</p>
-
-        <p>Chúng tôi xin nhắc nhở Quý phụ huynh về lịch hẹn tiêm chủng sắp tới của bé ${name}.
-            Lịch tiêm chủng sẽ diễn ra vào ngày ${scheduledDate}. Trong lần tiêm này, bé ${name}
-            sẽ được tiêm vắc xin ${vaccineName} nhằm bảo vệ sức khỏe và ngăn ngừa các bệnh nguy hiểm.
+        <p>Chúng tôi xin nhắc nhở Quý phụ huynh về lịch hẹn tiêm chủng sắp tới của bé <b>${name}</b>.</p>
+            <p>Lịch tiêm chủng sẽ diễn ra vào ngày <b>${scheduledDate}</b>. Trong lần tiêm này, bé ${name}
+            sẽ được tiêm vắc xin <b>${vaccineName}</b> nhằm bảo vệ sức khỏe và ngăn ngừa các bệnh nguy hiểm.
             Chúng tôi khuyến khích Quý phụ huynh đưa bé đến đúng giờ để quá trình tiêm chủng diễn ra
             thuận lợi và hiệu quả nhất.</p>
-
         <p>Nếu có bất kỳ thắc mắc hay cần hỗ trợ thêm thông tin, vui lòng liên hệ với chúng tôi qua số điện thoại 0258 3834 009.</p>
-
         <p>Trân trọng,</p>
     </div>
     <div class="footer">

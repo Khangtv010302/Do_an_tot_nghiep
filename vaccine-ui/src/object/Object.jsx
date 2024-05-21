@@ -35,6 +35,7 @@ import ObjectSchedule from "../object_schedule/Object_Schedule";
 
 function Objects() {
   //Declare
+  const [searchInfo,setSearchInfo]= useState("");
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const [page, setPage] = React.useState(1);
@@ -73,10 +74,11 @@ function Objects() {
   const { isLoading } = useQuery({
     queryKey: ["repoObject"],
     queryFn: () =>
-      axios.get("http://localhost:8080/API/Object", {
+      axios.get("http://localhost:8080/API/Object/Info", {
     headers: {
       Authorization: `Bearer ${getJwtToken()}` 
-    }
+    },
+    params:{info:searchInfo}
   }).then((res) => {
         setResponse(res.data.data);
         return res.data.data;
@@ -178,10 +180,7 @@ function Objects() {
       openNotification("Thất bại", error.response.data.message);
     },
   });
-  // useEffect(() => {
-  //   checkIsExistObjectSchedule();
-  // }, [dataById]);
-  //Column
+  
   const columns = [
     {
       title: "#",
@@ -359,6 +358,7 @@ function Objects() {
                 onSearch={(value, _e, info) => {
                   console.log(info?.source, value);
                   setShowLoading(true);
+                  setSearchInfo(value)
                   searchObject.mutate(value);
                   setOperation("");
                 }}

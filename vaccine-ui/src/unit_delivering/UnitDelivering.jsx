@@ -35,6 +35,7 @@ function UnitDelivering() {
      });
    };
   //declaire variable
+  const [searchInfo,setSearchInfo]= useState("");
   const { Search } = Input;
   const [showLoading, setShowLoading] = useState(false);
   const [page, setPage] = React.useState(1);
@@ -47,7 +48,7 @@ function UnitDelivering() {
     queryKey: ["repoUnitDelivering"],
     queryFn: () =>
       {
-        const name="";
+        const name=searchInfo;
         return axios({
           method: "get",
           url: "http://localhost:8080/API/UnitDelivering",
@@ -274,7 +275,9 @@ const handleDelete = async (record) => {
    {contextHolder}
             <h2 className="header">Quản lý đơn vị xuất</h2>
       <div className="center">
-      <Row>
+      <Row style={{marginLeft:"1%",
+        width:"98%"
+      }}>
           <Col span={12}><Button
           type="primary"
           onClick={handleAdd}
@@ -291,6 +294,7 @@ const handleDelete = async (record) => {
                 placeholder="Nhập tên đơn vị xuất"
                 onSearch={(value, _e, info) => {
                   console.log(info?.source, value);
+                  setSearchInfo(value);
                   setShowLoading(true);
                   searchUnitDelivering.mutate(value);
                 }}
@@ -313,8 +317,18 @@ const handleDelete = async (record) => {
           }}
         />
          <Modal
-        title={operation==='Add' ? "Thêm đơn vị xuất": operation === 'Update' ? "Sửa thông tin đơn vị xuất" : operation === 'Detail' ? "Xem thôn tin đơn vị xuất" : 'Xóa đơn vị xuất' }
-        
+          closeIcon={null}
+          title={<div style={ {fontSize: "24px",
+          color: "orange",
+          backgroundColor: "darkblue",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          paddingLeft: "10px",     
+          }
+         }
+          >
+        {operation==='Add' ? "Thêm đơn vị xuất": operation === 'Update' ? "Sửa thông tin đơn vị xuất" : operation === 'Detail' ? "Xem thôn tin đơn vị xuất" : 'Xóa đơn vị xuất' }
+          </div>}    
         open={operation !== ""}
         onCancel={handleCancel}
         footer={null}

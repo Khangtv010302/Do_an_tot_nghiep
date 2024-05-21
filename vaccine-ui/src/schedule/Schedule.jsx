@@ -340,7 +340,18 @@ function Schedule() {
           }}
         />
         <Modal
-          title="Xóa tháng tiêm chủng"
+        closeIcon={null}
+          title={<div style={ {fontSize: "24px",
+          color: "orange",
+          backgroundColor: "darkblue",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          paddingLeft: "10px",     
+          }
+         }
+          >
+            {operation === "Add"?  "Thêm tháng tiêm chủng":"Xóa tháng tiêm chủng" }
+          </div>}
           open={operation !== ""}
           onCancel={handleCancel}
           footer={null}

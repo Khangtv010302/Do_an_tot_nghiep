@@ -86,7 +86,7 @@ function Statistical() {
       width: "15%",
     },
     {
-      title: "SL mới nhận",
+      title: "SL tồn mới nhận",
       dataIndex: "newNumber",
       key: "newNumber",
       width: "15%",
@@ -466,7 +466,7 @@ function Statistical() {
           sm={10}
           md={10}
           lg={6}
-          xl={4}
+          xl={5}
           style={{ width: "80%", margin: "1%" }}
         >
           <Card>
@@ -482,7 +482,7 @@ function Statistical() {
                 }}
               />
               <Statistic
-                title={"Vắc xin mới nhập"}
+                title={"Vắc xin tồn mới nhập"}
                 value={numberNewVaccine}
               ></Statistic>
             </Space>

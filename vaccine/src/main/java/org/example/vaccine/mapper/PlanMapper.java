@@ -34,7 +34,7 @@ public interface PlanMapper {
     List<String> selectByPlanId(String id);
     @Select("SELECT oi.month_old, oi.object_id FROM object_injection oi INNER JOIN object o ON oi.object_id = o.id " +
             " WHERE oi.month_old <= TIMESTAMPDIFF(MONTH, o.birth_date, #{scheduledDate}) AND oi.vaccine_id IN " +
-            " (SELECT vaccine_id FROM plan_detail WHERE plan_detail.plan_id = #{planId}) AND oi.state = FALSE AND o.reminder = FALSE")
+            " (SELECT vaccine_id FROM plan_detail WHERE plan_detail.plan_id = #{planId}) AND oi.state = FALSE AND o.reminder = true")
     List<ObjectMonthOldResponse> getListObjectMonthOld(LocalDate scheduledDate,String planId);
     @Update("UPDATE object_injection SET vaccination_date = #{scheduledDate} WHERE object_id = #{objectId} AND month_old = #{monthOld}")
     void updateScheduledDateInVaccinationDate (LocalDate scheduledDate,String objectId,int monthOld);

@@ -25,8 +25,10 @@ public interface VaccineMapper {
     List<VaccineResponse> selectAll();
     @Select("SELECT name, id from vaccine")
     List<VaccineOnlyNameResponse> selectAllOnlyName();
-    @Select("SELECT * FROM vaccine WHERE name LIKE CONCAT('%',#{name},'%') OR manufacturer_id = #{manufacturerId}")
-    List<Vaccine> selectByNameOrManufacturerId(VaccineSearchRequest request);
+    @Select("SELECT va.id,manufacturer_id,va.name,image,antigen,packing,unit,description,origin,contraindicated,unwanted_effect,preserve,ma.name as manufacturerName   FROM vaccine as va inner join manufacturer as ma on va.manufacturer_id = ma.id WHERE va.name LIKE CONCAT('%',#{name},'%') AND manufacturer_id = #{manufacturerId}")
+    List<VaccineResponse> selectByNameOrManufacturerId(String name,String manufacturerId);
+    @Select("SELECT va.id,manufacturer_id,va.name,image,antigen,packing,unit,description,origin,contraindicated,unwanted_effect,preserve,ma.name as manufacturerName   FROM vaccine as va inner join manufacturer as ma on va.manufacturer_id = ma.id WHERE va.name LIKE CONCAT('%',#{name},'%') OR manufacturer_id = #{manufacturerId}")
+    List<VaccineResponse> selectByNameManufacturerIdNull(String name);
 
     @Select("SELECT * FROM vaccine WHERE id = #{id}")
     Vaccine selectById(String id);

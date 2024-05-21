@@ -52,5 +52,7 @@ public interface ReceiveDeliverMapper {
 
     @Select("SELECT count(*)  FROM  receive_deliver WHERE unit_delivering_id = #{unitDeliveringId} AND date_delivering=#{dateDelivering}")
     int isExistUnitDeliveringIdAndDateDelivering(String unitDeliveringId, LocalDate dateDelivering);
+    @Select("SELECT  count(*) FROM receive_deliver_detail WHERE lot_number =#{lotNumber} AND vaccine_id = #{vaccineId}")
+    int isExistLotNumberVaccineId(String lotNumber,String vaccineId);
 
 }

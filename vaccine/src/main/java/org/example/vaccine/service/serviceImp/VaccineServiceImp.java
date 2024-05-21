@@ -79,8 +79,11 @@ public class VaccineServiceImp implements VaccineService {
     }
 
     @Override
-    public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(VaccineSearchRequest request) {
-        List<Vaccine> vaccineList = vaccineMapper.selectByNameOrManufacturerId(request);
+    public ResponseEntity<ResponseBase> selectByNameOrManufacturerId(String name,String manufacturerId) {
+        List<VaccineResponse> vaccineList;
+        if(manufacturerId.isEmpty())
+            vaccineList = vaccineMapper.selectByNameManufacturerIdNull(name);
+        else vaccineList = vaccineMapper.selectByNameOrManufacturerId(name,manufacturerId);
         return ResponseEntity.ok().body(new ResponseData<>(vaccineList));
     }
 

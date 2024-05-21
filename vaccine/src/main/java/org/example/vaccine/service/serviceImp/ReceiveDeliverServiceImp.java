@@ -36,6 +36,10 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
     @Transactional(rollbackFor = {Exception.class})
     public ResponseEntity<ResponseBase> insert(ReceiveDeliverRequest request) {
         try {
+            for (ReceiveDeliverDetailRequest detailRequest:request.getDeliverDetailRequests()){
+                if (receiveDeliverMapper.isExistLotNumberVaccineId(detailRequest.getLotNumber(),detailRequest.getVaccineId()) > 0)
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Số lô của loại vắc xin này đã tồn tại"));
+            }
             int isExistUnitDeliveringIdAndDateDelivering =
                     receiveDeliverMapper.isExistUnitDeliveringIdAndDateDelivering
                             (request.getUnitDeliveringId(), request.getDateDelivering());

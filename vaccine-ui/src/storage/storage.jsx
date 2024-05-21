@@ -1,5 +1,5 @@
 import axios from "axios";
-import { format, min } from "date-fns";
+import { format } from "date-fns";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import App from "../App";
@@ -10,31 +10,29 @@ import {
   Input,
   Button,
   Modal,
-  Dropdown,
+
   Form,
   notification,
-  Radio,
+ 
   Select,
-  Switch,
-  Menu,
+
+  
   Row,
-  Checkbox,
+ 
   Col,
   Grid,
   Tooltip,
-  Upload,
+  
   DatePicker,
-  message,
-  ConfigProvider,
+  
 } from "antd";
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
-import { useForm } from "antd/es/form/Form";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { PlusOutlined } from "@ant-design/icons";
-import { render } from "react-dom";
+
 import LoadingModal from "../loading/Loading";
-import ObjectSchedule from "../object_schedule/Object_Schedule";
+
 
 function Storage() {
   const formatDate = (date) => {
@@ -266,7 +264,7 @@ function Storage() {
   }, [operation]);
   //tanstack querry
   const queryClient = useQueryClient();
-  const { isLoading, error, data, isFetching } = useQuery({
+  const { isLoading,} = useQuery({
     queryKey: ["repoStorage"],
     queryFn: () =>
       axios({
@@ -392,12 +390,12 @@ function Storage() {
       },
       params:{username}
     }).then((response) => {
-      // console.log(response.data.message);
+      
       setFullname(response.data.message);
     });
   };
   const getJwtToken = () => {
-    if (sessionStorage.getItem("jwtToken") !== undefined)
+    if (sessionStorage.getItem("jwtToken") !== null)
       return sessionStorage.getItem("jwtToken");
     if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
   };
@@ -415,7 +413,7 @@ function Storage() {
     return current && current < dayjs().endOf("day");
   };
   const handleSubAdd = () => {
-    setFirstDay
+  
     subForm.resetFields();
     setSubOperation("Add");
   };
@@ -437,15 +435,7 @@ function Storage() {
   setSubOperation("Delete");
 };
 
-  const handleReminder = (record) => {
-    console.log(record);
-    setOperation("Reminder");
-    form.setFieldsValue(record);
-    form.setFieldValue(
-      "scheduledDate",
-      dayjs(record.scheduledDate, "YYYY-MM-DD")
-    );
-  };
+  
   const handleDelete = () => {
     setOperation("Delete");
     getListDetailReceiveDelive(dataById.id);
@@ -639,7 +629,7 @@ function Storage() {
     setSubOperation("");
     }
   }
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = () => {
     openNotification("Thất bại", "Không thể thêm phiếu nhập");
   };
   const onSubFinishFailed = (errorInfo) => {
@@ -658,11 +648,9 @@ function Storage() {
               <Row>
                 <Col span={10}>
                   <div
-                    style={{
-                      margin: "3%",
-                      fontSize: "150%",
-                      fontWeight: "500",
-                    }}
+                      style={{ margin: "3%",  fontSize: "24px",
+                      fontWeight: "bold",
+                      color: "#333", }}
                   >
                     Nhập xuất vắc xin
                   </div>
@@ -674,7 +662,7 @@ function Storage() {
                     className="button-add"
                     onClick={handleAdd}
                   >
-                    Thêm mới phiếu nhập
+                    Thêm mới phiếu nhập xuất
                   </Button>
                 </Col>
               </Row>
@@ -797,9 +785,9 @@ function Storage() {
                 style={{ margin: "1%", fontSize: "150%", fontWeight: "500" }}
               >
                 {operation === "Add"
-                  ? " Thêm mới phiếu nhập"
+                  ? " Thêm mới phiếu nhập xuất"
                   : operation === "Detail" || operation === "Delete"
-                  ? "Thông tin phiếu nhập"
+                  ? "Thông tin phiếu nhập xuất"
                   : operation === "Update"
                   ? "Cập nhật thông tin phiếu nhập"
                   : null}
@@ -1093,7 +1081,7 @@ function Storage() {
                       }}
                     >
                       {" "}
-                      Bạn có muốn xóa phiếu nhập này !!
+                      Bạn có muốn xóa phiếu nhập xuất này !!
                     </div>
                   ) : null}
                 </Col>
@@ -1135,7 +1123,16 @@ function Storage() {
       )}
       {subOperation !== "" ? (
         <Modal
-          title={
+        closeIcon={null}
+          title={<div style={ {fontSize: "24px",
+          color: "orange",
+          backgroundColor: "darkblue",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          paddingLeft: "10px",     
+          }
+         }
+          >{
             subOperation === "Add"
               ? "Thêm vắc xin"
               : subOperation === "Update"
@@ -1143,7 +1140,8 @@ function Storage() {
               : subOperation === "Delete"
               ? "Xóa vắc xin"
               : null
-          }
+          }</div>
+        }
           open={subOperation !== ""}
           onCancel={handleSubCancel}
           footer={null}

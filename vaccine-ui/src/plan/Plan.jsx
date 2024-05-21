@@ -14,19 +14,12 @@ import {
   Dropdown,
   Form,
   notification,
-  Radio,
   Select,
-  Switch,
-  Menu,
   Row,
   Checkbox,
   Col,
   Grid,
-  Tooltip,
-  Upload,
   DatePicker,
-  message,
-  ConfigProvider,
 } from "antd";
 import {
   faGear,
@@ -36,11 +29,10 @@ import {
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
-import { useForm } from "antd/es/form/Form";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import LoadingModal from "../loading/Loading";
-
 
 function Plan() {
   const formatDate = (date) => {
@@ -68,12 +60,11 @@ function Plan() {
   const customLocale = {
     emptyText: '"Không có kế hoạch', // Change this to your custom message
   };
-  const { Search } = Input;
-  const [dataById, setDataById] = useState({});
+
   const [showLoading, setShowLoading] = useState(false);
   const today = new Date();
   const [form] = Form.useForm();
-  const [subForm] = Form.useForm();
+
   const [operation, setOperation] = useState("");
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -154,71 +145,94 @@ function Plan() {
       title: <span style={{ fontSize: "14px" }}>Thao tác</span>,
       width: "8%",
       key: "action",
-      render: (_, record) =>  {
-        const itemsWithRecord = (record) => [  {
-          key: "1",
-          label: (
-            <div  className="button-operation" onClick={()=>handleDetail(record)} >
-              <span className="button-operation-text">Xem chi tiết</span>
-              <div style={{ flexGrow: "1" }}></div>
-              <FontAwesomeIcon className="button-operation-icon" icon={faEye} />
-            </div>
-          ),
-        },
-        {
-          key: "2",
-          label: (
-            <div className="button-operation" onClick={()=>handleUpdate(record)}>
-              <FontAwesomeIcon />
-    
-              <span className="button-operation-text">Cập nhật</span>
-              <div style={{ flexGrow: "1" }}></div>
-              <FontAwesomeIcon className="button-operation-icon" icon={faPencil} />
-            </div>
-          ),
-        },
-        {
-          key: "3",
-          label: (
-            <div  className="button-operation" onClick={()=>handleDelete(record)} >
-              <FontAwesomeIcon />
-    
-              <span className="button-operation-text">Xóa</span>
-              <div style={{ flexGrow: "1" }}></div>
-              <FontAwesomeIcon
-                className="button-operation-icon"
-                icon={faTrashCan}
-              />
-            </div>
-          ),
-        },
-        {
-          key: "4",
-          label: (
-            <div className="button-operation" onClick={()=>handleReminder(record)}>
-              <FontAwesomeIcon />
-    
-              <span className="button-operation-text">Nhắc hẹn</span>
-              <div style={{ flexGrow: "1" }}></div>
-              <FontAwesomeIcon
-                className="button-operation-icon"
-                icon={faBell}
-              />
-            </div>
-          ),
-        },
-      ];
-    
-      return (
-        <div style={{ textAlign: "center" }}>
-          <Space size="middle" style={{cursor: "pointer"}}>
-            <Dropdown menu={{ items: itemsWithRecord(record) }} placement="bottom" arrow >
-              <FontAwesomeIcon icon={faGear} style={{ fontSize: "16px" }} />
-            </Dropdown>
-          </Space>
-        </div>
-      );
-    },
+      render: (_, record) => {
+        const itemsWithRecord = (record) => [
+          {
+            key: "1",
+            label: (
+              <div
+                className="button-operation"
+                onClick={() => handleDetail(record)}
+              >
+                <span className="button-operation-text">Xem chi tiết</span>
+                <div style={{ flexGrow: "1" }}></div>
+                <FontAwesomeIcon
+                  className="button-operation-icon"
+                  icon={faEye}
+                />
+              </div>
+            ),
+          },
+          {
+            key: "2",
+            label: (
+              <div
+                className="button-operation"
+                onClick={() => handleUpdate(record)}
+              >
+                <FontAwesomeIcon />
+
+                <span className="button-operation-text">Cập nhật</span>
+                <div style={{ flexGrow: "1" }}></div>
+                <FontAwesomeIcon
+                  className="button-operation-icon"
+                  icon={faPencil}
+                />
+              </div>
+            ),
+          },
+          {
+            key: "3",
+            label: (
+              <div
+                className="button-operation"
+                onClick={() => handleDelete(record)}
+              >
+                <FontAwesomeIcon />
+
+                <span className="button-operation-text">Xóa</span>
+                <div style={{ flexGrow: "1" }}></div>
+                <FontAwesomeIcon
+                  className="button-operation-icon"
+                  icon={faTrashCan}
+                />
+              </div>
+            ),
+          },
+          {
+            key: "4",
+            label: (
+              <div
+                className="button-operation"
+                onClick={() => handleReminder(record)}
+              >
+                <FontAwesomeIcon />
+
+                <span className="button-operation-text">Nhắc hẹn</span>
+                <div style={{ flexGrow: "1" }}></div>
+                <FontAwesomeIcon
+                  className="button-operation-icon"
+                  icon={faBell}
+                />
+              </div>
+            ),
+          },
+        ];
+
+        return (
+          <div style={{ textAlign: "center" }}>
+            <Space size="middle" style={{ cursor: "pointer" }}>
+              <Dropdown
+                menu={{ items: itemsWithRecord(record) }}
+                placement="bottom"
+                arrow
+              >
+                <FontAwesomeIcon icon={faGear} style={{ fontSize: "16px" }} />
+              </Dropdown>
+            </Space>
+          </div>
+        );
+      },
     },
   ];
 
@@ -228,16 +242,15 @@ function Plan() {
   //query
   //tanStackQuerry
   const queryClient = useQueryClient();
-  const { isLoading, error, data, isFetching } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["repoPlan"],
     queryFn: () =>
       axios({
         method: "get",
         url: "http://localhost:8080/API/Plan",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
-        
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { fromDay: firstDay, toDay: lastDay },
       }).then((response) => {
@@ -252,8 +265,8 @@ function Plan() {
         method: "post",
         url: "http://localhost:8080/API/Plan",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -275,8 +288,8 @@ function Plan() {
         method: "put",
         url: "http://localhost:8080/API/Plan",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         data: values,
       });
@@ -298,10 +311,10 @@ function Plan() {
         method: "delete",
         url: "http://localhost:8080/API/Plan",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
-        params:{id},
+        params: { id },
       });
     },
     onSuccess: () => {
@@ -321,14 +334,13 @@ function Plan() {
         method: "get",
         url: "http://localhost:8080/API/Plan/Reminder",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
-        params:{scheduledDate},
+        params: { scheduledDate },
       });
     },
     onSuccess: () => {
-      
       setShowLoading(false);
       setOperation("");
       openNotification("Thành công", "Đã nhắc hẹn theo kế hoạch thành công");
@@ -345,9 +357,9 @@ function Plan() {
     if (Cookies.get("jwtToken") !== undefined) return Cookies.get("jwtToken");
   };
   const disabledDateFirstDay = (currentDate) => {
-    const minDate = dayjs(firstDay, 'YYYY-MM-DD');
-    return currentDate.isBefore(minDate, 'day');
-};
+    const minDate = dayjs(firstDay, "YYYY-MM-DD");
+    return currentDate.isBefore(minDate, "day");
+  };
 
   const handleReminder = (record) => {
     console.log(record);
@@ -390,8 +402,8 @@ function Plan() {
       method: "get",
       url: "http://localhost:8080/API/General/Vaccine",
       headers: {
-         "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+        "Content-type": "application/json",
+        Authorization: `Bearer ${getJwtToken()}`,
       },
     }).then((response) => {
       setListVaccine(response.data.data);
@@ -407,8 +419,8 @@ function Plan() {
         method: "get",
         url: "http://localhost:8080/API/Plan",
         headers: {
-           "Content-type": "application/json",
-            Authorization: `Bearer ${getJwtToken()}`,
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
         },
         params: { fromDay: firstDay, toDay: lastDay },
       }).then((response) => {
@@ -450,27 +462,31 @@ function Plan() {
     }
     if (operation === "Delete") {
       setShowLoading(true);
-      deletePlan.mutate(values.id)
-     
+      deletePlan.mutate(values.id);
     }
     if (operation === "Reminder") {
       setShowLoading(true);
-      reminderPlan.mutate(values.scheduledDate)
+      reminderPlan.mutate(values.scheduledDate);
     }
   }
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = () => {
     openNotification("Thất bại", "Không thể thêm kế hoạch");
   };
 
   return (
     <App onChose={"Plan"}>
       {contextHolder}
-      <Row style={{ border: "1px solid",borderColor:"#A9A9A9" }}>
+      <Row style={{ border: "1px solid", borderColor: "#A9A9A9" }}>
         <Col span={24}>
           <Row>
             <Col span={10}>
               <div
-                style={{ margin: "3%", fontSize: "150%", fontWeight: "500" }}
+                style={{
+                  margin: "3%",
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#333",
+                }}
               >
                 Kế hoạch tiêm chủng
               </div>
@@ -489,7 +505,12 @@ function Plan() {
         </Col>
         <Col
           span={24}
-          style={{ borderTop: "1px solid",borderColor:"#A9A9A9", padding: "1%", paddingTop: "2%" }}
+          style={{
+            borderTop: "1px solid",
+            borderColor: "#A9A9A9",
+            padding: "1%",
+            paddingTop: "2%",
+          }}
         >
           <Row>
             <Col xs={24} sm={24} md={11} lg={9} xl={9}>
@@ -516,7 +537,7 @@ function Plan() {
                 }}
               >
                 <DatePicker
-                allowClear={false}
+                  allowClear={false}
                   defaultValue={dayjs(lastDay, dateFormat)}
                   disabledDate={disabledDateFirstDay}
                   style={{ width: "100%" }}
@@ -543,19 +564,23 @@ function Plan() {
           </Row>
         </Col>
       </Row>
-      <Row style={{ border: "1px solid",borderColor:"#A9A9A9", marginTop: "1%" }}>
+      <Row
+        style={{ border: "1px solid", borderColor: "#A9A9A9", marginTop: "1%" }}
+      >
         <Col
           span={24}
           style={{ margin: "1%", fontSize: "150%", fontWeight: "500" }}
         >
           Danh sách kế hoạch tiêm
         </Col>
-        <Col span={24} style={{ borderTop: "1px solid",borderColor:"#A9A9A9" }}>
+        <Col
+          span={24}
+          style={{ borderTop: "1px solid", borderColor: "#A9A9A9" }}
+        >
           {" "}
           <Table
             style={{ margin: "1%" }}
             scroll={{ x: 120, y: 400 }}
-         
             locale={customLocale}
             loading={isLoading}
             showSorterTooltip={{ target: "sorter-icon" }}
@@ -573,16 +598,28 @@ function Plan() {
         </Col>
       </Row>
       <Modal
+        closeIcon={null}
         title={
-          operation === "Detail" || operation ==="Delete"
-            ? "Thông tin kế hoạch"
-            : operation === "Add"
-            ? "Thêm kế hoạch"
-            : operation === "Update"
-            ? "Cập nhật kế hoạch"
-            : operation === "Reminder"
-            ? "Nhắc hẹn lịch tiêm chủng"
-            : null
+          <div
+            style={{
+              fontSize: "24px",
+              color: "orange",
+              backgroundColor: "darkblue",
+              fontWeight: "bold",
+              borderRadius: "8px",
+              paddingLeft: "10px",
+            }}
+          >
+            {operation === "Detail" || operation === "Delete"
+              ? "Thông tin kế hoạch"
+              : operation === "Add"
+              ? "Thêm kế hoạch"
+              : operation === "Update"
+              ? "Cập nhật kế hoạch"
+              : operation === "Reminder"
+              ? "Nhắc hẹn lịch tiêm chủng"
+              : null}
+          </div>
         }
         open={operation !== ""}
         onCancel={handleCancel}
@@ -613,7 +650,7 @@ function Plan() {
             <Form.Item style={{ display: "none" }} name="id"></Form.Item>
           ) : null}
           <Row>
-            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 label="Đợt tiêm"
@@ -630,7 +667,7 @@ function Plan() {
                 ]}
               >
                 <DatePicker
-                //  disabledDate={disabledDate}
+                  //  disabledDate={disabledDate}
                   preserveInvalidOnBlur={true}
                   format={"DD/MM/YYYY"}
                   style={
@@ -644,7 +681,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 initialValue={"TYT Vĩnh Thọ"}
@@ -667,7 +704,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col   span={screens.xs ? 8 :5} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 5} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={"Thường xuyên"}
                 labelCol={1}
@@ -696,7 +733,7 @@ function Plan() {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 initialValue={1}
@@ -712,14 +749,14 @@ function Plan() {
                     message: "Vui lòng nhập số ngày tiêm",
                   },
                   {
-                    type: 'numberDate',
+                    type: "numberDate",
                     min: 0,
-                    message: 'Giá trị phải lớn hơn hoặc bằng 0!',
+                    message: "Giá trị phải lớn hơn hoặc bằng 0!",
                   },
                 ]}
               >
                 <Input
-                 min={0}
+                  min={0}
                   type="Number"
                   style={{ width: "30%" }}
                   name="numberDate"
@@ -727,13 +764,12 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 :6} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
                 labelCol={1}
                 label="Tổng số đối tượng:"
                 wrapperCol={1}
                 name="numberObject"
-                
                 style={{
                   width: "100%", // Adjust width as needed
                 }}
@@ -743,14 +779,14 @@ function Plan() {
                     message: "Vui lòng nhập tổng số đối tượng tiêm",
                   },
                   {
-                    type: 'numberObject',
+                    type: "numberObject",
                     min: 0,
-                    message: 'Giá trị phải lớn hơn hoặc bằng 0!',
+                    message: "Giá trị phải lớn hơn hoặc bằng 0!",
                   },
                 ]}
               >
                 <Input
-                 min={0}
+                  min={0}
                   type="Number"
                   style={{ width: "50%" }}
                   name="numberObject"
@@ -758,7 +794,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 :5} style={{ marginLeft: "4%" }}>
+            <Col span={screens.xs ? 8 : 5} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={false}
                 labelCol={1}
@@ -769,7 +805,6 @@ function Plan() {
                     required: true,
                     message: "Vui lòng chọn trạng thái",
                   },
-                  
                 ]}
               >
                 <Select
@@ -798,16 +833,16 @@ function Plan() {
                 ]}
               >
                 <Checkbox.Group
-       
-         
                   style={
-                    operation === "Detail" || operation==="Delete" ? {pointerEvents:"none"}:{}
+                    operation === "Detail" || operation === "Delete"
+                      ? { pointerEvents: "none" }
+                      : {}
                   }
                 >
                   <Row>
                     {listVaccine.map((item) => (
                       <Col span={8} key={item.id}>
-                        <Checkbox value={item.id}>{item.name}  </Checkbox>
+                        <Checkbox value={item.id}>{item.name} </Checkbox>
                       </Col>
                     ))}
                   </Row>
@@ -867,7 +902,7 @@ function Plan() {
           </Row>
         </Form>
       </Modal>
-     
+
       <LoadingModal showLoading={showLoading} />
     </App>
   );

@@ -33,6 +33,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,11 +151,12 @@ public class PlanServiceImp implements PlanService {
     @Async
     protected Boolean isSendMail(String email, String name, String vaccineName, LocalDate scheduledDate){
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             Thread.sleep(1000);
             Map<String,Object> model= new HashMap<>();
             model.put("name",name);
             model.put("vaccineName",vaccineName);
-            model.put("scheduledDate",scheduledDate);
+            model.put("scheduledDate",scheduledDate.format(formatter));
             MimeMessage message = mailSender.createMimeMessage();
             try {
                 MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,

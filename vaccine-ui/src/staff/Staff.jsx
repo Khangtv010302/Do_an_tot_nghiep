@@ -45,12 +45,13 @@ function Staff() {
     queryKey: ["repoStaff"],
     queryFn: () =>
       axios
-        .get("http://localhost:8080/API/HealthcareStaff",{
+        .get("http://localhost:8080/API/HealthcareStaff/Search",{
           headers: {
              "Content-type": "application/json",
             Authorization: `Bearer ${getJwtToken()}`,
            
           },
+            params: { info:searchInfo },
         })
         .then((res) => {
           setResponse(res.data.data)
@@ -155,6 +156,7 @@ function Staff() {
     },
   });
   //Declare variable
+  const [searchInfo,setSearchInfo]= useState("");
   const [page, setPage] = React.useState(1);
   const { Search } = Input;
   const [showLoading,setShowLoading]= useState(false);
@@ -373,7 +375,9 @@ function Staff() {
       {contextHolder}
       <h2 className="header">Quản lý nhân viên</h2>
       <div className="center">
-      <Row>
+      <Row style={{marginLeft:"1%",
+        width:"98%"
+      }}>
           <Col span={12}><Button
           type="primary"
           onClick={handleAdd}
@@ -387,15 +391,16 @@ function Staff() {
         </Button></Col>
           <Col span={12} style={{textAlign:"right"}}> <Search
                 allowClear={true}
-                placeholder="Nhập tên nhà cung cấp"
+                placeholder="Nhập tên nhân viên hoặc email hoặc username"
                 onSearch={(value, _e, info) => {
                   console.log(info?.source, value);
                   setShowLoading(true);
+                  setSearchInfo(value);
                   searchStaff.mutate(value);
                   setOperation("");
                 }}
                 style={{
-                  width: "90%",
+                  width: "60%",
                 }}
               /></Col>
         </Row>
@@ -418,13 +423,24 @@ function Staff() {
         
       </div>
       {operation === "Add" || operation === "Update" ? <Modal
-        title={
-          operation === "Add"
-            ? "Thêm nhân viên"
-            : operation === "Update"
-            ? "Sửa thông tin nhân viên"
-            : null
+        closeIcon={null}
+        title={<div style={ {fontSize: "24px",
+        color: "orange",
+        backgroundColor: "darkblue",
+        fontWeight: "bold",
+        borderRadius: "8px",
+        paddingLeft: "10px",     
         }
+       }
+        >{
+          operation === "Add"
+          ? "Thêm nhân viên"
+          : operation === "Update"
+          ? "Sửa thông tin nhân viên"
+          : null
+    }
+        </div>} 
+     
         open={operation === "Add" || operation === "Update"}
         onCancel={handleCancel}
         footer={null}
@@ -444,7 +460,7 @@ function Staff() {
           }}
           // colon={false}
           style={{
-            maxWidth: 700,
+            maxWidth: 800,
           }}
           form={form}
         >
@@ -665,6 +681,7 @@ function Staff() {
       </Modal> : null}
       
       <Modal
+        closeIcon={null}
         open={operation === "Delete" || operation === "Detail"}
         onCancel={handleCancel}
         footer={null}
@@ -688,8 +705,14 @@ function Staff() {
           }}
           form={form}
         >
+          
           <div >
-            <h2 style={{textAlign:"center",marginBottom:"2%"}}>{
+            <h2 style={{textAlign:"center",marginBottom:"2%",fontSize: "24px",
+        color: "orange",
+        backgroundColor: "darkblue",
+        fontWeight: "bold",
+        borderRadius: "8px",
+        paddingLeft: "10px",     }}>{
           operation === "Detail"
             ? "Thông tin nhân viên"
             : operation === "Delete"
@@ -721,7 +744,7 @@ function Staff() {
               type="primary"
               htmlType="submit"
              >
-              {operation === "Add" ? "Thêm" : null}
+            
               {operation === "Update" ? "Sửa" : null}
               {operation === "Delete" ? "Xóa" : null}
             </Button>

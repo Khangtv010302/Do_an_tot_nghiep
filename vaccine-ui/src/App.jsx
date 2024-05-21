@@ -23,6 +23,7 @@ import {
 import {  useMutation } from "@tanstack/react-query";
 import HeaderPage from './header/header';
 import { Helmet } from 'react-helmet';
+import { History, HistoryOutlined } from '@mui/icons-material';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -34,7 +35,9 @@ function getItem(label, key, icon, children) {
 }
 const items = [
   getItem('Tổng quan', 'DashBoard', <HomeOutlined />),
+ 
   getItem('Đối tượng', 'Object', <FontAwesomeIcon icon={faChildren} />),
+  getItem('Lịch sử tiêm chủng', 'History', <HistoryOutlined />),
   getItem('Kế hoạch', 'Plan', <FontAwesomeIcon icon={faCalendar} />),
   getItem('Nhập xuất', 'Storage', <FontAwesomeIcon icon={faWarehouse} />),
   getItem('Lịch tiêm chủng', 'Schedule', <UnorderedListOutlined />),
@@ -72,10 +75,7 @@ const App = ({children,onChose}) => {
       const currentTime = new Date();
       const dateObject = new Date(getExpiredDate());
       const expiredDateMinus= new Date(dateObject.getTime() - (30*1000))
-      // console.log("Thời gian hiện tại: "+currentTime)
-      // console.log("Thời gian token chưa trừ: "+new Date(dateObject.getTime()))
-      // console.log("Thời gian token: "+expiredDateMinus)
-      console.log(currentTime>expiredDateMinus)
+     
       if (currentTime>expiredDateMinus){
       getNewToKen.mutate()
         }

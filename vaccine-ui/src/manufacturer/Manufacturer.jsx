@@ -34,7 +34,7 @@ function Manufacturer() {
      });
    };
   //declaire variable
-
+   const [searchInfo,setSearchInfo]= useState("");
   const [page, setPage] = React.useState(1);
   const [operation, setOperation] = useState("");
   const [response, setResponse] = useState([]);
@@ -47,7 +47,6 @@ function Manufacturer() {
     queryKey: ["repoManufacturer"],
     queryFn: () =>
       {
-        const name="";
         return axios({
           method: "get",
           url: "http://localhost:8080/API/Manufacturer",
@@ -56,7 +55,7 @@ function Manufacturer() {
           Authorization: `Bearer ${getJwtToken()}`,
        
           },
-          params: { name },
+          params: { name:searchInfo },
         }).then((response) => {
           console.log(response.data.data);
           setResponse(response.data.data);
@@ -274,7 +273,9 @@ const handleDelete = async (record) => {
              {contextHolder}
             <h2 className="header">Quản lý nhà cung cấp</h2>
       <div className="center">
-        <Row>
+      <Row style={{marginLeft:"1%",
+        width:"98%"
+      }}>
           <Col span={12}><Button
           type="primary"
           onClick={handleAdd}
@@ -292,6 +293,7 @@ const handleDelete = async (record) => {
                 onSearch={(value, _e, info) => {
                   console.log(info?.source, value);
                   setShowLoading(true);
+                  setSearchInfo(value);
                   searchManufacturer.mutate(value);
                   setOperation("");
                 }}
@@ -316,7 +318,19 @@ const handleDelete = async (record) => {
           }}
         />
          <Modal
-        title={operation==='Add' ? "Thêm nhà cung cấp": operation === 'Update' ? "Sửa thông tin nhà cung cấp" : operation === 'Detail' ? "Xem thôn tin nhà cung cấp" : 'Xóa nhà cung cấp' }
+         closeIcon={null}
+         title={<div style={ {fontSize: "24px",
+         color: "orange",
+         backgroundColor: "darkblue",
+         fontWeight: "bold",
+         borderRadius: "8px",
+         paddingLeft: "10px",     
+         }
+        }
+         >
+          {operation==='Add' ? "Thêm nhà cung cấp": operation === 'Update' ? "Sửa thông tin nhà cung cấp" : operation === 'Detail' ? "Xem thôn tin nhà cung cấp" : 'Xóa nhà cung cấp' }
+         </div>}
+       
         
         open={operation !== ""}
         onCancel={handleCancel}

@@ -161,14 +161,15 @@ function Type() {
     >
       <div>
       {contextHolder}
-        <h2 className="header">Quản lý loại nhân viên</h2>
+        <h2 className="header" >Quản lý loại nhân viên</h2>
         <div className="center">
-          <Button
+          <Button 
             type="primary"
             onClick={handleAdd}
             style={{
               marginBottom: "1%",
               textAlign: "left",
+              marginLeft:"1%"
             }}
           >
             
@@ -183,7 +184,23 @@ function Type() {
           
         </div>
         <Modal
-          title="Loại nhân viên"
+          closeIcon={null}
+          title={<div style={ {fontSize: "24px",
+          color: "orange",
+          backgroundColor: "darkblue",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          paddingLeft: "10px",     
+          }
+         }
+          >{
+            operation === "Add"
+            ? "Thêm Loại nhân viên"
+            : operation === "Delete"
+            ? "Xóa loại nhân viên"
+            : null
+      }
+          </div>} 
           open={operation !=="" }
           onCancel={handleCancel}
           footer={null}

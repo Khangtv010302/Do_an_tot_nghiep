@@ -44,12 +44,18 @@ function Vaccine() {
     queryKey: ["repoVaccine"],
     queryFn: () =>
       axios
-        .get("http://localhost:8080/API/Vaccine",{
+        .get("http://localhost:8080/API/Vaccine/Search",{
           headers:{
             Authorization: `Bearer ${getJwtToken()}`,
+          },
+          params:{
+            name:searchInfo,
+            manufacturerId:manufacturerId
           }
         })
-        .then((res) => res.data.data),
+        .then((res) => 
+          setTableData(res.data.data)
+      ),
     onError: () => {
       openNotification("Thất bại", "Không có dữ liệu");
     },
@@ -231,11 +237,15 @@ function Vaccine() {
     },
   ];
   //declair variable
+  const [searchInfo,setSearchInfo]= useState("");
+  const [manufacturerId,setManufacturerId]=useState("");
+  const { Search } = Input;
   const [page, setPage] = React.useState(1);
   const [fileList, setFileList] = useState([]);
   const [listManufacturer, setListManufacturer] = useState([]);
   const [operation, setOperation] = useState("");
   const [response, setResponse] = useState();
+  const [tableData, setTableData] = useState([]);
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const formData = new FormData();
@@ -255,8 +265,39 @@ function Vaccine() {
     preserve: "",
     image: "",
   });
-
+  useEffect(() => {
+    getlistManufacturer();
+  }, []);
   //function
+  const searchVaccine = useMutation({
+    mutationFn: (name) => {
+      console.log(name)
+      console.log("id "+ manufacturerId.toString())
+      return axios({
+        method: "get",
+        url: "http://localhost:8080/API/Vaccine/Search",
+        headers: {
+           "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
+        },
+        params:{
+          name:name,
+          manufacturerId:manufacturerId.toString()
+        },
+      }).then((response) => {
+        console.log(response.data.data);
+        setTableData(response.data.data);
+      });
+    },
+    onSuccess: () => {
+      setShowLoading(false);
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      console.log(error)
+      openNotification("Thất bại", error.response.data.message);
+    },
+  });
   const getJwtToken = () => {
     if (sessionStorage.getItem("jwtToken") !== null)
       return sessionStorage.getItem("jwtToken");
@@ -276,14 +317,14 @@ function Vaccine() {
   }
   const handleAdd = () => {
     setFile(null);
-    getlistManufacturer();
+  
     form.resetFields();
     setFileList([]);
     setOperation("Add");
   };
   const handleUpdate = (record) => {
     setFile(null);
-    getlistManufacturer();
+  
     form.setFieldsValue({
       id: record.id,
       name: record.name,
@@ -386,14 +427,7 @@ function Vaccine() {
     });
   };
   //Effect
-  useEffect(
-    () => {
-      getlistManufacturer();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [dataById],
-    onFinish
-  );
+ 
   //edit title
   let titleText;
   let titleStyle = {};
@@ -436,13 +470,17 @@ function Vaccine() {
   const listItems1 = sentences2.map((sentence, index) => (
     <li key={index}>{sentence.trim()}</li>
   ));
-
   return (
     <App onChose={"Vaccine"}>
       {contextHolder}
       <h2 className="header">Quản lý vaccine</h2>
+    
       <div className="center">
-        <Button
+      <Row style={{marginLeft:"1%",
+        width:"98%"
+      }}>
+          <Col span={6}>
+          <Button
           type="primary"
           onClick={handleAdd}
           style={{
@@ -457,11 +495,48 @@ function Vaccine() {
           />
           Thêm
         </Button>
+          </Col>
+          <Col span={2} style={{paddingLeft:"1%",textAlign:"center",paddingTop:"5px"}}>Nhà cung cấp</Col>
+          <Col span={11} style={{paddingLeft:"1%"}}>
+          <Select style={{width:"95%"}}
+          onChange={(e)=>{
+           
+          setManufacturerId(e.toString())
+          }}
+          value={manufacturerId}
+          >
+             <Select.Option key={""} value={""}
+            >
+                      Tất cả
+                    </Select.Option>
+                  {listManufacturer.map((item) => (
+                    <Select.Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                  
+                </Select>
+          </Col>
+        <Col span={5} style={{textAlign:"right"}}> <Search
+                allowClear={true}
+                placeholder="Nhập tên vắc xin"
+                onSearch={(name, _e, info) => {
+                  console.log(info?.source, name);
+                  if(info?.source =="clear"){
+                    setManufacturerId("");
+                  }
+                  setSearchInfo(name)
+                  console.log("id "+manufacturerId.toString())
+                  setShowLoading(true);
+                  searchVaccine.mutate(name);
+                }}
+              /></Col>
+        </Row>
         <Table
              style={{ margin: "1%", border: "1px solid",  borderColor:"#A9A9A9",  }}
           loading={isLoading}
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
           rowKey="id"
           pagination={{
             defaultPageSize: 8,
@@ -483,13 +558,22 @@ function Vaccine() {
           },
         }}
         closeIcon={null}
-        title={
-          operation === "Add"
-            ? "Thêm vắc xin"
-            : operation === "Update"
-            ? "Sửa thông tin vắc xin"
-            : null
+        title={<div style={ {fontSize: "24px",
+        color: "orange",
+        backgroundColor: "darkblue",
+        fontWeight: "bold",
+        borderRadius: "8px",
+        paddingLeft: "10px",     
         }
+       }
+        >{
+        operation === "Add"
+        ? "Thêm vắc xin"
+        : operation === "Update"
+        ? "Sửa thông tin vắc xin"
+        : null
+    }
+        </div>} 
         open={operation === "Add" || operation === "Update"}
         onCancel={handleCancel}
         footer={null}
@@ -566,7 +650,7 @@ function Vaccine() {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col span={8}>
+            <Col span={9}>
               <Form.Item
                 label="Kháng nguyên"
                 name="antigen"
@@ -583,9 +667,9 @@ function Vaccine() {
                 <Input name="antigen" />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={7}>
               <Form.Item
-                labelCol={{ span: 12 }}
+                labelCol={{ span: 13 }}
                 label="Phương thức đóng gói"
                 name="packing"
                 style={{
@@ -602,10 +686,10 @@ function Vaccine() {
                 <Input type="number" name="packing" maxLength="30" />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={4}>
               <Form.Item
                 initialValue="Liều"
-                labelCol={{ span: 4 }}
+                labelCol={{ span: 10 }}
                 wrapperCol={{ span: 20 }}
                 label="Đơn vị"
                 name="unit"
@@ -617,7 +701,7 @@ function Vaccine() {
                   name="unit"
                   maxLength="30"
                   size="30"
-                  style={{ width: "20%" }}
+                
                 />
               </Form.Item>
             </Col>

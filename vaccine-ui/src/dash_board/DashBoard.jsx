@@ -136,8 +136,8 @@ const DashBoard = () => {
      
         <div
           style={{
-          
-            fontSize: "30px",
+            
+            fontSize: "24px",
             fontWeight: "bold",
             marginBottom: "1%",
           }}

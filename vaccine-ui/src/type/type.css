@@ -8,3 +8,8 @@
     display: flex; /* Enable flexbox for alignment */
     justify-content: flex-end; /* Align buttons to the right */
 }
+.header{
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}

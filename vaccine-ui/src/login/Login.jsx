@@ -318,7 +318,7 @@ function Login() {
               alignItems: "center",
             }}
           >
-            <Row style={{ width: "60%" }}>
+            <Row style={{ width: "70%" }}>
               <Col span={4}>
                 {" "}
                 <img
@@ -338,7 +338,7 @@ function Login() {
                 }}
               >
                 {" "}
-                <div style={{ paddingTop: "4%", textAlign: "center" }}>
+                <div style={{ paddingTop: "7%", textAlign: "center", }}>
                   HỆ THỐNG TIÊM CHỦNG CHO TRẺ TẠI PHƯỜNG
                 </div>
               </Col>
@@ -363,7 +363,7 @@ function Login() {
                 required
                 fullWidth
                 id="username"
-                label="Username"
+                label="Tên tài khoản"
                 name="username"
                 autoComplete="username"
                 autoFocus

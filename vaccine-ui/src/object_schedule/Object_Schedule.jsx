@@ -42,6 +42,7 @@ function ObjectSchedule({ objectId}) {
     });
   };
   //declare variable
+  const [searchInfo,setSearchInfo]= useState("");
   const { useBreakpoint } = Grid;
   const [fontSizeHeader, setFontSizeHeader] = useState("13px");
   const screens = useBreakpoint();
@@ -268,11 +269,15 @@ function ObjectSchedule({ objectId}) {
     queryFn: () =>
       axios
         .get(
-          `http://localhost:8080/API/ObjectInjection/SelectByObjectId?objectId=${objectId}`,
+          `http://localhost:8080/API/ObjectInjection/SelectByObjectIdAndName`,
           {
             headers: {
               Authorization: `Bearer ${getJwtToken()}`,
             },
+            params:{
+              objectId:objectId,
+              name:searchInfo
+            }
           }
         )
         .then((res) => {
@@ -582,6 +587,7 @@ function ObjectSchedule({ objectId}) {
                     onSearch={(value, _e, info) => {
                       console.log(info?.source, value);
                       setShowLoading(true);
+                      setSearchInfo(value);
                       searchObjectSchedule.mutate({
                         name: value,
                         objectId: objectId,
@@ -614,17 +620,27 @@ function ObjectSchedule({ objectId}) {
         </div>
       )}
       <Modal
-        title={
-          operation === "Detail"
-            ? "Thông tin mũi tiêm"
-            : operation === "Delete"
-            ? "Xóa mũi tiêm"
-            : operation === "Add"
-            ? "Thêm mũi tiêm"
-            : operation === "Update"
-            ? "Cập nhật mũi tiêm"
-            : null
+        title={<div style={ {fontSize: "24px",
+        color: "orange",
+        backgroundColor: "darkblue",
+        fontWeight: "bold",
+        borderRadius: "8px",
+        paddingLeft: "10px",
+       
+      }
+    }
+        >{operation === "Detail"
+        ? "Thông tin mũi tiêm"
+        : operation === "Delete"
+        ? "Xóa mũi tiêm"
+        : operation === "Add"
+        ? "Thêm mũi tiêm"
+        : operation === "Update"
+        ? "Cập nhật mũi tiêm"
+        : null}</div>
+          
         }
+        closeIcon={null}
         open={operation !== ""}
         onCancel={handleCancel}
         footer={null}

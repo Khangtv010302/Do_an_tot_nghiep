@@ -12,7 +12,7 @@ public interface VaccineService {
     ResponseEntity<ResponseBase> updateById(Vaccine vaccine,MultipartFile file);
     ResponseEntity<ResponseBase> deleteById(String id);
     ResponseEntity<ResponseBase> selectAll();
-    ResponseEntity<ResponseBase> selectByNameOrManufacturerId(VaccineSearchRequest request);
+    ResponseEntity<ResponseBase> selectByNameOrManufacturerId(String name,String manufacturerId);
     ResponseEntity<ResponseBase> selectById(String id);
 
 }

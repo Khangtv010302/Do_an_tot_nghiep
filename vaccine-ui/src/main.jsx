@@ -19,12 +19,14 @@ import Objects from './object/Object.jsx'
 import Schedule from './schedule/Schedule.jsx'
 import Login from './login/Login.jsx'
 import Test from './test/test.jsx'
+
 import Plan from './plan/Plan.jsx'
 import Storage from './storage/storage.jsx'
 import UnitDelivering from './unit_delivering/UnitDelivering.jsx'
 import { Result,Button } from 'antd'
 import DashBoard from './dash_board/DashBoard.jsx';
 import Statistical from './statistical/Statistical.jsx';
+import HistoryInjection from './history/History.jsx';
 const queryClient = new QueryClient()
 
 console.log("session: "+ sessionStorage.length )
@@ -44,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     {/* <Route path='/Type' element={ sessionStorage.length > 0  || Object.keys(Cookies.get()).length > 0 ? <Type/> : <Login/>}></Route> */}
     <Route path='/Type' element={<Type></Type>}></Route>
     <Route path='/Staff' element={ <Staff/>}></Route>
+    <Route path='/History' element={ <HistoryInjection/>}></Route>
     <Route path='/Manufacturer' element={  <Manufacturer/>}></Route>
     <Route path='/Vaccine'element={ <Vaccine/>}></Route>
     <Route path='/Object' element={ <Objects/>}></Route>
