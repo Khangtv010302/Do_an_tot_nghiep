@@ -55,7 +55,7 @@ public class HealthcareStaffServiceImp implements HealthcareStaffService {
 
     @Override
     public ResponseEntity<ResponseBase> selectByNameOrEmailOrUsername(String info) {
-        List<HealthcareStaff> staffList = healthcareStaffMapper.selectByNameOrEmailOrUsername(info);
+        List<HealthcareStaffResponse> staffList = healthcareStaffMapper.selectByNameOrEmailOrUsername(info);
         return ResponseEntity.ok(new ResponseData<>(staffList));
     }
 

@@ -114,7 +114,7 @@ function HistoryInjection() {
           title: <span style={{ fontSize: fontSizeHeader }}>Tháng tiêm</span>,
           dataIndex: "monthOld",
           width: "7%",
-          responsive: ["md"],
+          responsive: ["xl"],
           key: "monthOld",
           render: (monthOld) => (
             <div style={{ textAlign: "center", fontSize: "12px" }}>
@@ -125,7 +125,7 @@ function HistoryInjection() {
         {
           title: <span style={{ fontSize: fontSizeHeader }}>Mũi</span>,
           width: "5%",
-          responsive: ["sm"],
+          responsive: ["xl"],
           dataIndex: "quantity",
           key: "quantity",
         },
@@ -134,7 +134,7 @@ function HistoryInjection() {
           title: <span style={{ fontSize: fontSizeHeader }}>Trạng thái</span>,
           dataIndex: "state",
           key: "state",
-          responsive: ["sm"],
+          responsive: ["xl"],
           render: (state) => (
             <div>
               {state ? (
@@ -422,7 +422,7 @@ function HistoryInjection() {
           span={24}
           style={{ margin: "1%", fontSize: "150%", fontWeight: "500" }}
         >
-          Danh sách kế hoạch tiêm
+          Danh sách các mũi tiêm
         </Col>
         <Col
           span={24}

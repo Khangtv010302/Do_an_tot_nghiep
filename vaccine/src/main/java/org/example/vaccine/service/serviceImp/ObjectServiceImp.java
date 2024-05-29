@@ -36,8 +36,11 @@ public class ObjectServiceImp implements ObjectService {
 
     @Override
     public ResponseEntity<ResponseBase> updateById(Objects objects) {
-        CommonResponseCode code = handle.response(objectMapper.updateById(objects));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        if(objectMapper.updateById(objects) == 3)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Email đã tồn tại"));
+        if(objectMapper.updateById(objects) == 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Không thấy tìm thấy đối tượng"));
+        return ResponseEntity.ok().body(new ResponseBase("Cập nhật thành công"));
     }
 
     @Override

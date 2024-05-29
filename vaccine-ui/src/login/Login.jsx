@@ -164,6 +164,10 @@ function Login() {
     },
   })
   //function
+  const handleSendOtp = () =>{
+    setShowLoading(true);
+    sendVerifyCode.mutate(email)
+  }
   function validatePassword(password) {
     const regex = /^(?=.*[A-Z])[A-Za-z0-9]*$/;
     return regex.test(password);
@@ -436,6 +440,7 @@ function Login() {
       </Grid>
       <LoadingModal showLoading={showLoading} />
       <Modal
+        maskClosable={false}
         open={operation !== ""}
         footer={false}
         title={
@@ -515,8 +520,8 @@ function Login() {
           id="password"
           label="Mật khẩu"
           variant="outlined"
-          error={!validatePassword(password)}
-          helperText={!validatePassword(password) ?"Mật khẩu phải bắt đầu bằng ký tự in hoa và phải có ký tự số" :""}
+          error={!validatePassword(password) && password !== ""}
+          helperText={!validatePassword(password)&& password !=="" ?"Mật khẩu phải bắt đầu bằng ký tự in hoa và phải có ký tự số" :""}
           size="small"
           type=   {showPasswordModal ? "text" : "password"}
           InputProps={{
@@ -543,8 +548,8 @@ function Login() {
           value={rePassword}
           id="rePassword"
           label="Nhập lại mật khẩu"
-          error={password !== rePassword}
-          helperText={password !== rePassword ? "Mật khẩu nhập lại không trùng khớp" : ""}
+          error={password !== rePassword && rePassword !==""}
+          helperText={password !== rePassword && rePassword !==""? "Mật khẩu nhập lại không trùng khớp" : ""}
           variant="outlined"
           size="small"
           type=   {showPasswordModal ? "text" : "password"}
@@ -561,7 +566,7 @@ function Login() {
             span={24}
             style={{
               textAlign: "center",
-              margin: "20px 0",
+              margin: "10px 0",
               backgroundColor: "#000066",
               borderRadius: "5px",
               height: "50px",
@@ -582,6 +587,33 @@ function Login() {
               {operation ==="EnterEmail"? "Yêu cầu gửi mã xác thực" : operation ==="EnterCode" ? "Xác nhận":"Đổi mật khẩu"}
             </Button>
           </Col>
+          {operation === "EnterCode"?
+             <Col
+             span={24}
+             style={{
+               textAlign: "center",
+              
+               backgroundColor: "#000066",
+               borderRadius: "5px",
+               height: "50px",
+               padding: "7px 0",
+             }}
+           >
+             <Button
+               type="primary"
+               onClick={handleSendOtp}
+               style={{
+                 color: "white",
+                 fontWeight: "400",
+                 fontSize: "16px",
+                 textTransform: "none",
+               }}
+               disabled={emailError || email == "" || password !== rePassword}
+             >
+              Gửi lại mã
+             </Button>
+           </Col>
+          : null}
           <Col
             span={24}
             style={{

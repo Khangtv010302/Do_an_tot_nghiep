@@ -441,7 +441,7 @@ function Vaccine() {
       fontWeight: "bold",
       borderRadius: "8px",
       paddingLeft: "10px",
-      marginTop: "20px",
+     
     };
   } else if (operation === "Delete") {
     titleText = "Xóa vắc xin !!";

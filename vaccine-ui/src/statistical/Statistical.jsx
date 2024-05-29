@@ -54,7 +54,9 @@ function Statistical() {
   const [numberNewVaccine, setNumberNewVaccine] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const { useBreakpoint } = Grid;
-
+  const customLocale = {
+    emptyText: '"Không có dữ liệu', // Change this to your custom message
+  };
   const screens = useBreakpoint();
   const dateFormat = "YYYY-MM-DD";
 
@@ -86,7 +88,7 @@ function Statistical() {
       width: "15%",
     },
     {
-      title: "SL tồn mới nhận",
+      title: "SL tồn mới nhập",
       dataIndex: "newNumber",
       key: "newNumber",
       width: "15%",
@@ -569,6 +571,7 @@ function Statistical() {
         }}
       >
         <Table
+        locale={customLocale}
           className="custom-header"
           style={{
             border: "3px solid",

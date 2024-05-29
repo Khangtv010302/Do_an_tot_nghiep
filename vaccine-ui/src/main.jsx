@@ -40,7 +40,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Route path="*" element={<Result status={404} title="Không tìm thấy trang"
    subTitle="Trang bị lỗi hoặc không tồn tại" 
    extra={<Button type="primary" onClick={()=>{
-   }}>Trở lại trang chủ</Button>}/> }/>
+    history.back();
+   }}>Trở lại trang trước</Button>}/> }/>
     <Route path='/Login'element={<Login/>}></Route>
     <Route path='/DashBoard' element={<DashBoard/>}></Route>
     {/* <Route path='/Type' element={ sessionStorage.length > 0  || Object.keys(Cookies.get()).length > 0 ? <Type/> : <Login/>}></Route> */}

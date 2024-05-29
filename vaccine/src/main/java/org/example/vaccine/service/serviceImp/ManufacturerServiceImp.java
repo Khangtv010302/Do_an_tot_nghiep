@@ -14,8 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -35,8 +33,11 @@ public class ManufacturerServiceImp implements ManufacturerService {
 
     @Override
     public ResponseEntity<ResponseBase> updateById(Manufacturer manufacturer) {
-        CommonResponseCode code = handle.response(manufacturerMapper.updateManufacturer(manufacturer));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        if(manufacturerMapper.updateManufacturer(manufacturer) == 3)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Tên đã tồn tại"));
+        if(manufacturerMapper.updateManufacturer(manufacturer) == 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Không thấy tìm thấy nhà cung cấp"));
+        return ResponseEntity.ok().body(new ResponseBase("Cập nhật thành công"));
     }
 
     @Override

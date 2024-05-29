@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 public interface PlanService {
     ResponseEntity<ResponseBase> insert(PlanRequest request) throws DuplicateScheduledDate;
-    ResponseEntity<ResponseBase> updateById(Plan plan) throws UpdateException;
+    ResponseEntity<ResponseBase> updateById(Plan plan) throws UpdateException, DuplicateScheduledDate;
     ResponseEntity<ResponseBase> deleteById(String id) throws DeleteException;
     ResponseEntity<ResponseBase> selectByFromDayToDay(LocalDate fromDay,LocalDate toDay);
     ResponseEntity<ResponseBase> selectById(String id);

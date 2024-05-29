@@ -10,6 +10,7 @@ import org.example.vaccine.model.GeneralInjection;
 import org.example.vaccine.model.request.GeneralInjectionRequest;
 import org.example.vaccine.model.response.GeneralInjectionResponse;
 import org.example.vaccine.service.GeneralInjectionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,8 @@ public class GeneralInjectionServiceImp implements GeneralInjectionService {
     @Override
     public ResponseEntity<ResponseBase> deleteByVaccineIdAndMonthOld(String vaccineId, int monthOld) {
         int isDelete = generalInjectionMapper.deletebyVaccineIdAndMonthOld(vaccineId,monthOld);
+        if(isDelete ==0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Không có tháng tiêm chủng này trong lịch"));
         return ResponseEntity.ok().body(new ResponseBase("Xóa thành công"));
     }
 

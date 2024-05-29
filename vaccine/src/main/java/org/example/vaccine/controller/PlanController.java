@@ -25,7 +25,7 @@ public class PlanController {
         return planService.insert(request);
     }
     @PutMapping("")
-    ResponseEntity<ResponseBase> updateById(@RequestBody Plan plan) throws UpdateException {
+    ResponseEntity<ResponseBase> updateById(@RequestBody Plan plan) throws UpdateException, DuplicateScheduledDate {
         return planService.updateById(plan);
     }
     @DeleteMapping("")

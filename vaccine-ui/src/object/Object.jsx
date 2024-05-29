@@ -291,7 +291,9 @@ function Objects() {
     setOperation("Update");
   };
   const handleCancel = () => {
+    if(operation!=="Add")
     handleDetail(dataById);
+  else setOperation("");
   };
   function onFinish(values) {
     values = {
@@ -388,6 +390,7 @@ function Objects() {
               columns={columns}
               dataSource={response}
               rowKey="id"
+         
               pagination={{
                 defaultPageSize: 10,
                 position: ["bottomCenter"],
@@ -842,6 +845,7 @@ function Objects() {
                           name="reminder"
                           labelCol={1}
                           label="Hẹn tiêm"
+                          initialValue={true}
                           valuePropName="checked"
                         >
                           <Switch
@@ -853,7 +857,7 @@ function Objects() {
                             className="custom-switch"
                             checkedChildren="Đang bật"
                             unCheckedChildren="Đang tắt"
-                            defaultChecked={false}
+                            defaultChecked={true}
                           />
                         </Form.Item>
                       </Col>

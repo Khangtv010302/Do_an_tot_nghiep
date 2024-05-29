@@ -69,8 +69,14 @@ public class PlanServiceImp implements PlanService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseBase> updateById(Plan plan) throws UpdateException {
-        int code =planMapper.updateById(plan);
+    public ResponseEntity<ResponseBase> updateById(Plan plan) throws UpdateException, DuplicateScheduledDate {
+        int code;
+        try {
+           code =planMapper.updateById(plan);
+        }catch (Exception e){
+            throw new DuplicateScheduledDate();
+        }
+
         if(code ==0)
             throw new UpdateException();
         planMapper.deletePlanDetailById(plan.getId());

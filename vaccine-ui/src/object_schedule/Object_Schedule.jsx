@@ -445,7 +445,6 @@ function ObjectSchedule({ objectId}) {
     }
      
     form.setFieldsValue(record);
-    form.setFieldValue("state",!record.state)
   
     setOperation("Update");
   };
@@ -734,7 +733,7 @@ function ObjectSchedule({ objectId}) {
             >
               <Select
                 style={
-                  operation ==="Update" ?   { pointerEvents: "none" } :{}
+                  operation ==="Detail" || operation ==="Delete" ?   { pointerEvents: "none" } :{}
                 }
               >
                 <Select.Option value={true}>Đã tiêm chủng</Select.Option>

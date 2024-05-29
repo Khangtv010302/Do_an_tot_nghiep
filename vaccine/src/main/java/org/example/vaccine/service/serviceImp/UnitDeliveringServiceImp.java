@@ -38,8 +38,11 @@ public class UnitDeliveringServiceImp implements UnitDeliveringService {
 
     @Override
     public ResponseEntity<ResponseBase> updateById(UnitDelivering manufacturer) {
-        CommonResponseCode code = handle.response(unitDeliveringMapper.updateManufacturer(manufacturer));
-        return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+        if(unitDeliveringMapper.updateManufacturer(manufacturer) == 3)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Tên đã tồn tại"));
+        if(unitDeliveringMapper.updateManufacturer(manufacturer) == 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Không thấy tìm thấy đơn vị xuất"));
+        return ResponseEntity.ok().body(new ResponseBase("Cập nhật thành công"));
     }
 
     @Override

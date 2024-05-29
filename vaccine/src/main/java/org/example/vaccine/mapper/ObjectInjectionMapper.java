@@ -41,8 +41,14 @@ public interface ObjectInjectionMapper {
     void updateMinusNumberReceiverDeliver(String lotNumber,String id);
     @Select("SELECT  COUNT(*) FROM receive_deliver_detail WHERE vaccine_id= (SELECT vaccine_id FROM object_injection WHERE id =#{id}) AND lot_number = #{lotNumber}" +
             " AND quantity_delivering < quantity_receiving")
-    int isExistLotNumberById(String lotNumber,String id);
+    int isExistLotNumberByIdAdd(String lotNumber,String id);
+    @Select("SELECT state FROM object_injection WHERE id =#{id}")
+    Boolean getStateById(String id);
+    @Select("SELECT  COUNT(*) FROM receive_deliver_detail WHERE vaccine_id= (SELECT vaccine_id FROM object_injection WHERE id =#{id}) AND lot_number = #{lotNumber}" +
+            " AND quantity_delivering >= quantity_receiving")
+    int isExistLotNumberByIdMinus(String lotNumber,String id);
     @Select("SELECT  COUNT(*) FROM receive_deliver_detail WHERE vaccine_id= #{vaccineId} AND lot_number = #{lotNumber}" +
             " AND quantity_delivering < quantity_receiving")
     int isExistLotNumberByVaccineId(String lotNumber,String vaccineId);
+
 }

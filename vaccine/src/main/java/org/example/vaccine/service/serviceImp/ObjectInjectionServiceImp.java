@@ -44,7 +44,7 @@ public class ObjectInjectionServiceImp implements ObjectInjectionService {
         int isInsertSuccess = objectInjectionMapper.insert(request);
         if (isInsertSuccess == 0 )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Thêm vắc xin thất bại"));
-        if ( request.getLotNumber()!=null) {
+        if ( request.getLotNumber()!=null && request.getState() ) {
             objectInjectionMapper.updateAddNumberReceiverDeliverByVaccineId(request.getLotNumber(), request.getVaccineId());
         }
         return ResponseEntity.ok().body(new ResponseBase("Đã thêm vắc xin vào danh sách"));
@@ -52,8 +52,17 @@ public class ObjectInjectionServiceImp implements ObjectInjectionService {
 
     @Override
     public ResponseEntity<ResponseBase> updateById(ObjectInjectionUpdateRequest request) {
-
-        int isExistLotNumber = objectInjectionMapper.isExistLotNumberById(request.getLotNumber(), request.getId());
+        Boolean state = objectInjectionMapper.getStateById(request.getId());
+        if(state == request.getState()){
+            int isUpdateSuccess = objectInjectionMapper.updateById(request);
+            if (isUpdateSuccess == 0)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Cập nhật thất bại"));
+            else  return ResponseEntity.ok().body(new ResponseBase("Cập nhật thành công"));
+        }
+        int isExistLotNumber ;
+        if(request.getState())
+            isExistLotNumber = objectInjectionMapper.isExistLotNumberByIdAdd(request.getLotNumber(), request.getId());
+        else   isExistLotNumber = objectInjectionMapper.isExistLotNumberByIdMinus(request.getLotNumber(), request.getId());
         if (isExistLotNumber <= 0 && request.getLotNumber() != null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Số lô vắc xin không đúng hoặc đã hết vắc xin của lô hàng này"));
         int isUpdateSuccess = objectInjectionMapper.updateById(request);

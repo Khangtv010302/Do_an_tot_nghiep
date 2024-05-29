@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import {
   Space,
   Table,
-  Input,
   Checkbox,
   Button,
   Modal,
@@ -14,6 +13,7 @@ import {
   Tooltip,
   notification,
   Select,
+  Image,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
@@ -167,7 +167,21 @@ function Schedule() {
       title: "#",
       dataIndex: "",
       key: "index",
-      render: (_, __, index) => (page - 1) * 8 + index + 1,
+      render: (_, __, index) => (page - 1) * 5 + index + 1,
+    },
+    {
+      title:"Ảnh",
+      dataIndex:"image",
+      key:"image",
+      width:"10%",
+      render: (image) => (
+        <Image
+        style={{
+          width:"100%"
+        }}
+        src={image}
+      />
+      )
     },
     {
       title: "Vắc xin",
@@ -224,10 +238,12 @@ function Schedule() {
         .map((vaccine) => vaccine.monthOld);
       const antigen = data.find((vaccine) => vaccine.name === name).antigen;
       const vaccineId = data.find((vaccine) => vaccine.name === name).vaccineId;
+      const image = data.find((vaccine) => vaccine.name === name).image;
       return {
         vaccineId: vaccineId,
         antigen: antigen,
         name: name,
+        image:image,
         monthOlds: monthOlds.join(", "), // Chuyển danh sách các tháng thành một chuỗi
       };
     });
@@ -332,7 +348,7 @@ function Schedule() {
           dataSource={newData}
           rowKey="id"
           pagination={{
-            defaultPageSize: 8,
+            defaultPageSize: 5,
             position: ["bottomCenter"],
             onChange(current) {
               setPage(current);

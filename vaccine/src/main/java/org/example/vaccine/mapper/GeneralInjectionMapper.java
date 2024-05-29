@@ -17,6 +17,6 @@ public interface GeneralInjectionMapper {
     int deletebyVaccineIdAndMonthOld (String vaccineId,int monthOld);
     @Delete("DELETE FROM general_injection WHERE vaccine_id=#{vaccineId} ")
     int deletebyVaccineId (String vaccineId);
-    @Select("SELECT vaccine_id,month_old, general_injection.id, vaccine.name, vaccine.antigen FROM general_injection INNER JOIN vaccine on general_injection.vaccine_id = vaccine.id")
+    @Select("SELECT vaccine_id,month_old, general_injection.id, vaccine.name, vaccine.antigen,vaccine.image  FROM general_injection INNER JOIN vaccine on general_injection.vaccine_id = vaccine.id")
     List<GeneralInjectionResponse> selectAll();
 }

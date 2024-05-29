@@ -95,7 +95,7 @@ const DashBoard = () => {
   const getNumberPlan = () => {
     axios({
       method: "get",
-      url: "  http://localhost:8080/API/DashBoard/SelectNumberReceiveDeliver",
+      url: "http://localhost:8080/API/DashBoard/SelectNumberPlanComplete",
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${getJwtToken()}`,

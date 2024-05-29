@@ -205,6 +205,8 @@ function HeaderPage() {
   };
   function validatePassword(password) {
     const regex = /^(?=.*[A-Z])[A-Za-z0-9]*$/;
+    if(password ==="")
+      return true;
     return regex.test(password);
   }
   const handleCancel = () => {
@@ -394,8 +396,8 @@ function HeaderPage() {
           value={reNewPassword}
           id="rePassword"
           label="Nhập lại mật khẩu mới"
-          error={newPassword !== reNewPassword}
-          helperText={newPassword !== reNewPassword ? "Mật khẩu nhập lại không trùng khớp" : ""}
+          error={newPassword !== reNewPassword && reNewPassword !==""}
+          helperText={newPassword === reNewPassword && reNewPassword ==="" ? null : "Mật khẩu nhập lại không trùng khớp"}
           variant="outlined"
           size="small"
           type=   {showNewPasswordModal ? "text" : "password"}
@@ -411,7 +413,7 @@ function HeaderPage() {
                     style={{ textAlign: "right" }}
                     type="primary"
                     onClick={handleChangePassword}
-                    disabled={oldPassword === "" || newPassword !== reNewPassword}
+                    disabled={oldPassword === "" || newPassword !== reNewPassword || reNewPassword ===""}
                   >
                     Đổi mật khẩu
                   </Button>
@@ -434,13 +436,23 @@ function HeaderPage() {
       </Modal>):null}
 
       {operation === "Account" || operation === "Update" ? <Modal
-        title={
-          operation === "Account"
-            ? "Thông tin cá nhân"
-            : operation === "Update"
-            ? "Chỉnh sửa thông tin các nhân"
-            : null
-        }
+       title={<div style={ {fontSize: "24px",
+       color: "orange",
+       backgroundColor: "darkblue",
+       fontWeight: "bold",
+       borderRadius: "8px",
+       paddingLeft: "10px",
+      
+     }
+   }
+       >{ operation === "Account"
+       ? "Thông tin cá nhân"
+       : operation === "Update"
+       ? "Chỉnh sửa thông tin các nhân"
+       : null}
+       </div>
+       }
+        
         open={operation !== ""}
         onCancel={handleCancel}
         footer={null}

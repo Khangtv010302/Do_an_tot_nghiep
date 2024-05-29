@@ -25,7 +25,7 @@ public interface HealthcareStaffMapper {
     @Select("SELECT he.id,he.email,he.fullname,he.place_of_residence,he.username,he.phone_number,he.role_id,he.sex, ro.name as 'roleName' " +
             "FROM healthcare_staff as he INNER JOIN role as ro on he.role_id = ro.id  WHERE he.fullname LIKE CONCAT('%',#{info}, '%') OR he.email LIKE CONCAT('%',#{info}, '%')  " +
             "OR he.username LIKE CONCAT('%', #{info}, '%')")
-    List<HealthcareStaff> selectByNameOrEmailOrUsername(String info);
+    List<HealthcareStaffResponse> selectByNameOrEmailOrUsername(String info);
     @Select("SELECT  * FROM healthcare_staff WHERE id = #{id}")
     HealthcareStaff selectById(String id);
     @Select("SELECT username,password,code as roleCode FROM healthcare_staff as he INNER JOIN role as ro ON he.role_id = ro.id WHERE username= #{username}")

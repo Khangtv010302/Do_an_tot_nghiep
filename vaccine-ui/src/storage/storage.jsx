@@ -1051,7 +1051,7 @@ function Storage() {
                   </Col>
                   <Col span={24}>
                     {operation === "Detail" || operation === "Delete" ? null : (
-                      <Button type="primary" onClick={handleSubAdd}>
+                      <Button type="primary" onClick={handleSubAdd} style={{marginLeft:"1%"}}>
                         Thêm vắc xin
                       </Button>
                     )}
@@ -1282,7 +1282,7 @@ function Storage() {
             >
               <Input
                 name="lotNumber"
-                readOnly={subOperation !== "Add" && subOperation !== "Update"}
+                readOnly={subOperation !== "Add" }
               />
             </Form.Item>
             <Form.Item

@@ -16,3 +16,9 @@
   padding: 4px 20px !important;
  
 }
+.info-a{
+  color: white;
+}
+.info-a:hover{
+  color: #C02424;
+}

@@ -55,8 +55,10 @@ public class VaccineServiceImp implements VaccineService {
            var data = cloudinary.uploader().upload(file.getBytes(), Map.of());
            String image = data.get("url").toString();
            vaccine.setImage(image);
-           CommonResponseCode code = handle.response(vaccineMapper.updateById(vaccine));
-           return ResponseEntity.status(code.getHttp()).body(new ResponseBase(code));
+           if (vaccineMapper.updateById(vaccine) ==1 )
+               return ResponseEntity.ok().body(new ResponseBase("Cập nhật thông tin thành công"));
+           deleteImage(image);
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Cập nhật thất bại"));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Upload hình ảnh thất bại"));
         }

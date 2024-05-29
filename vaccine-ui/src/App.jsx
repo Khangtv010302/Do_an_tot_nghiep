@@ -8,7 +8,7 @@ import {
   LineChartOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import {  Layout, Menu, theme,Grid,notification } from 'antd';
+import {  Layout, Menu, theme,Grid,notification, Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Cookies from 'js-cookie'
 import { 
@@ -23,7 +23,7 @@ import {
 import {  useMutation } from "@tanstack/react-query";
 import HeaderPage from './header/header';
 import { Helmet } from 'react-helmet';
-import { History, HistoryOutlined } from '@mui/icons-material';
+import { FacebookOutlined, History, HistoryOutlined } from '@mui/icons-material';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -44,7 +44,7 @@ const items = [
   getItem('Thống kê báo cáo', 'Statistical', <LineChartOutlined />),
   getItem('Nhà cung cấp', 'Manufacturer', <FontAwesomeIcon icon={faIndustry} />),
   getItem('Đơn vị xuất', 'UnitDelivering', <FontAwesomeIcon icon={faTruckMedical} />),
-  getItem('Vaccine', 'Vaccine', <FontAwesomeIcon icon={faSyringe} />),
+  getItem('Vắc xin', 'Vaccine', <FontAwesomeIcon icon={faSyringe} />),
   getItem('Nhân viên', 'staff', <UserOutlined />),
   getItem('Loại nhân viên', 'type', <FontAwesomeIcon icon={faUsers} />),
 ];
@@ -74,13 +74,12 @@ const App = ({children,onChose}) => {
     const interval  = setInterval(() => {
       const currentTime = new Date();
       const dateObject = new Date(getExpiredDate());
-      const expiredDateMinus= new Date(dateObject.getTime() - (30*1000))
-     
+      const expiredDateMinus = new Date(dateObject.getTime() - (60*1000))
+      
+     console.log(currentTime>expiredDateMinus);
       if (currentTime>expiredDateMinus){
       getNewToKen.mutate()
         }
-      
-      
     }, 1000); 
     return () => clearInterval(interval);
   }, []);
@@ -206,13 +205,33 @@ const App = ({children,onChose}) => {
       >
         {children}
       </Content>
-      <Footer
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      <Footer style={{ backgroundColor: 'rgb(0, 21, 41)', padding: '40px 50px', color:"white"}}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={8}>
+          <h3 style={{color:"#C02424",fontSize:"20px  "}}>Trạm y tế phường Vĩnh Thọ</h3>
+          <p>Trạm y tế phường Vĩnh Thọ thành phố Nha Trang tỉnh Khánh Hòa được xây dựng nhằm cung cấp dịch vụ khám chữa bệnh cho người dân phường Vĩnh Thọ, tổ chức các hoạt động y tế như tiêm chủng; phỏng chống dịch bệnh và quản lý, theo dõi sức khỏe cho các đối tượng như người cao tuổi, trẻ sơ sinh và phụ nữa mang thai.</p>
+        
+        </Col>
+        <Col xs={24} sm={8}>
+        <h3 style={{color:"#C02424",fontSize:"20px  "}}>Thông tin</h3>
+          <a className='info-a'  href='https://mapstore.vn/dia-diem/tinh-khanh-hoa/thanh-pho-nha-trang/phuong-vinh-tho/tram-y-te-phuong-vinh-tho-15-ho-tung-mau-phuong-vinh-tho-thanh-pho-nha-trang-tinh-khanh-hoa-1633050010112000'>Trạm y tế phường Vĩnh Thọ</a>
+        </Col>
+        <Col xs={24} sm={8}>
+        <h3 style={{color:"#C02424",fontSize:"20px  "}}>Liên hệ</h3>
+          <p>Phone: +058 3834 009</p>
+          <p>Follow us: 
+          </p>
+          <p style={{marginTop:"1%",}}>
+          <a className="footer-link" href="https://www.facebook.com/pages/Tr%E1%BA%A1m%20Y%20T%E1%BA%BF%20Ph%C6%B0%E1%BB%9Dng%20V%C4%A9nh%20Th%E1%BB%8D/539950223127629/" target="_blank" rel="noopener noreferrer" >
+              <FacebookOutlined />
+            </a>
+          </p>
+        </Col>
+      </Row>
+      <div style={{ textAlign: 'center', marginTop: '40px' }}>
+        <span>© 2024 Trạm y tế phường Vĩnh Thọ</span>
+      </div>
+    </Footer>
     </Layout>
   </Layout>: <Navigate to="/Login" replace></Navigate>
     

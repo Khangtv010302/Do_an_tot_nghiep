@@ -12,4 +12,5 @@ import org.example.vaccine.model.GeneralInjection;
 public class GeneralInjectionResponse extends GeneralInjection {
     private String name;
     private String antigen;
+    private String image;
 }

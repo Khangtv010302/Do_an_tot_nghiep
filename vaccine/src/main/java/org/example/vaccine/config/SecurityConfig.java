@@ -37,13 +37,6 @@ import java.util.List;
         type = SecuritySchemeType.HTTP,
         in = SecuritySchemeIn.HEADER
 )
-@SecurityScheme(
-        name = "userAuth",
-        description = "Basic auth with DB description",
-        scheme = "bearer",  // Consider using "basic" for clarity
-        type = SecuritySchemeType.HTTP,
-        in = SecuritySchemeIn.HEADER
-)
 public class SecurityConfig {
     final
     JwtTokenProvider jwtTokenProvider;

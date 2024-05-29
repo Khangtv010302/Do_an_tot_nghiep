@@ -61,6 +61,11 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
     @Override
     @Transactional
     public ResponseEntity<ResponseBase> updateById(ReceiveDeliver receiveDeliver) throws UpdateException {
+        int isExistUnitDeliveringIdAndDateDelivering =
+                receiveDeliverMapper.isExistUnitDeliveringIdAndDateDelivering
+                        (receiveDeliver.getUnitDeliveringId(), receiveDeliver.getDateDelivering());
+        if (isExistUnitDeliveringIdAndDateDelivering > 0)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Đã nhập trùng ngày xuất của đơn vị xuất"));
         int code;
         code = receiveDeliverMapper.updateById(receiveDeliver);
         if (code == 0)

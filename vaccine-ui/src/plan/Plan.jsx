@@ -630,15 +630,10 @@ function Plan() {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           name="wrap"
-          labelCol={{
-            flex: "160px",
-          }}
-          labelAlign="left"
+         
+         
           layout="vertical"
-          labelWrap
-          wrapperCol={{
-            flex: 1,
-          }}
+       
           colon={false}
           style={{
             marginTop: "2%",
@@ -652,7 +647,7 @@ function Plan() {
           <Row>
             <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
-                labelCol={1}
+              
                 label="Đợt tiêm"
                 name="scheduledDate"
                 initialValue={dayjs()}
@@ -683,7 +678,7 @@ function Plan() {
             </Col>
             <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
-                labelCol={1}
+           
                 initialValue={"TYT Vĩnh Thọ"}
                 label="Địa điểm:"
                 wrapperCol={1}
@@ -704,10 +699,10 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 : 5} style={{ marginLeft: "4%" }}>
+            <Col span={9} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={"Thường xuyên"}
-                labelCol={1}
+              
                 label="Hình thức tiêm:"
                 name="form"
                 rules={[
@@ -735,10 +730,10 @@ function Plan() {
             </Col>
             <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
-                labelCol={1}
+              
                 initialValue={1}
                 label="Số ngày tiêm:"
-                wrapperCol={1}
+              
                 name="numberDate"
                 style={{
                   width: "100%", // Adjust width as needed
@@ -766,9 +761,9 @@ function Plan() {
             </Col>
             <Col span={screens.xs ? 8 : 6} style={{ marginLeft: "4%" }}>
               <Form.Item
-                labelCol={1}
+              
                 label="Tổng số đối tượng:"
-                wrapperCol={1}
+              
                 name="numberObject"
                 style={{
                   width: "100%", // Adjust width as needed
@@ -794,7 +789,7 @@ function Plan() {
                 />
               </Form.Item>
             </Col>
-            <Col span={screens.xs ? 8 : 5} style={{ marginLeft: "4%" }}>
+            <Col span={9} style={{ marginLeft: "4%" }}>
               <Form.Item
                 initialValue={false}
                 labelCol={1}
@@ -822,7 +817,7 @@ function Plan() {
             </Col>
             <Col span={24} style={{ marginLeft: "4%" }}>
               <Form.Item
-                labelCol={1}
+               
                 label="Danh sách vaccine:"
                 name="vaccineId"
                 rules={[
@@ -865,7 +860,7 @@ function Plan() {
               ) : null}
             </Col>
             <Col span={12}>
-              <div className="submit">
+              <div className="submit" >
                 {operation === "Detail" ? null : (
                   <Button
                     style={{
