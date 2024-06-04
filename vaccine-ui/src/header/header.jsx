@@ -60,6 +60,40 @@ function HeaderPage() {
     },
   ];
   //tanstack
+  const logout = useMutation({
+    mutationFn: () => {
+      const refreshToken= getRefreshToken();
+      return axios({
+        method: "post",
+        url: "http://localhost:8080/API/Account/Logout",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${getJwtToken()}`,
+        },
+        params: {
+          refreshToken
+        },
+      }).then((response) => {
+       return response;
+      });
+    },
+    onSuccess: () => {
+      setShowLoading(false);
+      openNotification("Thành công", "Bạn đã đăng xuất");
+      sessionStorage.clear();
+      const cookieKeys = Object.keys(Cookies.get());
+      // Iterate over each key and remove the corresponding cookie
+      cookieKeys.forEach((key) => {
+        Cookies.remove(key);
+      });
+      navigate("/Login", { replace: true });
+    },
+    onError: (error) => {
+      setShowLoading(false);
+      console.log(error.response.data.message)
+      openNotification("Thất bại", error.response.data.message);
+    },
+  });
   const changePassword = useMutation({
     mutationFn: () => {
       const username= getUsername();
@@ -236,6 +270,11 @@ function HeaderPage() {
       return Cookies.get("jwtToken");
     }
   };
+  const getRefreshToken = () => {
+    if (sessionStorage.getItem("refreshToken") !== null)
+      return sessionStorage.getItem("refreshToken");
+    if (Cookies.get("refreshToken") !== undefined) return Cookies.get("refreshToken");
+  };
   const getUsername = () => {
     if (sessionStorage.getItem("username") !== null)
       return sessionStorage.getItem("username");
@@ -259,13 +298,8 @@ function HeaderPage() {
   const onClick = ({ key }) => {
     console.log(`Click on item ${key}`);
     if (key === "logout") {
-      sessionStorage.clear();
-      const cookieKeys = Object.keys(Cookies.get());
-      // Iterate over each key and remove the corresponding cookie
-      cookieKeys.forEach((key) => {
-        Cookies.remove(key);
-      });
-      navigate("/Login", { replace: true });
+      logout.mutate();
+     
     }
     if (key ==="ChangePassword"){
       setOldPassword("");

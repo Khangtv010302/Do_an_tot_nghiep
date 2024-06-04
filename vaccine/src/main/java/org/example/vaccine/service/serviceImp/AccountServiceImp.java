@@ -81,6 +81,14 @@ public class AccountServiceImp implements AccountService {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Cập nhật không thành công"));
     }
 
+    @Override
+    public ResponseEntity<ResponseBase> logout(String refreshToken) {
+        int isUpdate=accountMapper.logout(refreshToken);
+        if (isUpdate == 1)
+            return ResponseEntity.ok().body(new ResponseBase("Đăng xuất thành công"));
+        return  ResponseEntity.badRequest().body(new ResponseBase("Đăng xuất thất bại"));
+    }
+
     public boolean verifyPassword(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);

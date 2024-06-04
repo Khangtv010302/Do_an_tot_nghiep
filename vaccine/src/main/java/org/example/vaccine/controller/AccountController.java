@@ -43,4 +43,9 @@ public class AccountController {
     {
         return  accountService.updateAccountById(accountUpdateRequest);
     }
+    @PostMapping("/Logout")
+    public ResponseEntity<ResponseBase> logout (@RequestParam String refreshToken)
+    {
+        return  accountService.logout(refreshToken);
+    }
 }

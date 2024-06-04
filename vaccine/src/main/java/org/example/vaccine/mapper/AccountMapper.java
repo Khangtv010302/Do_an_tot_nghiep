@@ -22,4 +22,6 @@ public interface AccountMapper {
     HealthcareStaff selectByUsername(String username);
     @Update("UPDATE  healthcare_staff SET email = #{email}, fullname = #{fullname},phone_number = #{phoneNumber},place_of_residence = #{placeOfResidence}, sex = #{sex} WHERE id=#{id} ")
     int updateAccountById (AccountUpdateRequest accountUpdateRequest);
+    @Update("UPDATE  healthcare_staff SET expire_date_token = null, refresh_token = null  WHERE refresh_token=#{refreshToken} ")
+    int logout (String refreshToken);
 }

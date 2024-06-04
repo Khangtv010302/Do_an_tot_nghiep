@@ -10,4 +10,5 @@ public interface AccountService {
     ResponseEntity<ResponseBase> getJwtTokenFromTokenRequest(String refreshToken,String username,String jwtToken);
     ResponseEntity<ResponseBase> selectByUsername(String username);
     ResponseEntity<ResponseBase> updateAccountById(AccountUpdateRequest request);
+    ResponseEntity<ResponseBase> logout(String refreshToken);
 }
