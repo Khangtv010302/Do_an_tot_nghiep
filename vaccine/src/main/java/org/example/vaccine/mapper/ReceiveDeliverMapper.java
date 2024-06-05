@@ -50,7 +50,7 @@ public interface ReceiveDeliverMapper {
     @Select("SELECT vaccine_id, name, quantity_receiving, unit,packing,lot_number,expired_date,quantity_delivering FROM receive_deliver_detail as re INNER JOIN vaccine as va on re.vaccine_id = va.id WHERE receive_deliver_id = #{receiveDeliverId}")
     List<ReceiveDetailResponse> selectDetailByReceiveDeliverId(String receiveDeliverId);
 
-    @Select("SELECT count(*)  FROM  receive_deliver WHERE unit_delivering_id = #{unitDeliveringId} AND date_delivering=#{dateDelivering}")
+    @Select("SELECT count(*)  FROM  receive_deliver WHERE unit_delivering_id <> #{unitDeliveringId} AND date_delivering=#{dateDelivering}")
     int isExistUnitDeliveringIdAndDateDelivering(String unitDeliveringId, LocalDate dateDelivering);
     @Select("SELECT  count(*) FROM receive_deliver_detail WHERE lot_number =#{lotNumber} AND vaccine_id = #{vaccineId}")
     int isExistLotNumberVaccineId(String lotNumber,String vaccineId);

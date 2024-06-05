@@ -47,6 +47,7 @@ function ObjectSchedule({ objectId}) {
   const [fontSizeHeader, setFontSizeHeader] = useState("13px");
   const screens = useBreakpoint();
   const { Search } = Input;
+  const [listLotNumber,setListLotNumber]= useState([]);
   const [listVaccine, setListVaccine] = useState([]);
   const [page, setPage] = React.useState(1);
   const [showLoading, setShowLoading] = useState(false);
@@ -443,9 +444,8 @@ function ObjectSchedule({ objectId}) {
         vaccinationDate: dayjs(record.vaccinationDate, "YYYY-MM-DD"),
       };
     }
-     
+    getListLotNumber(record.vaccineId)
     form.setFieldsValue(record);
-  
     setOperation("Update");
   };
   const handleDelete = (record) => {
@@ -467,6 +467,20 @@ function ObjectSchedule({ objectId}) {
       },
     }).then((response) => {
       setListVaccine(response.data.data);
+    });
+  };
+  const getListLotNumber = (id) => {
+    const vaccineId=id;
+    axios({
+      method: "get",
+      url: "http://localhost:8080/API/ObjectInjection/SelectListLotNumberByVaccineId",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${getJwtToken()}`,
+      },
+      params:{vaccineId},
+    }).then((response) => {
+      setListLotNumber(response.data.data);
     });
   };
   const handleAdd = () => {
@@ -677,6 +691,9 @@ function ObjectSchedule({ objectId}) {
             >
               <Select
                 style={operation !== "Add" ? { pointerEvents: "none" } : {}}
+                onChange={(e)=>
+                   getListLotNumber(e)
+                }
               >
                 {listVaccine.map((item) => (
                   <Select.Option key={item.id} value={item.id}>
@@ -715,10 +732,18 @@ function ObjectSchedule({ objectId}) {
               }}
               
             >
-              <Input
-                readOnly={operation !== "Add" && operation !== "Update"}
-                name="lotNumber"
-              />
+                <Select
+                style={
+                  operation ==="Detail" || operation ==="Delete" ?   { pointerEvents: "none" } :{}
+                }
+              >
+                <Select.Option value={""}>Không có số lô</Select.Option>
+                {listLotNumber.map((item) => (
+                  <Select.Option key={item.lotNumber} value={item.lotNumber}>
+                    {item.lotNumber}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item
               label="Trạng thái:"

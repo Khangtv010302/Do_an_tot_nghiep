@@ -14,4 +14,5 @@ public interface ObjectInjectionService {
     ResponseEntity<ResponseBase> selectByObjectIdAndId(String objectId,String id);
     ResponseEntity<ResponseBase> selectByObjectID(String objectID);
     ResponseEntity<ResponseBase> selectByObjectIdAndName(String objectId,String name);
+    ResponseEntity<ResponseBase> selectListLotNumberByVaccineId(String vaccineId);
 }

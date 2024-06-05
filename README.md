@@ -30,15 +30,31 @@ programing language: Java, JavaScript
   - Navigate to project folder
   - Type "cmd" in path input then press enter key
   - Type "npm run build" then press enter key & waiting execution
+  - You see directory dist
 - Spring Boot
   - Navigate to project folder
   - Type "cmd" in path input then press enter key
   - Type "mvn clean install -DskipTests" then press enter key & waiting execution
 ### Deployment
-- React
-  - Navigate to target folder then copy bankservice.war to your folder deployment
-  - Start bankservice.war by command "java -jar bankservice.war", if there is not issue, it is ready at moment
-  - Health check your api
+  - React
+    - Dowload nginx and extract your directory
+    - To serve your Spring application using Nginx, you can use the following configuration:
+    - ```nginx 
+      server {
+      listen       5173;
+      server_name  localhost;
+
+      #charset koi8-r;
+
+      #access_log  logs/host.access.log  main;
+      index index.html;
+      location / {
+          root   Your path dist;
+          index  index.html index.htm;
+          try_files $uri /index.html;
+          }
+      }
+    - Run nginx.exe
 - Spring Boot
   - Navigate to target folder then copy vaccine.jar to your folder deployment
   - Start vaccine.jar by command "java -jar vaccine.jar", if there is not issue, it is ready at moment

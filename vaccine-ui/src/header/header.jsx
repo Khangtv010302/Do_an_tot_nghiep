@@ -431,7 +431,7 @@ function HeaderPage() {
           id="rePassword"
           label="Nhập lại mật khẩu mới"
           error={newPassword !== reNewPassword && reNewPassword !==""}
-          helperText={newPassword === reNewPassword && reNewPassword ==="" ? null : "Mật khẩu nhập lại không trùng khớp"}
+          helperText={newPassword === reNewPassword || reNewPassword ==="" ? null : "Mật khẩu nhập lại không trùng khớp"}
           variant="outlined"
           size="small"
           type=   {showNewPasswordModal ? "text" : "password"}

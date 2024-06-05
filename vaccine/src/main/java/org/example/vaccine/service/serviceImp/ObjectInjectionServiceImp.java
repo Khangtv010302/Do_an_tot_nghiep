@@ -11,6 +11,7 @@ import org.example.vaccine.model.ObjectInjection;
 import org.example.vaccine.model.request.ObjectInjectionRequest;
 import org.example.vaccine.model.request.ObjectInjectionUpdateRequest;
 import org.example.vaccine.model.response.GeneralInjectionResponse;
+import org.example.vaccine.model.response.LotNumberResponse;
 import org.example.vaccine.model.response.ObjectInjectionDetailResponse;
 import org.example.vaccine.service.ObjectInjectionService;
 import org.springframework.http.HttpStatus;
@@ -103,5 +104,11 @@ public class ObjectInjectionServiceImp implements ObjectInjectionService {
     public ResponseEntity<ResponseBase> selectByObjectIdAndName(String objectId, String name) {
         List<ObjectInjectionDetailResponse> objectInjectionList = objectInjectionMapper.selectByObjectIdAndName(objectId, name);
         return ResponseEntity.ok().body(new ResponseData<>(objectInjectionList));
+    }
+
+    @Override
+    public ResponseEntity<ResponseBase> selectListLotNumberByVaccineId(String vaccineId) {
+        List<LotNumberResponse> list = objectInjectionMapper.selectListLotNumberByVaccineId(vaccineId);
+        return ResponseEntity.ok().body(new ResponseData<>(list));
     }
 }

@@ -100,11 +100,11 @@ const App = ({children,onChose}) => {
          },
          params: getJwtRefreshUsername(),
        }).then((response) => {
-        if (sessionStorage.length >= 3 ){
+        if (sessionStorage.length >= 1 ){
           sessionStorage.setItem("jwtToken",response.data.data.jwtToken)
       sessionStorage.setItem("expiredDate",response.data.data.expiredDate)
       }
-      if ( Object.keys(Cookies.get()).length  >= 3){
+      if ( Object.keys(Cookies.get()).length  >= 1){
         Cookies.set("jwtToken",response.data.data.jwtToken)
         Cookies.set("expiredDate",response.data.data.expiredDate)
       }

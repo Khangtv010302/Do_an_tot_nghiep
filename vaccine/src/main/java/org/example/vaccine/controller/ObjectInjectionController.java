@@ -1,5 +1,6 @@
 package org.example.vaccine.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.example.vaccine.base.ResponseBase;
 import org.example.vaccine.model.ObjectInjection;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/API/ObjectInjection")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "userAuth")
 public class ObjectInjectionController {
     private final ObjectInjectionService objectInjectionService;
     @PostMapping("/InsertAll")
@@ -41,6 +43,10 @@ public class ObjectInjectionController {
     @GetMapping("/SelectByObjectIdAndName")
     ResponseEntity<ResponseBase> selectByObjectIdAndName (@RequestParam String objectId,@RequestParam String name){
         return objectInjectionService.selectByObjectIdAndName(objectId,name);
+    }
+    @GetMapping("/SelectListLotNumberByVaccineId")
+    ResponseEntity<ResponseBase> selectByObjectIdAndName (@RequestParam String vaccineId){
+        return objectInjectionService.selectListLotNumberByVaccineId(vaccineId);
     }
 
 

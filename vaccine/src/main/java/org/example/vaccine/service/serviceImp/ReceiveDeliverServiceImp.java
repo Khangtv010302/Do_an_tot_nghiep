@@ -64,7 +64,7 @@ public class ReceiveDeliverServiceImp implements ReceiveDeliverService {
         int isExistUnitDeliveringIdAndDateDelivering =
                 receiveDeliverMapper.isExistUnitDeliveringIdAndDateDelivering
                         (receiveDeliver.getUnitDeliveringId(), receiveDeliver.getDateDelivering());
-        if (isExistUnitDeliveringIdAndDateDelivering > 0)
+        if (isExistUnitDeliveringIdAndDateDelivering > 1)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseBase("Đã nhập trùng ngày xuất của đơn vị xuất"));
         int code;
         code = receiveDeliverMapper.updateById(receiveDeliver);

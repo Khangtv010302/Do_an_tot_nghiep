@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.example.vaccine.model.ObjectInjection;
 import org.example.vaccine.model.request.ObjectInjectionRequest;
 import org.example.vaccine.model.request.ObjectInjectionUpdateRequest;
+import org.example.vaccine.model.response.LotNumberResponse;
 import org.example.vaccine.model.response.ObjectInjectionDetailResponse;
 import org.example.vaccine.model.response.ObjectInjectionResponse;
 
@@ -50,5 +51,6 @@ public interface ObjectInjectionMapper {
     @Select("SELECT  COUNT(*) FROM receive_deliver_detail WHERE vaccine_id= #{vaccineId} AND lot_number = #{lotNumber}" +
             " AND quantity_delivering < quantity_receiving")
     int isExistLotNumberByVaccineId(String lotNumber,String vaccineId);
-
+    @Select("SELECT lot_number FROM receive_deliver_detail WHERE vaccine_id = #{vaccineId} AND expired_date > curdate() AND quantity_delivering < receive_deliver_detail.quantity_receiving")
+    List<LotNumberResponse> selectListLotNumberByVaccineId(String vaccineId);
 }
